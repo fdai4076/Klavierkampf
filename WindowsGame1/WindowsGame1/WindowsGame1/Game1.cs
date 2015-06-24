@@ -18,11 +18,17 @@ namespace WindowsGame1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Model klotz;
+        Matrix view, projection;
+        float roty=0.0f;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.PreferredBackBufferWidth = 1280;
+
         }
 
         /// <summary>
@@ -34,7 +40,8 @@ namespace WindowsGame1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4,1280f/720f,0.1f,1000f);
+            view = Matrix.CreateLookAt(new Vector3(0, 0, 5), Vector3.Zero, Vector3.Up);
             base.Initialize();
         }
 
@@ -46,7 +53,7 @@ namespace WindowsGame1
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            klotz = Content.Load<Model>("Grundklotz");
             // TODO: use this.Content to load your game content here
         }
 
@@ -71,7 +78,7 @@ namespace WindowsGame1
                 this.Exit();
 
             // TODO: Add your update logic here
-
+            roty += 0.01f;
             base.Update(gameTime);
         }
 
@@ -84,7 +91,18 @@ namespace WindowsGame1
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
+            Matrix world = Matrix.Identity * Matrix.CreateTranslation(new Vector3(0,0,0))*Matrix.CreateRotationY(roty);
+            foreach (ModelMesh mesh in klotz.Meshes)
+            {
+                foreach (BasicEffect basic in mesh.Effects)
+                {
+                    basic.World = world;
+                    basic.View = view;
+                    basic.Projection = projection;
+                    basic.EnableDefaultLighting();
+                }
+                mesh.Draw();
+            }
             base.Draw(gameTime);
         }
     }
