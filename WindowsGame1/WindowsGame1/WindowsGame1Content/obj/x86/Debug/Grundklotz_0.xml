@@ -3,7 +3,7 @@
   <Asset Type="Graphics:MeshContent">
     <Name>Cube</Name>
     <Identity>
-      <SourceFilename>C:\Users\Michelle\Documents\Visual Studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1Content\Grundklotz.fbx</SourceFilename>
+      <SourceFilename>C:\Users\Michelle\Desktop\test\Klavierkampf\WindowsGame1\WindowsGame1\WindowsGame1Content\Grundklotz.fbx</SourceFilename>
       <SourceTool>FbxImporter</SourceTool>
     </Identity>
     <Transform>-100 1.22464676E-14 0 0 -1.99520285E-21 -1.62920678E-05 100 0 1.22464676E-14 100 1.62920678E-05 0 0 0 0 1</Transform>
@@ -26,7 +26,7 @@
     <Resource ID="#Resource1" Type="Graphics:BasicMaterialContent">
       <Name>Material.003</Name>
       <Identity>
-        <SourceFilename>C:\Users\Michelle\Documents\Visual Studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1Content\Grundklotz.fbx</SourceFilename>
+        <SourceFilename>C:\Users\Michelle\Desktop\test\Klavierkampf\WindowsGame1\WindowsGame1\WindowsGame1Content\Grundklotz.fbx</SourceFilename>
         <SourceTool>FbxImporter</SourceTool>
       </Identity>
       <OpaqueData>

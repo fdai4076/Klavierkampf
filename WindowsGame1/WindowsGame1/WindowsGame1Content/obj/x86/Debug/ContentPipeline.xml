@@ -7,11 +7,11 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\Michelle\Documents\Visual Studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\Grundklotz.xnb</Output>
+      <Output>C:\Users\Michelle\Desktop\test\Klavierkampf\WindowsGame1\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\Grundklotz.xnb</Output>
       <Time>2015-06-24T10:50:44.4175381+02:00</Time>
       <Dependency>
         <Key>obj\x86\Debug\Grundklotz_0.xml</Key>
-        <Value>2015-06-24T10:52:16.5608084+02:00</Value>
+        <Value>2015-07-01T10:45:54.3562834+02:00</Value>
       </Dependency>
     </Item>
     <Item>
@@ -27,10 +27,10 @@
       <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>C:\Users\Michelle\Documents\Visual Studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1Content\</RootDirectory>
-      <LoggerRootDirectory>C:\Users\Michelle\Documents\Visual Studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\Users\Michelle\Documents\Visual Studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1Content\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>C:\Users\Michelle\Documents\Visual Studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\</OutputDirectory>
+      <RootDirectory>C:\Users\Michelle\Desktop\test\Klavierkampf\WindowsGame1\WindowsGame1\WindowsGame1Content\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\Michelle\Desktop\test\Klavierkampf\WindowsGame1\WindowsGame1\WindowsGame1\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\Michelle\Desktop\test\Klavierkampf\WindowsGame1\WindowsGame1\WindowsGame1Content\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\Michelle\Desktop\test\Klavierkampf\WindowsGame1\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>

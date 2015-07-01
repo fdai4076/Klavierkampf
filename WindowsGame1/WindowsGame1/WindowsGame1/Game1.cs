@@ -21,6 +21,8 @@ namespace WindowsGame1
         Model klotz;
         Matrix view, projection;
         float roty=0.0f;
+        Player player1;
+        Player player2;
 
         public Game1()
         {
@@ -55,6 +57,8 @@ namespace WindowsGame1
             spriteBatch = new SpriteBatch(GraphicsDevice);
             klotz = Content.Load<Model>("Grundklotz");
             // TODO: use this.Content to load your game content here
+            player1 = new Player(new Vector3(5,0,0),0,klotz,null);
+            player2 = new Player(new Vector3(4, 0, 0), 1, klotz, null);
         }
 
         /// <summary>
@@ -76,6 +80,11 @@ namespace WindowsGame1
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                this.Exit();
+            player1.Update();
+            player2.Update();
 
             // TODO: Add your update logic here
             roty += 0.01f;
@@ -102,7 +111,10 @@ namespace WindowsGame1
                     basic.EnableDefaultLighting();
                 }
                 mesh.Draw();
+
             }
+            player1.Draw(view, projection);
+            player2.Draw(view, projection);
             base.Draw(gameTime);
         }
     }
