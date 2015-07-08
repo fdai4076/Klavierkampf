@@ -20,7 +20,7 @@ namespace WindowsGame1
         SpriteBatch spriteBatch;
         Model klotz;
         Matrix view, projection;
-        float roty = 0.0f;
+        float roty=0.0f;
         Player player1;
         Player player2;
 
@@ -42,7 +42,7 @@ namespace WindowsGame1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1280f / 720f, 0.1f, 1000f);
+            projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4,1280f/720f,0.1f,1000f);
             view = Matrix.CreateLookAt(new Vector3(0, 0, 5), Vector3.Zero, Vector3.Up);
             base.Initialize();
         }
@@ -57,7 +57,7 @@ namespace WindowsGame1
             spriteBatch = new SpriteBatch(GraphicsDevice);
             klotz = Content.Load<Model>("Grundklotz");
             // TODO: use this.Content to load your game content here
-            player1 = new Player(new Vector3(5, 0, 0), 0, klotz, null);
+            player1 = new Player(new Vector3(5,0,0),0,klotz,null);
             player2 = new Player(new Vector3(4, 0, 0), 1, klotz, null);
         }
 
@@ -100,7 +100,7 @@ namespace WindowsGame1
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            Matrix world = Matrix.Identity * Matrix.CreateTranslation(new Vector3(0, 0, 0)) * Matrix.CreateRotationY(roty);
+            Matrix world = Matrix.Identity * Matrix.CreateTranslation(new Vector3(0,0,0))*Matrix.CreateRotationY(roty);
             foreach (ModelMesh mesh in klotz.Meshes)
             {
                 foreach (BasicEffect basic in mesh.Effects)
