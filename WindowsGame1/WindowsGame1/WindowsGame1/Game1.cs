@@ -23,6 +23,7 @@ namespace WindowsGame1
         float roty=0.0f;
         Player player1;
         Player player2;
+        SpriteFont font;
 
         public Game1()
         {
@@ -30,6 +31,7 @@ namespace WindowsGame1
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferHeight = 720;
             graphics.PreferredBackBufferWidth = 1280;
+            
 
         }
 
@@ -43,7 +45,7 @@ namespace WindowsGame1
         {
             // TODO: Add your initialization logic here
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4,1280f/720f,0.1f,1000f);
-            view = Matrix.CreateLookAt(new Vector3(0, 0, 5), Vector3.Zero, Vector3.Up);
+            view = Matrix.CreateLookAt(new Vector3(0, 0, 20), Vector3.Zero, Vector3.Up);
             base.Initialize();
         }
 
@@ -55,9 +57,10 @@ namespace WindowsGame1
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            font = Content.Load<SpriteFont>("SpriteFont1");
             klotz = Content.Load<Model>("Grundklotz");
             // TODO: use this.Content to load your game content here
-            player1 = new Player(new Vector3(5,0,0),0,klotz,null);
+            player1 = new Player(new Vector3(0,0,0),0,klotz,null);
             player2 = new Player(new Vector3(4, 0, 0), 1, klotz, null);
         }
 
@@ -98,9 +101,16 @@ namespace WindowsGame1
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
+            spriteBatch.DrawString(font, "rotationy"+player1.rotationy.ToString(), new Vector2(100, 100), Color.White);
+            spriteBatch.DrawString(font, "faktory"+player1.faktory.ToString(), new Vector2(100, 200), Color.White);
+            spriteBatch.DrawString(font, "faktorz" + player1.faktorz.ToString(), new Vector2(100, 300), Color.White);
+            spriteBatch.DrawString(font, "sinz" + ((float)Math.Sin((float)player1.faktory)).ToString(), new Vector2(100, 400), Color.White);
+           
+            spriteBatch.End();
 
             // TODO: Add your drawing code here
-            Matrix world = Matrix.Identity * Matrix.CreateTranslation(new Vector3(0,0,0))*Matrix.CreateRotationY(roty);
+           /* Matrix world = Matrix.Identity * Matrix.CreateTranslation(new Vector3(0,0,0))*Matrix.CreateRotationY(roty);
             foreach (ModelMesh mesh in klotz.Meshes)
             {
                 foreach (BasicEffect basic in mesh.Effects)
@@ -113,6 +123,7 @@ namespace WindowsGame1
                 mesh.Draw();
 
             }
+            */
             player1.Draw(view, projection);
             player2.Draw(view, projection);
             base.Draw(gameTime);

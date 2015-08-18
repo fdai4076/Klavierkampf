@@ -11,7 +11,9 @@ public class Player
     private Vector3 aktposition;
     private bool[] itemActive;
     private int playerindex;
-    private float rotationy;
+    public float rotationy;
+    public double faktorz;
+    public double faktory;
 
     public Player(Vector3 spawn, int playerindex, Model model, Texture2D textur)
     {
@@ -20,11 +22,14 @@ public class Player
         this.model = model;
         this.textur = textur;
         rotationy = 0.0f;
+        faktory = 0.0;
+        faktorz = 1.0;
     }
 
     public void Draw(Matrix view, Matrix projection)
     {
-        Matrix world = Matrix.Identity * Matrix.CreateTranslation(position) * Matrix.CreateRotationY(MathHelper.ToRadians(rotationy)) * Matrix.CreateTranslation(-position);
+        Matrix world = Matrix.Identity * Matrix.CreateRotationY(rotationy)*Matrix.CreateTranslation(position)  ;// * Matrix.CreateTranslation(-position);
+        
         foreach (ModelMesh mesh in model.Meshes)
         {
             foreach (BasicEffect basic in mesh.Effects)
@@ -44,20 +49,26 @@ public class Player
         {
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                rotationy += 0.1f;
-                //position.X += 
+                rotationy += 0.01f;
+                faktorz -= 0.01f;
+                faktory += 0.01f;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                position.X += 1;
+                rotationy -= 0.01f;
+                faktorz += 0.01f;
+                faktory -= 0.01f;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                position.Z -= 1;
+                position.Z -= (float)Math.Sin((float)faktorz);
+                position.X -= (float)Math.Sin((float)faktory); 
+                
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                position.Z += 1;
+                position.Z += (float)Math.Sin((float)faktorz);
+                position.X += (float)Math.Sin((float)faktory);
             }
         }
 
@@ -65,20 +76,28 @@ public class Player
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                position.X -= 1;
+                rotationy += 0.01f;
+                faktorz -= 0.01f;
+                faktory += 0.01f;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
-                position.Z -= 1;
+                position.Z -= (float)Math.Sin((float)faktorz);
+                position.X -= (float)Math.Sin((float)faktory); 
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                position.Z += 1;
+                position.Z += (float)Math.Sin((float)faktorz);
+                position.X += (float)Math.Sin((float)faktory);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                position.X += 1;
+                rotationy -= 0.01f;
+                faktorz += 0.01f;
+                faktory -= 0.01f;
             }
         }
     }
+
+    
 }
