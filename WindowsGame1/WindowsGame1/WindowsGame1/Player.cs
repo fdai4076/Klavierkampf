@@ -97,6 +97,59 @@ public class Player
                 faktory -= 0.01f;
             }
         }
+
+         if (playerindex == 2)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.J))
+            {
+                rotationy += 0.01f;
+                faktorz -= 0.01f;
+                faktory += 0.01f;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.L))
+            {
+                rotationy -= 0.01f;
+                faktorz += 0.01f;
+                faktory -= 0.01f;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.I))
+            {
+                position.Z -= (float)Math.Sin((float)faktorz);
+                position.X -= (float)Math.Sin((float)faktory); 
+                
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.K))
+            {
+                position.Z += (float)Math.Sin((float)faktorz);
+                position.X += (float)Math.Sin((float)faktory);
+            }
+        }
+
+        if (playerindex == 3)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.NumPad4))
+            {
+                rotationy += 0.01f;
+                faktorz -= 0.01f;
+                faktory += 0.01f;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.NumPad8))
+            {
+                position.Z -= (float)Math.Sin((float)faktorz);
+                position.X -= (float)Math.Sin((float)faktory); 
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.NumPad5))
+            {
+                position.Z += (float)Math.Sin((float)faktorz);
+                position.X += (float)Math.Sin((float)faktory);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.NumPad6))
+            {
+                rotationy -= 0.01f;
+                faktorz += 0.01f;
+                faktory -= 0.01f;
+            }
+        }
     }
 
     

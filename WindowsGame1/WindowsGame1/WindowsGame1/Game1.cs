@@ -22,11 +22,14 @@ namespace WindowsGame1
         Model kleiderschrank;
         Model stuhl;
         Model sofa;
+        Model kuehlschrank;
         Model arena;
         Matrix view, projection;
         float roty=0.0f;
         Player player1;
         Player player2;
+        Player player3;
+        Player player4;
         SpriteFont font;
 
         public Game1()
@@ -49,7 +52,7 @@ namespace WindowsGame1
         {
             // TODO: Add your initialization logic here
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4,1280f/720f,0.1f,1000f);
-            view = Matrix.CreateLookAt(new Vector3(0, 0, 20), Vector3.Zero, Vector3.Up);
+            view = Matrix.CreateLookAt(new Vector3(-10, 32, 19), Vector3.Zero, Vector3.Up)*Matrix.CreateRotationX(0.08f);
             base.Initialize();
         }
 
@@ -65,11 +68,14 @@ namespace WindowsGame1
             klavier = Content.Load<Model>("klavier");
             kleiderschrank = Content.Load<Model>("kleiderschrank");
             sofa = Content.Load<Model>("sofa");
+            kuehlschrank = Content.Load<Model>("kuehlschrank");
             stuhl = Content.Load<Model>("stuhl");
             arena = Content.Load<Model>("arena");
             // TODO: use this.Content to load your game content here
-            player1 = new Player(new Vector3(0,0,0),0,arena,null);
+            player1 = new Player(new Vector3(0,0,-4),0,stuhl,null);
             player2 = new Player(new Vector3(4, 0, 0), 1, sofa, null);
+            player3 = new Player(new Vector3(0, 0, 4), 2, kuehlschrank, null);
+            player4 = new Player(new Vector3(-4, 0, 0), 3, klavier, null);
         }
 
         /// <summary>
@@ -96,6 +102,8 @@ namespace WindowsGame1
                 this.Exit();
             player1.Update();
             player2.Update();
+            player3.Update();
+            player4.Update();
 
             // TODO: Add your update logic here
             roty += 0.01f;
@@ -118,8 +126,8 @@ namespace WindowsGame1
             spriteBatch.End();
 
             // TODO: Add your drawing code here
-           /* Matrix world = Matrix.Identity * Matrix.CreateTranslation(new Vector3(0,0,0))*Matrix.CreateRotationY(roty);
-            foreach (ModelMesh mesh in klotz.Meshes)
+            Matrix world = Matrix.Identity;
+            foreach (ModelMesh mesh in arena.Meshes)
             {
                 foreach (BasicEffect basic in mesh.Effects)
                 {
@@ -131,9 +139,11 @@ namespace WindowsGame1
                 mesh.Draw();
 
             }
-            */
+            
             player1.Draw(view, projection);
             player2.Draw(view, projection);
+            player3.Draw(view, projection);
+            player4.Draw(view, projection);
             base.Draw(gameTime);
         }
     }
