@@ -31,6 +31,8 @@ namespace WindowsGame1
         Player player3;
         Player player4;
         SpriteFont font;
+        enum GameState {logo, start, character, howtoplay, option, ingame, pause, result};
+        private GameState gamestate;
 
         public Game1()
         {
@@ -39,6 +41,7 @@ namespace WindowsGame1
             graphics.PreferredBackBufferHeight = 720;
             graphics.PreferredBackBufferWidth = 1280;
             
+
 
         }
 
@@ -54,6 +57,7 @@ namespace WindowsGame1
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4,1280f/720f,0.1f,1000f);
             view = Matrix.CreateLookAt(new Vector3(-10, 32, 19), Vector3.Zero, Vector3.Up)*Matrix.CreateRotationX(0.08f);
             base.Initialize();
+            gamestate = GameState.ingame;
         }
 
         /// <summary>
@@ -72,7 +76,7 @@ namespace WindowsGame1
             stuhl = Content.Load<Model>("stuhl");
             arena = Content.Load<Model>("arena");
             // TODO: use this.Content to load your game content here
-            player1 = new Player(new Vector3(0,0,-4),0,stuhl,null);
+            player1 = new Player(new Vector3(0,0,-4),0,kleiderschrank,null);
             player2 = new Player(new Vector3(4, 0, 0), 1, sofa, null);
             player3 = new Player(new Vector3(0, 0, 4), 2, kuehlschrank, null);
             player4 = new Player(new Vector3(-4, 0, 0), 3, klavier, null);
@@ -94,20 +98,55 @@ namespace WindowsGame1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 this.Exit();
-            player1.Update();
-            player2.Update();
-            player3.Update();
-            player4.Update();
 
-            // TODO: Add your update logic here
-            roty += 0.01f;
-            base.Update(gameTime);
+            //GameState
+
+            switch (gamestate)
+            {
+                case GameState.logo:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+                case GameState.start:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+                case GameState.character:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+                case GameState.howtoplay:
+                    //Console.WriteLine("Case 1");
+                    break;
+    
+                case GameState.option:
+                    //Console.WriteLine("Case 1");
+                    break;
+                
+                case GameState.ingame:
+                     player1.Update();
+                     player2.Update();
+                     player3.Update();
+                     player4.Update();
+                    break;
+
+                 case GameState.pause:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+                 case GameState.result:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+            } 
         }
 
         /// <summary>
@@ -116,7 +155,68 @@ namespace WindowsGame1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
+           
+            //GameState
+
+            switch (gamestate)
+            {
+                case GameState.logo:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+                case GameState.start:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+                case GameState.character:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+                case GameState.howtoplay:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+                case GameState.option:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+                case GameState.ingame:
+                    // TODO: Add your drawing code here
+                    Matrix world = Matrix.Identity;
+                    foreach (ModelMesh mesh in arena.Meshes)
+                    {
+                        foreach (BasicEffect basic in mesh.Effects)
+                        {
+                            basic.World = world;
+                            basic.View = view;
+                            basic.Projection = projection;
+                            basic.EnableDefaultLighting();
+                        }
+                        mesh.Draw();
+
+                    }
+
+                    player1.Draw(view, projection);
+                    player2.Draw(view, projection);
+                    player3.Draw(view, projection);
+                    player4.Draw(view, projection);
+                    base.Draw(gameTime);
+                    break;
+
+                case GameState.pause:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+                case GameState.result:
+                    //Console.WriteLine("Case 1");
+                    break;
+
+            }
+
+            
+           /*
             spriteBatch.Begin();
             spriteBatch.DrawString(font, "rotationy"+player1.rotationy.ToString(), new Vector2(100, 100), Color.White);
             spriteBatch.DrawString(font, "faktory"+player1.faktory.ToString(), new Vector2(100, 200), Color.White);
@@ -124,27 +224,8 @@ namespace WindowsGame1
             spriteBatch.DrawString(font, "sinz" + ((float)Math.Sin((float)player1.faktory)).ToString(), new Vector2(100, 400), Color.White);
            
             spriteBatch.End();
-
-            // TODO: Add your drawing code here
-            Matrix world = Matrix.Identity;
-            foreach (ModelMesh mesh in arena.Meshes)
-            {
-                foreach (BasicEffect basic in mesh.Effects)
-                {
-                    basic.World = world;
-                    basic.View = view;
-                    basic.Projection = projection;
-                    basic.EnableDefaultLighting();
-                }
-                mesh.Draw();
-
-            }
-            
-            player1.Draw(view, projection);
-            player2.Draw(view, projection);
-            player3.Draw(view, projection);
-            player4.Draw(view, projection);
-            base.Draw(gameTime);
+            */
+           
         }
     }
 }
