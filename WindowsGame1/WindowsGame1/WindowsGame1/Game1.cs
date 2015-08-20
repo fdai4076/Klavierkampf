@@ -18,7 +18,11 @@ namespace WindowsGame1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Model klotz;
+        Model klavier;
+        Model kleiderschrank;
+        Model stuhl;
+        Model sofa;
+        Model arena;
         Matrix view, projection;
         float roty=0.0f;
         Player player1;
@@ -58,10 +62,14 @@ namespace WindowsGame1
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("SpriteFont1");
-            klotz = Content.Load<Model>("Grundklotz");
+            klavier = Content.Load<Model>("klavier");
+            kleiderschrank = Content.Load<Model>("kleiderschrank");
+            sofa = Content.Load<Model>("sofa");
+            stuhl = Content.Load<Model>("stuhl");
+            arena = Content.Load<Model>("arena");
             // TODO: use this.Content to load your game content here
-            player1 = new Player(new Vector3(0,0,0),0,klotz,null);
-            player2 = new Player(new Vector3(4, 0, 0), 1, klotz, null);
+            player1 = new Player(new Vector3(0,0,0),0,arena,null);
+            player2 = new Player(new Vector3(4, 0, 0), 1, sofa, null);
         }
 
         /// <summary>
