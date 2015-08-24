@@ -31,11 +31,14 @@ namespace WindowsGame1
         Player player2;
         Player player3;
         Player player4;
+        Player player5;
         SpriteFont font;
+        BoundingSphere[] sofaBounding;
+        BoundingSphere[] schrankBounding;
 
         enum GameState { logo, start, character, howtoplay, option, ingame, pause, result };
         private GameState gamestate;
-        private bool test = false;
+        private bool test = true;
 
         public Game1()
         {
@@ -50,7 +53,7 @@ namespace WindowsGame1
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
+        /// This is where it can query for any required services and load any non-graphi4
         /// related content.  Calling base.Initialize will enumerate through any components
         /// and initialize them as well.
         /// </summary>
@@ -59,12 +62,30 @@ namespace WindowsGame1
             // TODO: Add your initialization logic here
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1280f / 720f, 0.1f, 1000f);
 
-            view = Matrix.CreateLookAt(new Vector3(-10, 32, 19), Vector3.Zero, Vector3.Up) * Matrix.CreateRotationX(0.08f);
+            view = Matrix.CreateLookAt(new Vector3(4, 20, 28), Vector3.Zero, Vector3.Up);
+
 
             base.Initialize();
             gamestate = GameState.ingame;
+            sofaBounding = new BoundingSphere[3];
+            sofaBounding[0].Center = new Vector3(0, 0, 0);
+            sofaBounding[1].Center = new Vector3(-1.3135f, 0, 0);
+            sofaBounding[2].Center = new Vector3(1.3135f, 0, 0);
 
+            for (int i = 0; i < sofaBounding.Length; i++)
+            {
+                sofaBounding[i].Radius = 1.0915f;
+            }
 
+            schrankBounding = new BoundingSphere[3];
+            schrankBounding[0].Center = new Vector3(0, 0, 0);
+            schrankBounding[1].Center = new Vector3(-0.616f, 0, 0);
+            schrankBounding[2].Center = new Vector3(0.616f, 0, 0);
+
+            for (int i = 0; i < schrankBounding.Length; i++)
+            {
+                schrankBounding[i].Radius = 0.634f;
+            }
 
         }
 
@@ -75,6 +96,7 @@ namespace WindowsGame1
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
+
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("SpriteFont1");
             klotz = Content.Load<Model>("Grundklotz");
@@ -85,10 +107,12 @@ namespace WindowsGame1
             stuhl = Content.Load<Model>("stuhl");
             arena = Content.Load<Model>("arena");
             // TODO: use this.Content to load your game content here
-            player1 = new Player(new Vector3(0, 0, -4), 0, kleiderschrank, null);
-            player2 = new Player(new Vector3(4, 0, 0), 1, sofa, null);
-            player3 = new Player(new Vector3(0, 0, 4), 2, kuehlschrank, null);
-            player4 = new Player(new Vector3(-4, 0, 0), 3, klavier, null);
+            player1 = new Player(new Vector3(0, 2.3625f, -4), 0, kleiderschrank, schrankBounding, null);
+            player2 = new Player(new Vector3(0, 0, 4), 1, sofa, sofaBounding, null);
+            //player3 = new Player(new Vector3(0, 0, 4), 2, kuehlschrank, null);
+            //player4 = new Player(new Vector3(-4, 0, 0), 3, klavier, null);
+            player5 = new Player(new Vector3(0, 0, 0), 4, arena, null, null);
+
         }
 
         /// <summary>
@@ -141,10 +165,25 @@ namespace WindowsGame1
                     break;
 
                 case GameState.ingame:
-                    player1.Update(player1.getBoundingSphere().Intersects(player2.getBoundingSphere()));
-                    player2.Update(player1.getBoundingSphere().Intersects(player2.getBoundingSphere()));
-                   // player3.Update();
-                    //player4.Update();
+                    for (int i = 0; i < player1.getBound().Length; i++)
+                    {
+                        for (int j = 0; j < player2.getBound().Length; i++)
+                        {
+                            if (player1.getBound()[i].Intersects(player2.getBound()[j]))
+                            {
+                                test = false;
+                            }
+                        }
+                    }
+
+                    player1.Update(test);
+                    player2.Update(test);
+                    test = true;
+
+                    //player1.Update(player1.getBoundingSphere().Intersects(player2.getBoundingSphere()));
+                    //player2.Update(player1.getBoundingSphere().Intersects(player2.getBoundingSphere()));
+                    //player3.Update(player1.getBoundingSphere().Intersects(player2.getBoundingSphere()));
+                    //player4.Update(player1.getBoundingSphere().Intersects(player2.getBoundingSphere()));
 
                     break;
 
@@ -193,7 +232,7 @@ namespace WindowsGame1
 
                 case GameState.ingame:
                     // TODO: Add your drawing code here
-                    Matrix world = Matrix.Identity;
+                    /*Matrix world = Matrix.Identity;
                     foreach (ModelMesh mesh in arena.Meshes)
                     {
                         foreach (BasicEffect basic in mesh.Effects)
@@ -205,38 +244,45 @@ namespace WindowsGame1
                         }
                         mesh.Draw();
                     }
-
+                     */
+                    player5.Draw(view, projection);
                     player1.Draw(view, projection);
                     player2.Draw(view, projection);
                     player3.Draw(view, projection);
                     player4.Draw(view, projection);
-                    spriteBatch.Begin();
 
-                    spriteBatch.DrawString(font, "center bs1 " + player1.getBoundingSphere().Radius.ToString(), new Vector2(100, 300), Color.White);
-                    spriteBatch.DrawString(font, "center bs3 " + player2.getBoundingSphere().Radius.ToString(), new Vector2(100, 400), Color.White);
+                /*spriteBatch.Begin();
+                //spriteBatch.DrawString(font, "center bs1 " + player1.model.Bones, new Vector2(100, 100), Color.White);
+                spriteBatch.DrawString(font, "view " + view.ToString(), new Vector2(0, 500), Color.White);
+                spriteBatch.DrawString(font, "view " + view.ToString(), new Vector2(-800, 600), Color.White);
+                spriteBatch.DrawString(font, "center bs1 " + player1.getBoundingSphere().Center.ToString(), new Vector2(100, 100), Color.White);
+                spriteBatch.DrawString(font, "center bs2 " + player2.getBoundingSphere().Center.ToString(), new Vector2(100, 200), Color.White);
+                spriteBatch.DrawString(font, "center bs3 " + player3.getBoundingSphere().Center.ToString(), new Vector2(100, 300), Color.White);
+                spriteBatch.DrawString(font, "center bs4 " + player4.getBoundingSphere().Center.ToString(), new Vector2(100, 400), Color.White);
 
-                    spriteBatch.End();
-                    base.Draw(gameTime);
-                    break;
+                spriteBatch.End();
+                 */
+                base.Draw(gameTime);
+                break;
 
-                case GameState.pause:
-                    //Console.WriteLine("Case 1");
-                    break;
+            case GameState.pause:
+                //Console.WriteLine("Case 1");
+                break;
 
-                case GameState.result:
-                    //Console.WriteLine("Case 1");
-                    break;
+            case GameState.result:
+                //Console.WriteLine("Case 1");
+                break;
 
-            }
-             /*
-             spriteBatch.Begin();
-             spriteBatch.DrawString(font, "rotationy"+player1.rotationy.ToString(), new Vector2(100, 100), Color.White);
-             spriteBatch.DrawString(font, "faktory"+player1.faktory.ToString(), new Vector2(100, 200), Color.White);
-             spriteBatch.DrawString(font, "faktorz" + player1.faktorz.ToString(), new Vector2(100, 300), Color.White);
-             spriteBatch.DrawString(font, "sinz" + ((float)Math.Sin((float)player1.faktory)).ToString(), new Vector2(100, 400), Color.White);
+        }
+         /*
+         spriteBatch.Begin();
+         spriteBatch.DrawString(font, "rotationy"+player1.rotationy.ToString(), new Vector2(100, 100), Color.White);
+         spriteBatch.DrawString(font, "faktory"+player1.faktory.ToString(), new Vector2(100, 200), Color.White);
+         spriteBatch.DrawString(font, "faktorz" + player1.faktorz.ToString(), new Vector2(100, 300), Color.White);
+         spriteBatch.DrawString(font, "sinz" + ((float)Math.Sin((float)player1.faktory)).ToString(), new Vector2(100, 400), Color.White);
            
-             spriteBatch.End();
-             */
+         spriteBatch.End();
+         */
+            }
         }
     }
-}

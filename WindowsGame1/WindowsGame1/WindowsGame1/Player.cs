@@ -14,20 +14,29 @@ public class Player
     public float rotationy;
     public double faktorz;
     public double faktory;
-    private BoundingSphere bound;
+    //private BoundingSphere bound;
+    private BoundingSphere[] sphere;
 
-    public Player(Vector3 spawn, int playerindex, Model model, Texture2D textur)
+    public Player(Vector3 spawn, int playerindex, Model model, BoundingSphere[] sphere,Texture2D textur)
     {
         this.position = spawn;
         this.playerindex = playerindex;
         this.model = model;
         this.textur = textur;
-        bound = model.Meshes[0].BoundingSphere;
-        bound.Center = spawn;
+        this.sphere = sphere;
+
+        
+            for (int i = 0; i < sphere.Length; i++)
+            {
+                this.sphere[i].Center = this.sphere[i].Center + spawn;
+            }
+        
+        //bound = model.Meshes[0].BoundingSphere;
         //bound.Radius = 0.5f;
         rotationy = 0.0f;
         faktory = 0.0;
         faktorz = 1.0;
+        
     }
 
     public void Draw(Matrix view, Matrix projection)
@@ -71,8 +80,10 @@ public class Player
                 {
                     position.Z -= (float)Math.Sin((float)faktorz);
                     position.X -= (float)Math.Sin((float)faktory);
-
-                    bound.Center = bound.Center - new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
+                    for (int i = 0; i < sphere.Length; i++)
+                    {
+                        sphere[i].Center = sphere[i].Center - new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
+                    }
                 }
 
             }
@@ -80,7 +91,10 @@ public class Player
             {
                 position.Z += (float)Math.Sin((float)faktorz);
                 position.X += (float)Math.Sin((float)faktory);
-                bound.Center = bound.Center + new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
+                for (int i = 0; i < sphere.Length; i++)
+                {
+                    sphere[i].Center = sphere[i].Center + new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
+                }
             }
         }
 
@@ -96,13 +110,20 @@ public class Player
             {
                 position.Z -= (float)Math.Sin((float)faktorz);
                 position.X -= (float)Math.Sin((float)faktory);
-                bound.Center = bound.Center - new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
+                for (int i = 0; i < sphere.Length; i++)
+                {
+                    sphere[i].Center = sphere[i].Center - new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
+                }
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
                 position.Z += (float)Math.Sin((float)faktorz);
                 position.X += (float)Math.Sin((float)faktory);
-                bound.Center = bound.Center + new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
+                for (int i = 0; i < sphere.Length; i++)
+                {
+                    sphere[i].Center = sphere[i].Center + new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
+
+                }
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
@@ -112,7 +133,7 @@ public class Player
             }
         }
 
-        if (playerindex == 2)
+        /*if (playerindex == 2)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.J))
             {
@@ -168,15 +189,17 @@ public class Player
                 faktory -= 0.01f;
             }
         }
+         */
     }
 
-    public Vector3 getBound()
+    public BoundingSphere[] getBound()
     {
-        return bound.Center;
+        return sphere;
     }
 
-    public BoundingSphere getBoundingSphere()
+    /*public BoundingSphere getBoundingSphere()
     {
         return bound;
     }
+     */
 }
