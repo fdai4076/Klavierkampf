@@ -34,7 +34,10 @@ namespace WindowsGame1
         Player player5;
         SpriteFont font;
         BoundingSphere[] sofaBounding;
-        BoundingSphere[] schrankBounding;
+        BoundingSphere[] kleiderschrankBounding;
+        BoundingSphere[] kuehlschrankBounding;
+        BoundingSphere[] klavierBounding;
+        BoundingSphere[] stuhlBounding;
 
         enum GameState { logo, start, character, howtoplay, option, ingame, pause, result };
         private GameState gamestate;
@@ -46,9 +49,6 @@ namespace WindowsGame1
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferHeight = 720;
             graphics.PreferredBackBufferWidth = 1280;
-
-
-
         }
 
         /// <summary>
@@ -59,34 +59,59 @@ namespace WindowsGame1
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1280f / 720f, 0.1f, 1000f);
-
             view = Matrix.CreateLookAt(new Vector3(4, 20, 28), Vector3.Zero, Vector3.Up);
 
-
             base.Initialize();
+            
             gamestate = GameState.ingame;
+
             sofaBounding = new BoundingSphere[3];
             sofaBounding[0].Center = new Vector3(0, 0, 0);
             sofaBounding[1].Center = new Vector3(-1.3135f, 0, 0);
             sofaBounding[2].Center = new Vector3(1.3135f, 0, 0);
-
             for (int i = 0; i < sofaBounding.Length; i++)
             {
                 sofaBounding[i].Radius = 1.0915f;
             }
 
-            schrankBounding = new BoundingSphere[3];
-            schrankBounding[0].Center = new Vector3(0, 0, 0);
-            schrankBounding[1].Center = new Vector3(-0.616f, 0, 0);
-            schrankBounding[2].Center = new Vector3(0.616f, 0, 0);
-
-            for (int i = 0; i < schrankBounding.Length; i++)
+            kleiderschrankBounding = new BoundingSphere[3];
+            kleiderschrankBounding[0].Center = new Vector3(0, 0, 0);
+            kleiderschrankBounding[1].Center = new Vector3(-0.616f, 0, 0);
+            kleiderschrankBounding[2].Center = new Vector3(0.616f, 0, 0);
+            for (int i = 0; i < kleiderschrankBounding.Length; i++)
             {
-                schrankBounding[i].Radius = 0.634f;
+                kleiderschrankBounding[i].Radius = 0.634f;
+            }
+           //kuehlschrank und stuhl fehlen!
+            kuehlschrankBounding = new BoundingSphere[3];
+            kuehlschrankBounding[0].Center = new Vector3(0, 0, 0);
+            kuehlschrankBounding[1].Center = new Vector3(-0.616f, 0, 0);
+            kuehlschrankBounding[2].Center = new Vector3(0.616f, 0, 0);
+            for (int i = 0; i < kuehlschrankBounding.Length; i++)
+            {
+                kuehlschrankBounding[i].Radius = 0.634f;
             }
 
+            klavierBounding = new BoundingSphere[5];
+            klavierBounding[0].Center = new Vector3(0, 0, 0);
+            klavierBounding[1].Center = new Vector3(-0.369f, 0, 0);
+            klavierBounding[2].Center = new Vector3(0.369f, 0, 0);
+            klavierBounding[3].Center = new Vector3(-0.369f, 0, 0);
+            klavierBounding[4].Center = new Vector3(0.369f, 0, 0);
+            for (int i = 0; i < klavierBounding.Length; i++)
+            {
+                klavierBounding[i].Radius = 0.5675f;
+            }
+
+            stuhlBounding = new BoundingSphere[3];
+            stuhlBounding[0].Center = new Vector3(0, 0, 0);
+            stuhlBounding[1].Center = new Vector3(-0.616f, 0, 0);
+            stuhlBounding[2].Center = new Vector3(0.616f, 0, 0);
+            for (int i = 0; i < stuhlBounding.Length; i++)
+            {
+                stuhlBounding[i].Radius = 0.634f;
+            }
         }
 
         /// <summary>
@@ -107,7 +132,7 @@ namespace WindowsGame1
             stuhl = Content.Load<Model>("stuhl");
             arena = Content.Load<Model>("arena");
             // TODO: use this.Content to load your game content here
-            player1 = new Player(new Vector3(0, 2.3625f, -4), 0, kleiderschrank, schrankBounding, null);
+            player1 = new Player(new Vector3(0, 2.3625f, -4), 0, kleiderschrank, kleiderschrankBounding, null);
             player2 = new Player(new Vector3(0, 0, 4), 1, sofa, sofaBounding, null);
             //player3 = new Player(new Vector3(0, 0, 4), 2, kuehlschrank, null);
             //player4 = new Player(new Vector3(-4, 0, 0), 3, klavier, null);
