@@ -83,35 +83,26 @@ namespace WindowsGame1
             {
                 kleiderschrankBounding[i].Radius = 0.634f;
             }
-           //kuehlschrank und stuhl fehlen!
-            kuehlschrankBounding = new BoundingSphere[3];
+          
+            kuehlschrankBounding = new BoundingSphere[0];
             kuehlschrankBounding[0].Center = new Vector3(0, 0, 0);
-            kuehlschrankBounding[1].Center = new Vector3(-0.616f, 0, 0);
-            kuehlschrankBounding[2].Center = new Vector3(0.616f, 0, 0);
-            for (int i = 0; i < kuehlschrankBounding.Length; i++)
-            {
-                kuehlschrankBounding[i].Radius = 0.634f;
-            }
+            kuehlschrankBounding[0].Radius = 0.55f;
 
             klavierBounding = new BoundingSphere[5];
             klavierBounding[0].Center = new Vector3(0, 0, 0);
-            klavierBounding[1].Center = new Vector3(-0.369f, 0, 0);
-            klavierBounding[2].Center = new Vector3(0.369f, 0, 0);
-            klavierBounding[3].Center = new Vector3(-0.369f, 0, 0);
-            klavierBounding[4].Center = new Vector3(0.369f, 0, 0);
+            klavierBounding[1].Center = new Vector3(-0.4f, 0, 0);
+            klavierBounding[2].Center = new Vector3(0.4f, 0, 0);
+            klavierBounding[3].Center = new Vector3(-0.9675f, 0, 0);
+            klavierBounding[4].Center = new Vector3(0.9675f, 0, 0);
             for (int i = 0; i < klavierBounding.Length; i++)
             {
                 klavierBounding[i].Radius = 0.5675f;
             }
 
-            stuhlBounding = new BoundingSphere[3];
+            stuhlBounding = new BoundingSphere[1];
             stuhlBounding[0].Center = new Vector3(0, 0, 0);
-            stuhlBounding[1].Center = new Vector3(-0.616f, 0, 0);
-            stuhlBounding[2].Center = new Vector3(0.616f, 0, 0);
-            for (int i = 0; i < stuhlBounding.Length; i++)
-            {
-                stuhlBounding[i].Radius = 0.634f;
-            }
+            stuhlBounding[0].Radius = 0.44f;
+            
         }
 
         /// <summary>
