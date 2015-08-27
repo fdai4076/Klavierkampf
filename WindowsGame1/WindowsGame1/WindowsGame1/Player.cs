@@ -15,6 +15,7 @@ public class Player
     public float rotationy;
     public double faktorz;
     public double faktory;
+    public float speed;
     //private BoundingSphere bound;
     private BoundingSphere[] sphere;
 
@@ -38,6 +39,7 @@ public class Player
         rotationy = 0.0f;
         faktory = 0.0;
         faktorz = 1.0;
+        speed = 0.1f;
         
     }
 
@@ -45,7 +47,7 @@ public class Player
     {
         for (int i = 0; i < sphere.Length; i++)
         {
-            Matrix World = Matrix.Identity * Matrix.CreateRotationY(rotationy) * Matrix.CreateTranslation(sphere[i].Center) * Matrix.CreateRotationY(rotationy) *Matrix.CreateTranslation(position);
+            Matrix World = Matrix.Identity * Matrix.CreateTranslation(sphere[i].Center);
             foreach (ModelMesh sphereMesh in sphereModel.Meshes)
             {
                 foreach (BasicEffect effect in sphereMesh.Effects)
@@ -86,8 +88,14 @@ public class Player
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
                 rotationy += 0.01f;
-                faktorz -= 0.01f;
-                faktory += 0.01f;
+                //faktorz -= 0.01f;
+               // faktory += 0.01f;
+                for (int i = 0; i < sphere.Length; i++)
+                {
+                    float radius = (Math.Abs(sphere[i].Center.X - position.X) + Math.Abs(sphere[i].Center.Z - position.Z));
+                    sphere[i].Center.X = (float)(position.X + (Math.Sin(rotationy) * radius));
+                    sphere[i].Center.Z = (float)(position.Z + (Math.Cos(rotationy) * radius));
+                }
                 
 
 
@@ -95,19 +103,31 @@ public class Player
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
                 rotationy -= 0.01f;
-                faktorz += 0.01f;
-                faktory -= 0.01f;
+               // faktorz += 0.01f;
+               // faktory -= 0.01f;
+                for (int i = 0; i < sphere.Length; i++)
+                {
+                    float radius = (Math.Abs(sphere[i].Center.X - position.X) + Math.Abs(sphere[i].Center.Z - position.Z));
+                    sphere[i].Center.X = (float)(position.X - (Math.Sin(rotationy) * radius));
+                    sphere[i].Center.Z = (float)(position.Z - (Math.Cos(rotationy) * radius));
+                }
+                
             }
       
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
                 if(canWalk)
                 {
-                    position.Z -= (float)Math.Sin((float)faktorz)/100;
-                    position.X -= (float)Math.Sin((float)faktory)/100;
+                   // position.Z -= (float)Math.Sin((float)faktorz)/100;
+                   // position.X -= (float)Math.Sin((float)faktory)/100;
+                    position.Z -= (float)(speed * Math.Cos(rotationy));
+                    position.X -= (float)(speed * Math.Sin(rotationy));
                     for (int i = 0; i < sphere.Length; i++)
                     {
-                        sphere[i].Center = sphere[i].Center - new Vector3((float)Math.Sin((float)faktory)/100, 0, (float)Math.Sin((float)faktorz)/100);
+                        //sphere[i].Center = sphere[i].Center - new Vector3((float)Math.Sin((float)faktory)/100, 0, (float)Math.Sin((float)faktorz)/100);
+                            sphere[i].Center.X -= (float)(speed * Math.Sin(rotationy));
+                            sphere[i].Center.Z -= (float)(speed * Math.Cos(rotationy));
+                        
                     }
                 }
 
@@ -116,11 +136,15 @@ public class Player
             {
                 if (canWalk)
                 {
-                    position.Z += (float)Math.Sin((float)faktorz)/100;
-                    position.X += (float)Math.Sin((float)faktory)/100;
+                    //position.Z += (float)Math.Sin((float)faktorz)/100;
+                   // position.X += (float)Math.Sin((float)faktory)/100;
+                    position.Z += (float)(speed * Math.Cos(rotationy));
+                    position.X += (float)(speed * Math.Sin(rotationy));
                     for (int i = 0; i < sphere.Length; i++)
                     {
-                        sphere[i].Center = sphere[i].Center + new Vector3((float)Math.Sin((float)faktory)/100, 0, (float)Math.Sin((float)faktorz)/100);
+                       // sphere[i].Center = sphere[i].Center + new Vector3((float)Math.Sin((float)faktory)/100, 0, (float)Math.Sin((float)faktorz)/100);
+                        sphere[i].Center.X += (float)(speed * Math.Sin(rotationy));
+                        sphere[i].Center.Z += (float)(speed * Math.Cos(rotationy));
                     }
                 }
             }
@@ -131,37 +155,59 @@ public class Player
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
                 rotationy += 0.01f;
-                faktorz -= 0.01f;
-                faktory += 0.01f;
+                //faktorz -= 0.01f;
+                //faktory += 0.01f;
+                for (int i = 0; i < sphere.Length; i++)
+                {
+                    float radius = (Math.Abs(sphere[i].Center.X - position.X) + Math.Abs(sphere[i].Center.Z - position.Z));
+                    sphere[i].Center.X = (float)(position.X + (Math.Sin(rotationy) * radius));
+                    sphere[i].Center.Z = (float)(position.Z + (Math.Cos(rotationy) * radius));
+                }
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
                 
-                    position.Z -= (float)Math.Sin((float)faktorz);
-                    position.X -= (float)Math.Sin((float)faktory);
+                   // position.Z -= (float)Math.Sin((float)faktorz);
+                   // position.X -= (float)Math.Sin((float)faktory);
+                   position.Z -= (float)(speed * Math.Cos(rotationy));
+                   position.X -= (float)(speed * Math.Sin(rotationy));
                     for (int i = 0; i < sphere.Length; i++)
                     {
-                        sphere[i].Center = sphere[i].Center - new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
+                        //sphere[i].Center = sphere[i].Center - new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
+                        sphere[i].Center.X -= (float)(speed * Math.Sin(rotationy));
+                        sphere[i].Center.Z -= (float)(speed * Math.Cos(rotationy));
                     }
                 
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
                 
-                    position.Z += (float)Math.Sin((float)faktorz);
-                    position.X += (float)Math.Sin((float)faktory);
+                   // position.Z -= (float)Math.Sin((float)faktorz);
+                   // position.X -= (float)Math.Sin((float)faktory);
+                position.Z += (float)(speed * Math.Cos(rotationy));
+                position.X += (float)(speed * Math.Sin(rotationy));
                     for (int i = 0; i < sphere.Length; i++)
                     {
-                        sphere[i].Center = sphere[i].Center + new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
-
+                       // sphere[i].Center = sphere[i].Center + new Vector3((float)Math.Sin((float)faktory), 0, (float)Math.Sin((float)faktorz));
+                        sphere[i].Center.X += (float)(speed * Math.Sin(rotationy));
+                        sphere[i].Center.Z += (float)(speed * Math.Cos(rotationy));
                     }
                 
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
                 rotationy -= 0.01f;
-                faktorz += 0.01f;
-                faktory -= 0.01f;
+               // faktorz += 0.01f;
+               // faktory -= 0.01f;
+               
+                for (int i = 0; i < sphere.Length; i++)
+                {
+                    double radius = Math.Sqrt(Math.Pow(position.X - sphere[i].Center.X, 2) + Math.Pow(position.Z - sphere[i].Center.Z, 2));
+                    Console.WriteLine(radius);
+                    sphere[i].Center.X = (float)(position.X + (Math.Cos(rotationy)* radius));
+                    sphere[i].Center.Z = (float)(position.Z + (Math.Sin(rotationy) * radius));
+                }
+                
             }
         }
 
