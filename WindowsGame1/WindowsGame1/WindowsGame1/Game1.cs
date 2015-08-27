@@ -66,7 +66,7 @@ namespace WindowsGame1
         protected override void Initialize()
         {
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1280f / 720f, 0.1f, 1000f);
-            view = Matrix.CreateLookAt(new Vector3(1, 40, 0), Vector3.Zero, Vector3.Up);
+            view = Matrix.CreateLookAt(new Vector3(0, 40, 1), Vector3.Zero, Vector3.Up);
 
             base.Initialize();
             
@@ -284,19 +284,25 @@ namespace WindowsGame1
                     player2.Draw(view, projection);
                     //player3.Draw(view, projection);
                     //player4.Draw(view, projection);
+                     spriteBatch.Begin();
 
-                /*spriteBatch.Begin();
-                spriteBatch.DrawString(font, "ca " + sphere1.Meshes[0].BoundingSphere.ToString(), new Vector2(100, 100), Color.White);
-                spriteBatch.DrawString(font, "view " + view.ToString(), new Vector2(0, 500), Color.White);
-                spriteBatch.DrawString(font, "view " + view.ToString(), new Vector2(-800, 600), Color.White);
-                spriteBatch.DrawString(font, "center bs1 " + player1.getBoundingSphere().Center.ToString(), new Vector2(100, 100), Color.White);
-                spriteBatch.DrawString(font, "center bs2 " + player2.getBoundingSphere().Center.ToString(), new Vector2(100, 200), Color.White);
-                spriteBatch.DrawString(font, "center bs3 " + player3.getBoundingSphere().Center.ToString(), new Vector2(100, 300), Color.White);
-                spriteBatch.DrawString(font, "center bs4 " + player4.getBoundingSphere().Center.ToString(), new Vector2(100, 400), Color.White);
+                     spriteBatch.DrawString(font, "ca " + player2.sphere[2].Center, new Vector2(100, 100), Color.White);
+                    spriteBatch.DrawString(font, "view " + player2.position.ToString(), new Vector2(0, 500), Color.White);
+        
 
-                spriteBatch.End();
-       */          
-                base.Draw(gameTime);
+                    spriteBatch.End();
+                    /*spriteBatch.Begin();
+                    spriteBatch.DrawString(font, "ca " + Math.Acos(0), new Vector2(100, 100), Color.White);
+                    spriteBatch.DrawString(font, "view " + view.ToString(), new Vector2(0, 500), Color.White);
+                    spriteBatch.DrawString(font, "view " + view.ToString(), new Vector2(-800, 600), Color.White);
+                    spriteBatch.DrawString(font, "center bs1 " + player1.getBoundingSphere().Center.ToString(), new Vector2(100, 100), Color.White);
+                    spriteBatch.DrawString(font, "center bs2 " + player2.getBoundingSphere().Center.ToString(), new Vector2(100, 200), Color.White);
+                    spriteBatch.DrawString(font, "center bs3 " + player3.getBoundingSphere().Center.ToString(), new Vector2(100, 300), Color.White);
+                    spriteBatch.DrawString(font, "center bs4 " + player4.getBoundingSphere().Center.ToString(), new Vector2(100, 400), Color.White);
+
+                    spriteBatch.End();
+                  */
+                    base.Draw(gameTime);
                 break;
 
             case GameState.pause:

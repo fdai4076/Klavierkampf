@@ -8,7 +8,7 @@ public class Player
     public Model model;
     private Model sphereModel;
     private Texture2D textur;
-    private Vector3 position;
+    public Vector3 position;
     private Vector3 aktposition;
     private bool[] itemActive;
     private int playerindex;
@@ -17,10 +17,12 @@ public class Player
     public double faktory;
     public float speed;
     //private BoundingSphere bound;
-    private BoundingSphere[] sphere;
+    public BoundingSphere[] sphere;
+    
 
     public Player(Vector3 spawn, int playerindex, Model model, BoundingSphere[] sphere, Model sphereModel, Texture2D textur)
     {
+
         this.position = spawn;
         this.playerindex = playerindex;
         this.model = model;
@@ -78,7 +80,7 @@ public class Player
             mesh.Draw();
             
         }
-        
+       
     }
 
     public void Update(bool canWalk)
@@ -204,8 +206,8 @@ public class Player
                 {
                     double radius = Math.Sqrt(Math.Pow(position.X - sphere[i].Center.X, 2) + Math.Pow(position.Z - sphere[i].Center.Z, 2));
                     Console.WriteLine(radius);
-                    sphere[i].Center.X = (float)(position.X + (Math.Cos(rotationy)* radius));
-                    sphere[i].Center.Z = (float)(position.Z + (Math.Sin(rotationy) * radius));
+                    sphere[i].Center.X = (float)(position.X + Math.Sin(getAngle2Dim(sphere[i].Center,position))*radius);
+                    sphere[i].Center.Z = (float)(position.Z + Math.Cos(getAngle2Dim(sphere[i].Center,position))*radius);
                 }
                 
             }
@@ -280,4 +282,20 @@ public class Player
         return bound;
     }
      */
+
+    public double getAngle3Dim(Vector3 spherePos, Vector3 modelPos)
+    {
+        Vector3 sphereVector = new Vector3(spherePos.X - modelPos.X,spherePos.Y - modelPos.Y,spherePos.Z - modelPos.Z);
+        double angle = (Vector3.Dot(new Vector3(1, 0, 0), sphereVector))/ (Math.Sqrt(1) * Math.Sqrt(Math.Pow(sphereVector.X, 2) + Math.Pow(sphereVector.Y, 2)+Math.Pow(sphereVector.Z,2)));
+        
+        return Math.Acos(angle);
+    }
+
+    public double getAngle2Dim(Vector3 spherePos, Vector3 modelPos)
+    {
+        Vector2 sphereVector = new Vector2(spherePos.X - modelPos.X, spherePos.Z - modelPos.Z);
+        double angle = (Vector2.Dot(new Vector2(1, 0), sphereVector)) / (Math.Sqrt(1) * Math.Sqrt(Math.Pow(sphereVector.X, 2) + Math.Pow(sphereVector.Y, 2)));
+
+        return Math.Acos(angle);
+    }
 }
