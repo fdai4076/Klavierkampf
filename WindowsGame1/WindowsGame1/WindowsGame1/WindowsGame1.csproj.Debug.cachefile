@@ -2,7 +2,6 @@ Content\Grundklotz.xnb
 Content\arena.xnb
 Content\klavier.xnb
 Content\kleiderschrank.xnb
-Content\kuehlschrank.xnb
 Content\sofa.xnb
 Content\stuhl.xnb
 Content\sphere_01.xnb
@@ -11,3 +10,7 @@ Content\sphere_03.xnb
 Content\sphere_04.xnb
 Content\sphere_05.xnb
 Content\SpriteFont1.xnb
+Content\ultimateSphere.xnb
+Content\kuehlschrank.xnb
+Content\kuehlschrankTexture.xnb
+Content\Blender\kuehlschrankTexture_0.xnb
