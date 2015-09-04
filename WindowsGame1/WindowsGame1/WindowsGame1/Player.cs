@@ -17,6 +17,7 @@ namespace WindowsGame1
         public double faktory;
         public float speed;
         public CollisionSphere[] sphere;
+        private bool dashing;
 
 
         public Player(Vector3 spawn, int playerindex, Model model, CollisionSphere[] sphere, Model boundingSphere)
@@ -35,6 +36,7 @@ namespace WindowsGame1
             }       
             rotationy = 0.0f;
             speed = 0.1f;
+            dashing = false;
         }
 
         public void Draw(Matrix view, Matrix projection)
@@ -65,18 +67,27 @@ namespace WindowsGame1
                     basic.View = view;
                     basic.Projection = projection;
                     basic.EnableDefaultLighting();
-                    basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-                    basic.Alpha = 0.5f;
+                    //basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                    //basic.Alpha = 0.5f;
                 }
                 mesh.Draw();
             }
         }
 
         public void Update(bool canWalk)
-        {       
+        {
+            speed = 0.1f;
+            if (!canWalk)
+            {
+                position.Y -= 0.1f;
+                for (int i = 0; i < sphere.Length; i++)
+                {
+                    sphere[i].setCenterPos(new Vector3(sphere[i].getCenterPos().X, sphere[i].getCenterPos().Y - 0.1f, sphere[i].getCenterPos().Z));
+                }
+            }
             if (playerindex == 0)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                if (Keyboard.GetState().IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
                 {
                     rotationy += 0.01f;
                  
@@ -90,7 +101,7 @@ namespace WindowsGame1
                     }          
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.D))
+                if (Keyboard.GetState().IsKeyDown(Keys.D) || GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
                 {
                     rotationy -= 0.01f;
 
@@ -104,10 +115,20 @@ namespace WindowsGame1
                     }
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.W))
+                if (Keyboard.GetState().IsKeyDown(Keys.W) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
                 {
                     if (canWalk)
-                    {  
+                    {
+                        if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing)
+                        {
+                            speed = speed * 50f;
+                            dashing = true;
+                        }
+
+                        if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Released)
+                            dashing = false;
+                            
+
                         position.Z -= (float)(speed * Math.Cos(rotationy));
                         position.X -= (float)(speed * Math.Sin(rotationy));
                         for (int i = 0; i < sphere.Length; i++)
@@ -117,10 +138,11 @@ namespace WindowsGame1
                             sphere[i].getCenterPos().Y,
                             (float)(sphere[i].getCenterPos().Z - speed*Math.Cos(rotationy))));
                         }
+                        
                     }
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                if (Keyboard.GetState().IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
                 {
                     if (canWalk)
                     {    
@@ -136,6 +158,8 @@ namespace WindowsGame1
                     }
                 }
             }
+
+            
 
 
             if (playerindex == 1)
@@ -328,15 +352,6 @@ namespace WindowsGame1
             }
         }
 
-
-
-        /*public BoundingSphere getBoundingSphere()
-        {
-            return bound;
-        }
-         */
-
-
         public double getAngle2Dim(Vector3 spherePos, Vector3 modelPos)
         {
             Vector2 sphereVector = new Vector2(spherePos.X - modelPos.X, spherePos.Z - modelPos.Z);
@@ -346,17 +361,6 @@ namespace WindowsGame1
                 return (MathHelper.ToRadians(360) - Math.Acos(angle));
             }
             return Math.Acos(angle);
-        }
-
-        public String getDrawingThings()
-        {
-            return sphere[1].getCenterPos().ToString();
-
-            
-
-            
-            //return sphere[0].getAngleToModel().ToString();
-            // return /* (position.X + Math.Cos(135) * */ (Math.Abs(sphere[0].getCenterPos().X - position.X) +  Math.Abs(sphere[0].getCenterPos().Z - position.Z)).ToString();
         }
     }
 }

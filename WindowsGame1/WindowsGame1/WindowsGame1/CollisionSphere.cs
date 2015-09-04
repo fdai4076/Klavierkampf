@@ -66,5 +66,10 @@ namespace WindowsGame1
             return posToModel;
         }
 
+        public BoundingSphere getSphere()
+        {
+            return sphere;
+        }
+
     }
 }
