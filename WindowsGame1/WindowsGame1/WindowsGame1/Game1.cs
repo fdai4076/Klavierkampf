@@ -62,7 +62,7 @@ namespace WindowsGame1
         protected override void Initialize()
         {
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1280f / 720f, 0.1f, 1000f);
-            view = Matrix.CreateLookAt(new Vector3(0, 10,0.1f ), Vector3.Zero, Vector3.Up);
+            view = Matrix.CreateLookAt(new Vector3(0, 40,0.1f ), Vector3.Zero, Vector3.Up);
 
             base.Initialize();
             
@@ -160,11 +160,11 @@ namespace WindowsGame1
                 new CollisionSphere (new Vector3 (1.4f, 0, 0.4f))
             };
 
-            player1 = new Player(new Vector3(0, 2.2425f, 0), 0,sofa, sofaBounding, ultimatesphere);
-            player2 = new Player(new Vector3(0, 2.8625f, -4), 1, kleiderschrank, kleiderschrankBounding, ultimatesphere);
-            //player3 = new Player(new Vector3(0, 0, 4), 2, kuehlschrank, null);
-            //player4 = new Player(new Vector3(-4, 0, 0), 3, klavier, null);
-            //player5 = new Player(new Vector3(0, 0, 0), 4, arena, null, null);
+            player1 = new Player(new Vector3(0, 2.2425f, -4), 0,sofa, sofaBounding, ultimatesphere);
+            player2 = new Player(new Vector3(4, 2.8625f, 0), 1, kleiderschrank, kleiderschrankBounding, ultimatesphere);
+            player3 = new Player(new Vector3(-4,2.403f , 0), 2, kuehlschrank, kuehlschrankBounding,ultimatesphere);
+            player4 = new Player(new Vector3(0, 2.1f, 4), 3, klavier, klavierBounding,ultimatesphere);
+            
             
         }
 
@@ -255,6 +255,8 @@ namespace WindowsGame1
 
                     player1.Update(test);
                     player2.Update(test);
+                    player3.Update(test);
+                    player4.Update(test);
                     test = true;
 
                     break;
@@ -321,17 +323,20 @@ namespace WindowsGame1
                      
                     player1.Draw(view, projection);
                     player2.Draw(view, projection);
-                    //player3.Draw(view, projection);
-                    //player4.Draw(view, projection);
+                    player3.Draw(view, projection);
+                    player4.Draw(view, projection);
                     
-                    spriteBatch.Begin();
+                  /*  spriteBatch.Begin();
                     spriteBatch.DrawString(font, "Sphere0 " + player1.sphere[0].getCenterPos().ToString(), new Vector2(100, 100), Color.White);
-                    spriteBatch.DrawString(font, "Sphere1 " + player1.sphere[1].getCenterPos().ToString(), new Vector2(100, 150), Color.White);
-                    spriteBatch.DrawString(font, "Sphere2 " + player1.sphere[2].getCenterPos().ToString(), new Vector2(100, 200), Color.White);
-                    spriteBatch.DrawString(font, "Sphere3 " + player1.sphere[3].getCenterPos().ToString(), new Vector2(100, 250), Color.White);
-
-
+                    spriteBatch.DrawString(font, "Sphere1 " + player1.sphere[11].getCenterPos().ToString(), new Vector2(100, 150), Color.White);
+                    spriteBatch.DrawString(font, "Sphere2 " + player1.sphere[18].getCenterPos().ToString(), new Vector2(100, 200), Color.White);
+                    spriteBatch.DrawString(font, "Sphere3 " + player1.sphere[29].getCenterPos().ToString(), new Vector2(100, 250), Color.White);
+                    spriteBatch.DrawString(font, "radius0 " + MathHelper.ToDegrees((float)(player1.sphere[0].getAngleToModel()+player1.rotationy)).ToString(), new Vector2(100, 300), Color.White);
+                    spriteBatch.DrawString(font, "radius1 " + MathHelper.ToDegrees((float)(player1.sphere[11].getAngleToModel() + player1.rotationy)).ToString(), new Vector2(100, 350), Color.White);
+                    spriteBatch.DrawString(font, "radius2 " + MathHelper.ToDegrees((float)(player1.sphere[18].getAngleToModel() + player1.rotationy)).ToString(), new Vector2(100, 400), Color.White);
+                    spriteBatch.DrawString(font, "radius3 " + MathHelper.ToDegrees((float)(player1.sphere[29].getAngleToModel() + player1.rotationy)).ToString(), new Vector2(100, 450), Color.White);
                     spriteBatch.End();
+                     */
                   
                     base.Draw(gameTime);
                 break;
