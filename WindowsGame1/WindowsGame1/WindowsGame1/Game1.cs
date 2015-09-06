@@ -39,16 +39,24 @@ namespace WindowsGame1
         private BoundingBox arenaBounding;
         
 
-        enum GameState { logo, start, character, howtoplay, option, ingame, pause, result };
+        enum GameState { logo, splashMenu, character, howtoplay, option, ingame, pause, result };
         private GameState gamestate;
 
+        Button buttonPauseReturn, buttonPauseMainmenu;
+        BButton buttonSplahscreenStart, buttonSplashscreenHowtoplay, buttonOption, buttonExit;
+
+        Texture2D pausenMenu;
+        Texture2D mainMenu;
+
+        int screenWidth = 1280, screenHeight = 720;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferHeight = 720;
-            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = screenHeight;
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -183,12 +191,27 @@ namespace WindowsGame1
             klavier = Content.Load<Model>("klavier");
             kleiderschrank = Content.Load<Model>("kleiderschrank");
             sofa = Content.Load<Model>("sofa");
-           kuehlschrank = Content.Load<Model>("kuehlschrank");
+            kuehlschrank = Content.Load<Model>("kuehlschrank");
             stuhl = Content.Load<Model>("stuhl");
             arena = Content.Load<Model>("arena");
             ultimatesphere = Content.Load<Model>("ultimateSphere");
             // TODO: use this.Content to load your game content here
-            
+
+            pausenMenu = Content.Load<Texture2D>("Menu/Pause/PausenMenu");
+            mainMenu = Content.Load<Texture2D>("Menu/splashMenu/SplashMenu");
+
+            buttonPauseReturn = new Button(Content.Load<Texture2D>("Menu/Pause/returnButton"), graphics.GraphicsDevice);
+            buttonPauseReturn.setPosition(new Vector2((515), (300)));
+
+            buttonPauseMainmenu = new Button(Content.Load<Texture2D>("Menu/SplashMenu/MainMenu"), graphics.GraphicsDevice);
+            buttonPauseMainmenu.setPosition(new Vector2((515), 475));
+
+            buttonSplahscreenStart = new BButton(Content.Load<Texture2D>("Menu/SplashMenu/StartButton"), graphics.GraphicsDevice);
+            buttonSplahscreenStart.setPosition(new Vector2(0, (screenHeight / 2)));
+
+            buttonSplashscreenHowtoplay = new BButton(Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay"), graphics.GraphicsDevice);
+            buttonSplashscreenHowtoplay.setPosition(new Vector2(0, (screenHeight / 3)));
+
 
         }
 
@@ -217,6 +240,7 @@ namespace WindowsGame1
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 this.Exit();
 
+            MouseState mouse = Mouse.GetState();
             //GameState
 
             switch (gamestate)
@@ -225,8 +249,25 @@ namespace WindowsGame1
                     
                     break;
 
-                case GameState.start:
+                case GameState.splashMenu:
                     
+                    IsMouseVisible = true;
+
+                    if (buttonSplahscreenStart.isClicked == true)
+                    {
+                        gamestate = GameState.ingame;
+                        IsMouseVisible = false;
+                        buttonSplahscreenStart.isClicked = false;
+                    }
+                    buttonSplahscreenStart.Update(mouse);
+
+                    if (buttonSplashscreenHowtoplay.isClicked == true)
+                    {
+                        gamestate = GameState.ingame;
+                        IsMouseVisible = false;
+                        buttonSplashscreenHowtoplay.isClicked = false;
+                    }
+                    buttonSplashscreenHowtoplay.Update(mouse);
                     break;
 
                 case GameState.character:
@@ -259,11 +300,29 @@ namespace WindowsGame1
                     player3.Update(player3.sphere[0].getSphere().Intersects(arenaBounding));
                     player4.Update(player4.sphere[0].getSphere().Intersects(arenaBounding));
                     
+                    if (Keyboard.GetState().IsKeyDown(Keys.P))
+                        gamestate = GameState.pause;
 
                     break;
 
                 case GameState.pause:
                     
+                    IsMouseVisible = true;
+
+                    if (buttonPauseReturn.isClicked == true)
+                    {
+                        gamestate = GameState.ingame;
+                        IsMouseVisible = false; 
+                        buttonPauseReturn.isClicked = false;
+                    }
+
+                    if (buttonPauseMainmenu.isClicked == true)
+                    {
+                        gamestate = GameState.splashMenu;
+                        buttonPauseMainmenu.isClicked = false;
+                    }
+                    buttonPauseMainmenu.Update(mouse);
+                    buttonPauseReturn.Update(mouse);
                     break;
 
                 case GameState.result:
@@ -284,6 +343,7 @@ namespace WindowsGame1
             
 
             //GameState
+            spriteBatch.Begin();
 
             switch (gamestate)
             {
@@ -291,8 +351,12 @@ namespace WindowsGame1
                     
                     break;
 
-                case GameState.start:
+                case GameState.splashMenu:
                    
+                    spriteBatch.Draw(mainMenu, new Rectangle(0, 0, screenWidth, screenWidth), Color.White);
+                    buttonSplahscreenStart.Draw(spriteBatch);
+                    buttonSplashscreenHowtoplay.Draw(spriteBatch);
+
                     break;
 
                 case GameState.character:
@@ -327,7 +391,7 @@ namespace WindowsGame1
                     player3.Draw(view, projection);
                     player4.Draw(view, projection);
                     
-                    spriteBatch.Begin();
+                    //spriteBatch.Begin();
                     spriteBatch.DrawString(font, "Sphere0 " + player1.sphere[0].getCenterPos().ToString(), new Vector2(100, 100), Color.White);
                     spriteBatch.DrawString(font, "Sphere1 " + player1.sphere[11].getCenterPos().ToString(), new Vector2(100, 150), Color.White);
                     spriteBatch.DrawString(font, "Sphere2 " + player1.sphere[18].getCenterPos().ToString(), new Vector2(100, 200), Color.White);
@@ -337,7 +401,7 @@ namespace WindowsGame1
                     spriteBatch.DrawString(font, "radius2 " + MathHelper.ToDegrees((float)(player1.sphere[18].getAngleToModel() + player1.rotationy)).ToString(), new Vector2(100, 400), Color.White);
                     spriteBatch.DrawString(font, "radius3 " + MathHelper.ToDegrees((float)(player1.sphere[29].getAngleToModel() + player1.rotationy)).ToString(), new Vector2(100, 450), Color.White);
                     spriteBatch.DrawString(font, "collision" + (player1.sphere[0].getSphere().Intersects(arenaBounding)).ToString(), new Vector2(100, 500), Color.White);
-                    spriteBatch.End();
+                    //spriteBatch.End();
 
                     //http://xboxforums.create.msdn.com/forums/t/1796.aspx :
                     GraphicsDevice.BlendState = BlendState.Opaque; 
@@ -350,12 +414,18 @@ namespace WindowsGame1
 
             case GameState.pause:
                 
+                spriteBatch.Draw(pausenMenu, new Rectangle(0,0, screenWidth,screenWidth), Color.White);
+                buttonPauseReturn.Draw(spriteBatch);
+                buttonPauseMainmenu.Draw(spriteBatch);
+                
                 break;
 
             case GameState.result:
                 
                 break;
+
             }
+            spriteBatch.End();
         }
     }
 }
