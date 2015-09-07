@@ -170,10 +170,10 @@ namespace WindowsGame1
 
 
             //2.2425
-            player1 = new Player(new Vector3(0, 2.2425f, -4), 0,sofa, sofaBounding, ultimatesphere);
-            player2 = new Player(new Vector3(4, 2.8625f, 0), 1, kleiderschrank, kleiderschrankBounding, ultimatesphere);
-            player3 = new Player(new Vector3(-4,2.403f , 0), 2, kuehlschrank, kuehlschrankBounding,ultimatesphere);
-            player4 = new Player(new Vector3(0, 2.1f, 4), 3, klavier, klavierBounding,ultimatesphere);
+            player1 = new Player(new Vector3(0, 1.7425f, -4), MathHelper.ToRadians(180f), 0,sofa, sofaBounding, ultimatesphere);
+            player2 = new Player(new Vector3(0, 2.8625f, 4), 0 , 1, kleiderschrank, kleiderschrankBounding, ultimatesphere);
+            player3 = new Player(new Vector3(4,2.403f , 0),MathHelper.ToRadians(90f), 2, kuehlschrank, kuehlschrankBounding,ultimatesphere);
+            player4 = new Player(new Vector3(-4, 2.1f, 0), MathHelper.ToRadians(-90f),3, klavier, klavierBounding,ultimatesphere);
             
             
         }

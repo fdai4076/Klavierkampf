@@ -18,23 +18,28 @@ namespace WindowsGame1
         public float speed;
         public CollisionSphere[] sphere;
         private bool dashing;
+        
 
-
-        public Player(Vector3 spawn, int playerindex, Model model, CollisionSphere[] sphere, Model boundingSphere)
+        public Player(Vector3 spawn,float spawnrotation, int playerindex, Model model, CollisionSphere[] sphere, Model boundingSphere)
         {
             this.position = spawn;
             this.playerindex = playerindex;
             this.model = model;
             this.sphereModel = boundingSphere;
             this.sphere = sphere;
+            this.rotationy = spawnrotation;
 
             for (int i = 0; i < this.sphere.Length; i++)
             {
                 this.sphere[i].setCenterPos(new Vector3(spawn.X + this.sphere[i].getPosToModel().X, 1.2f, spawn.Z + this.sphere[i].getPosToModel().Z));
                 this.sphere[i].setAngleToModel(getAngle2Dim(this.sphere[i].getCenterPos(), this.position));
                 this.sphere[i].setRadius(Math.Sqrt(Math.Pow(position.X - sphere[i].getCenterPos().X,2) + Math.Pow(position.Z - sphere[i].getCenterPos().Z,2)));
-            }       
-            rotationy = 0.0f;
+                double radius = sphere[i].getRadius();
+                sphere[i].setCenterPos(new Vector3(
+                               (float)(position.X + (Math.Cos(sphere[i].getAngleToModel() + rotationy) * radius)),
+                               sphere[i].getCenterPos().Y,
+                               (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
+            }          
             speed = 0.1f;
             dashing = false;
         }
@@ -158,9 +163,6 @@ namespace WindowsGame1
                     }
                 }
             }
-
-            
-
 
             if (playerindex == 1)
             {
