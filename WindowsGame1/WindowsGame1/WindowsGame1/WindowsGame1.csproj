@@ -107,6 +107,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BButton.cs" />
+    <Compile Include="Button.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="CollisionSphere.cs" />
     <Compile Include="Player.cs" />
