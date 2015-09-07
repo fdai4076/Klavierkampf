@@ -12,12 +12,14 @@ namespace WindowsGame1
         Vector3 posToModel;
         double angleToModel;
         double radius;
+        int directionIndex;
 
-        public CollisionSphere (Vector3 pos)
+        public CollisionSphere (Vector3 pos, int directionIndex)
         {
             
             posToModel = pos;
             sphere.Radius = 0.2f;
+            this.directionIndex = directionIndex;
             
         }
 
@@ -69,6 +71,11 @@ namespace WindowsGame1
         public BoundingSphere getSphere()
         {
             return sphere;
+        }
+
+        public int getDirectionIndex()
+        {
+            return directionIndex;
         }
 
     }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace WindowsGame1
 {
@@ -16,11 +17,13 @@ namespace WindowsGame1
         public double faktorz;
         public double faktory;
         public float speed;
+        public float power;
         public CollisionSphere[] sphere;
         private bool dashing;
+        public CollisionManager collisionManager;
         
 
-        public Player(Vector3 spawn,float spawnrotation, int playerindex, Model model, CollisionSphere[] sphere, Model boundingSphere)
+        public Player(Vector3 spawn,float spawnrotation, int playerindex, Model model, CollisionSphere[] sphere, Model boundingSphere, CollisionManager collisionManager)
         {
             this.position = spawn;
             this.playerindex = playerindex;
@@ -28,6 +31,7 @@ namespace WindowsGame1
             this.sphereModel = boundingSphere;
             this.sphere = sphere;
             this.rotationy = spawnrotation;
+            this.collisionManager = collisionManager;
 
             for (int i = 0; i < this.sphere.Length; i++)
             {
@@ -42,6 +46,7 @@ namespace WindowsGame1
             }          
             speed = 0.1f;
             dashing = false;
+            power = 1f;
         }
 
         public void Draw(Matrix view, Matrix projection)
@@ -72,17 +77,18 @@ namespace WindowsGame1
                     basic.View = view;
                     basic.Projection = projection;
                     basic.EnableDefaultLighting();
-                    //basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-                    //basic.Alpha = 0.5f;
+                    basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                    basic.Alpha = 0.5f;
                 }
                 mesh.Draw();
             }
         }
 
-        public void Update(bool canWalk)
+        public void Update(bool canFall)
         {
             speed = 0.1f;
-            if (!canWalk)
+            List<Collision>[] collisions = collisionManager.checkCollision(this);
+            if (!canFall)
             {
                 position.Y -= 0.1f;
                 for (int i = 0; i < sphere.Length; i++)
@@ -94,6 +100,8 @@ namespace WindowsGame1
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
                 {
+                    if(collisionManager.checkCanRotateLeft(this, position))
+                    {
                     rotationy += 0.01f;
                  
                     for (int i = 0; i < sphere.Length; i++)
@@ -103,26 +111,30 @@ namespace WindowsGame1
                             (float)(position.X + (Math.Cos(sphere[i].getAngleToModel() +  rotationy) * radius)),
                             sphere[i].getCenterPos().Y,
                             (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));   
-                    }          
+                    }  
+                    }
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.D) || GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
                 {
-                    rotationy -= 0.01f;
-
-                    for (int i = 0; i < sphere.Length; i++)
+                    if (collisionManager.checkCanRotateRight(this,position))
                     {
+                        rotationy -= 0.01f;
+
+                      for (int i = 0; i < sphere.Length; i++)
+                      {
                         double radius = sphere[i].getRadius();
                         sphere[i].setCenterPos(new Vector3(
                             (float)(position.X + (Math.Cos(rotationy + sphere[i].getAngleToModel()) * radius)),
                             sphere[i].getCenterPos().Y,
                             (float)(position.Z + (-Math.Sin(rotationy + sphere[i].getAngleToModel()) * radius))));
+                        }
                     }
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.W) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
                 {
-                    if (canWalk)
+                    if (collisions[0].Count == 0)
                     {
                         if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing)
                         {
@@ -149,7 +161,7 @@ namespace WindowsGame1
 
                 if (Keyboard.GetState().IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
                 {
-                    if (canWalk)
+                    if (collisions[2].Count == 0)
                     {    
                         position.Z += (float)(speed * Math.Cos(rotationy));
                         position.X += (float)(speed * Math.Sin(rotationy));
@@ -196,7 +208,7 @@ namespace WindowsGame1
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 {
-                    if (canWalk)
+                    if (collisions[0].Count == 0)
                     {
                         position.Z -= (float)(speed * Math.Cos(rotationy));
                         position.X -= (float)(speed * Math.Sin(rotationy));
@@ -212,7 +224,7 @@ namespace WindowsGame1
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Down))
                 {
-                    if (canWalk)
+                    if (collisions[3].Count == 0)
                     {
                         position.Z += (float)(speed * Math.Cos(rotationy));
                         position.X += (float)(speed * Math.Sin(rotationy));
@@ -259,7 +271,7 @@ namespace WindowsGame1
 
                 if (Keyboard.GetState().IsKeyDown(Keys.I))
                 {
-                    if (canWalk)
+                    if (collisions[0].Count == 0)
                     {
                         position.Z -= (float)(speed * Math.Cos(rotationy));
                         position.X -= (float)(speed * Math.Sin(rotationy));
@@ -275,7 +287,7 @@ namespace WindowsGame1
 
                 if (Keyboard.GetState().IsKeyDown(Keys.K))
                 {
-                    if (canWalk)
+                    if (collisions[3].Count == 0)
                     {
                         position.Z += (float)(speed * Math.Cos(rotationy));
                         position.X += (float)(speed * Math.Sin(rotationy));
@@ -322,7 +334,7 @@ namespace WindowsGame1
 
                 if (Keyboard.GetState().IsKeyDown(Keys.NumPad8))
                 {
-                    if (canWalk)
+                    if (collisions[0].Count == 0)
                     {
                         position.Z -= (float)(speed * Math.Cos(rotationy));
                         position.X -= (float)(speed * Math.Sin(rotationy));
@@ -338,7 +350,7 @@ namespace WindowsGame1
 
                 if (Keyboard.GetState().IsKeyDown(Keys.NumPad5))
                 {
-                    if (canWalk)
+                    if (collisions[3].Count == 0)
                     {
                         position.Z += (float)(speed * Math.Cos(rotationy));
                         position.X += (float)(speed * Math.Sin(rotationy));
@@ -364,5 +376,18 @@ namespace WindowsGame1
             }
             return Math.Acos(angle);
         }
+
+        public int getPlayerIndex()
+        {
+            return playerindex;
+        }
+
+        public CollisionSphere[] getCollisionSpheres()
+        {
+            return sphere;
+        }
+
+       
+
     }
 }
