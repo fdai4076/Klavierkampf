@@ -403,11 +403,7 @@ namespace WindowsGame1
                     spriteBatch.DrawString(font, "collision" + (player1.sphere[0].getSphere().Intersects(arenaBounding)).ToString(), new Vector2(100, 500), Color.White);
                     //spriteBatch.End();
 
-                    //http://xboxforums.create.msdn.com/forums/t/1796.aspx :
-                    GraphicsDevice.BlendState = BlendState.Opaque; 
-                    GraphicsDevice.DepthStencilState = DepthStencilState.Default; 
-                    GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap; 
-                    //
+                    
 
                     base.Draw(gameTime);
                 break;
@@ -426,6 +422,11 @@ namespace WindowsGame1
 
             }
             spriteBatch.End();
+            //http://xboxforums.create.msdn.com/forums/t/1796.aspx :
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+            //
         }
     }
 }

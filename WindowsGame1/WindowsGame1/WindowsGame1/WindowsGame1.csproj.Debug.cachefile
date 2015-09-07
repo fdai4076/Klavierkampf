@@ -13,7 +13,6 @@ Content\ultimateSphere.xnb
 Content\kuehlschrank.xnb
 Content\SpriteFont1.xnb
 Content\kuehlschrankTexture.xnb
-Content\Blender\kuehlschrankTexture_0.xnb
 Content\Menu\Pause\PausenMenu.xnb
 Content\Menu\Pause\returnButton.xnb
 Content\Menu\SplashMenu\Exit.xnb
@@ -22,3 +21,15 @@ Content\Menu\SplashMenu\MainMenu.xnb
 Content\Menu\SplashMenu\Option.xnb
 Content\Menu\SplashMenu\SplashMenu.xnb
 Content\Menu\SplashMenu\StartButton.xnb
+Content\arenaTextur.xnb
+Content\arenaTextur_0.xnb
+Content\klavierTextur.xnb
+Content\kleiderschrankTextur.xnb
+Content\kuehlschrankTextur.xnb
+Content\sofaTextur.xnb
+Content\stuhlTextur.xnb
+Content\klavierTextur_0.xnb
+Content\kleiderschrankTextur_0.xnb
+Content\sofaTextur_0.xnb
+Content\stuhlTextur_0.xnb
+Content\kuehlschrankTextur_0.xnb
