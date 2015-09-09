@@ -26,16 +26,13 @@ namespace WindowsGame1
         Model arena;
         Model ultimatesphere;
         Matrix view, projection;
+        Item item;
         Player player1;
         Player player2;
         Player player3;
         Player player4;
         SpriteFont font;
-        private CollisionSphere[] sofaBounding;
-        private CollisionSphere[] stuhlBounding;
-        private CollisionSphere[] klavierBounding;
-        private CollisionSphere[] kleiderschrankBounding;
-        private CollisionSphere[] kuehlschrankBounding;
+       
         private BoundingBox arenaBounding;
         public CollisionManager collisionManager;
         
@@ -77,104 +74,18 @@ namespace WindowsGame1
 
 
 
-            stuhlBounding = new CollisionSphere[] {
-                new CollisionSphere (new Vector3(- 0.2f, 0, -0.2f), 0),
-                new CollisionSphere (new Vector3(0.2f, 0, -0.2f), 0),
-                new CollisionSphere (new Vector3(-0.2f, 0, 0.2f),2),
-                new CollisionSphere (new Vector3(0.2f, 0, 0.2f),2)
-            };
-
-            kuehlschrankBounding = new CollisionSphere[] {
-                new CollisionSphere (new Vector3(-0.4f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3(0,0, -0.4f),0),
-                new CollisionSphere (new Vector3(0.4f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3(-0.4f, 0, 0),3),
-                new CollisionSphere (new Vector3(0.4f, 0,0 ),1),
-                new CollisionSphere (new Vector3(-0.4f, 0, 0.4f),2),
-                new CollisionSphere (new Vector3(0,0,0.4f),2),
-                new CollisionSphere (new Vector3(0.4f,0,0.4f),2)
-            };
-
-            sofaBounding = new CollisionSphere[] {
-                new CollisionSphere (new Vector3(-2.2f, 0, -0.8f),0),
-                new CollisionSphere (new Vector3(-1.8f, 0, -0.8f),0),
-                new CollisionSphere (new Vector3(-1.4f, 0, -0.8f),0),
-                new CollisionSphere (new Vector3(-1f, 0, -0.8f),0),
-                new CollisionSphere (new Vector3(-0.6f,0, -0.8f),0),
-                new CollisionSphere (new Vector3(-0.2f, 0, -0.8f),0),
-                new CollisionSphere (new Vector3(0.2f, 0, -0.8f),0),
-                new CollisionSphere (new Vector3(0.6f, 0, -0.8f),0),
-                new CollisionSphere (new Vector3 (1f, 0, -0.8f),0),
-                new CollisionSphere (new Vector3(1.4f, 0, -0.8f),0),
-                new CollisionSphere (new Vector3 (1.8f, 0, -0.8f),0),
-                new CollisionSphere (new Vector3 (2.2f, 0, -0.8f),0),
-                new CollisionSphere (new Vector3 (-2.2f, 0, -0.4f),3),
-                new CollisionSphere (new Vector3 (2.2f, 0, -0.4f),1),
-                new CollisionSphere (new Vector3 (-2.2f, 0, 0),3),
-                new CollisionSphere (new Vector3 (2.2f, 0, 0),1),
-                new CollisionSphere (new Vector3 (-2.2f, 0, 0.4f),3),
-                new CollisionSphere (new Vector3 (2.2f, 0, 0.4f),1),
-                new CollisionSphere (new Vector3 (-2.2f, 0, 0.8f),2),
-                new CollisionSphere (new Vector3 (-1.8f, 0, 0.8f),2),
-                new CollisionSphere (new Vector3 (-1.4f, 0, 0.8f),2),
-                new CollisionSphere (new Vector3 (-1f, 0, 0.8f),2),
-                new CollisionSphere (new Vector3 (-0.6f, 0, 0.8f),2),
-                new CollisionSphere (new Vector3 (-0.2f, 0, 0.8f),2),
-                new CollisionSphere (new Vector3 (0.2f, 0, 0.8f),2),
-                new CollisionSphere (new Vector3 (0.6f, 0, 0.8f),2),
-                new CollisionSphere (new Vector3 (1f, 0, 0.8f),2),
-                new CollisionSphere (new Vector3 (1.4f, 0, 0.8f),2),
-                new CollisionSphere (new Vector3 (1.8f, 0, 0.8f),2),
-                new CollisionSphere (new Vector3 (2.2f, 0, 0.8f),2)
-            };
-
-            kleiderschrankBounding = new CollisionSphere[] {
-                new CollisionSphere (new Vector3(-1f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3(-0.6f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3(-0.2f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3(0.2f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3 (0.6f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3 (1f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3 (-1f, 0, 0),3),
-                new CollisionSphere (new Vector3(1f, 0 ,0),1),
-                new CollisionSphere (new Vector3(-1f, 0, 0.4f),2),
-                new CollisionSphere(new Vector3(-0.6f, 0, 0.4f),2),
-                new CollisionSphere (new Vector3(-0.2f, 0, 0.4f),2),
-                new CollisionSphere (new Vector3(0.2f, 0, 0.4f),2),
-                new CollisionSphere (new Vector3(0.6f, 0, 0.4f),2),
-                new CollisionSphere (new Vector3 (1f, 0, 0.4f),2)
-            };
-
-            klavierBounding = new CollisionSphere[]
-            {
-                new CollisionSphere (new Vector3 (-1.4f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3 (-1f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3 (-0.6f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3 (-0.2f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3 (0.2f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3 (0.6f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3 (1f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3 (1.4f, 0, -0.4f),0),
-                new CollisionSphere (new Vector3 (-1.4f, 0, 0),3),
-                new CollisionSphere (new Vector3 (1.4f, 0, 0),1),
-                new CollisionSphere (new Vector3 (-1.4f, 0, 0.4f),2),
-                new CollisionSphere (new Vector3 (-1f, 0, 0.4f),2),
-                new CollisionSphere (new Vector3 (-0.6f, 0, 0.4f),2),
-                new CollisionSphere (new Vector3 (-0.2f, 0, 0.4f),2),
-                new CollisionSphere (new Vector3 ( 0.2f, 0, 0.4f),2),
-                new CollisionSphere (new Vector3 (0.6f, 0, 0.4f),2),
-                new CollisionSphere (new Vector3 (1f , 0, 0.4f),2),
-                new CollisionSphere (new Vector3 (1.4f, 0, 0.4f),2)
-            };
+           
 
             arenaBounding = new BoundingBox(new Vector3(-12.5f, -1f, -12.5f), new Vector3(12.5f, 1f, 12.5f));
 
+            Model[] modelle = new Model[] { klavier, kleiderschrank, sofa, kuehlschrank };
+            CharacterManager characterManager = new CharacterManager(modelle); 
 
             collisionManager = new CollisionManager();
-            player1 = new Player(new Vector3(0, 1.7425f, -4), MathHelper.ToRadians(180f), 0,sofa, sofaBounding, ultimatesphere,collisionManager);
-            player2 = new Player(new Vector3(0, 2.8625f, 4), 0 , 1, kleiderschrank, kleiderschrankBounding, ultimatesphere, collisionManager);
-            player3 = new Player(new Vector3(4,2.403f , 0),MathHelper.ToRadians(90f), 2, kuehlschrank, kuehlschrankBounding,ultimatesphere, collisionManager);
-            player4 = new Player(new Vector3(-4, 2.1f, 0), MathHelper.ToRadians(-90f),3, klavier, klavierBounding,ultimatesphere,collisionManager);
+            player1 = new Player(new Vector3(0, characterManager.gibStruct(0).yPosition, -4), MathHelper.ToRadians(180f), 0, ultimatesphere, collisionManager, characterManager);
+            player2 = new Player(new Vector3(0, characterManager.gibStruct(1).yPosition, 4), 0, 1, ultimatesphere, collisionManager, characterManager);
+            player3 = new Player(new Vector3(4, characterManager.gibStruct(2).yPosition, 0), MathHelper.ToRadians(90f), 2, ultimatesphere, collisionManager, characterManager);
+            player4 = new Player(new Vector3(-4, characterManager.gibStruct(3).yPosition, 0), MathHelper.ToRadians(-90f), 3, ultimatesphere, collisionManager, characterManager);
             collisionManager.setPlayers(new Player[] { player1, player2, player3, player4 });
             
         }
@@ -195,6 +106,7 @@ namespace WindowsGame1
             kuehlschrank = Content.Load<Model>("kuehlschrank");
             stuhl = Content.Load<Model>("stuhl");
             arena = Content.Load<Model>("arena");
+            item = new Item(Content.Load<Model>("itemLangsamer"), new Vector3(0, 3, 0));
             ultimatesphere = Content.Load<Model>("ultimateSphere");
             // TODO: use this.Content to load your game content here
 
@@ -300,7 +212,9 @@ namespace WindowsGame1
                     player2.Update(player2.sphere[0].getSphere().Intersects(arenaBounding));
                     player3.Update(player3.sphere[0].getSphere().Intersects(arenaBounding));
                     player4.Update(player4.sphere[0].getSphere().Intersects(arenaBounding));
-                    
+
+                    item.update();
+
                     if (Keyboard.GetState().IsKeyDown(Keys.P))
                         gamestate = GameState.pause;
 
@@ -391,16 +305,18 @@ namespace WindowsGame1
                     player2.Draw(view, projection);
                     player3.Draw(view, projection);
                     player4.Draw(view, projection);
-                    
+
+                    item.draw(view, projection);
+
                     //spriteBatch.Begin();
                     spriteBatch.DrawString(font, "Sphere0 " + player1.sphere[0].getCenterPos().ToString(), new Vector2(100, 100), Color.White);
-                    spriteBatch.DrawString(font, "Sphere1 " + player1.sphere[11].getCenterPos().ToString(), new Vector2(100, 150), Color.White);
-                    spriteBatch.DrawString(font, "Sphere2 " + player1.sphere[18].getCenterPos().ToString(), new Vector2(100, 200), Color.White);
-                    spriteBatch.DrawString(font, "Sphere3 " + player1.sphere[29].getCenterPos().ToString(), new Vector2(100, 250), Color.White);
+                    spriteBatch.DrawString(font, "Sphere1 " + player1.sphere[1].getCenterPos().ToString(), new Vector2(100, 150), Color.White);
+                    spriteBatch.DrawString(font, "Sphere2 " + player1.sphere[2].getCenterPos().ToString(), new Vector2(100, 200), Color.White);
+                    spriteBatch.DrawString(font, "Sphere3 " + player1.sphere[3].getCenterPos().ToString(), new Vector2(100, 250), Color.White);
                     spriteBatch.DrawString(font, "radius0 " + MathHelper.ToDegrees((float)(player1.sphere[0].getAngleToModel())).ToString(), new Vector2(100, 300), Color.White);
-                    spriteBatch.DrawString(font, "radius1 " + MathHelper.ToDegrees((float)(player1.sphere[11].getAngleToModel())).ToString(), new Vector2(100, 350), Color.White);
-                    spriteBatch.DrawString(font, "radius2 " + MathHelper.ToDegrees((float)(player1.sphere[18].getAngleToModel())).ToString(), new Vector2(100, 400), Color.White);
-                    spriteBatch.DrawString(font, "radius3 " + MathHelper.ToDegrees((float)(player1.sphere[29].getAngleToModel())).ToString(), new Vector2(100, 450), Color.White);
+                    spriteBatch.DrawString(font, "radius1 " + MathHelper.ToDegrees((float)(player1.sphere[1].getAngleToModel())).ToString(), new Vector2(100, 350), Color.White);
+                    spriteBatch.DrawString(font, "radius2 " + MathHelper.ToDegrees((float)(player1.sphere[2].getAngleToModel())).ToString(), new Vector2(100, 400), Color.White);
+                    spriteBatch.DrawString(font, "radius3 " + MathHelper.ToDegrees((float)(player1.sphere[3].getAngleToModel())).ToString(), new Vector2(100, 450), Color.White);
                     spriteBatch.DrawString(font, "collision" + (player1.sphere[0].getSphere().Intersects(arenaBounding)).ToString(), new Vector2(100, 500), Color.White);
                     //spriteBatch.End();
 

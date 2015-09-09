@@ -24,15 +24,16 @@ namespace WindowsGame1
         public CollisionSphere[] sphere;
         private bool dashing;
         public CollisionManager collisionManager;
-        
+        private CharacterManager characterManager;
 
-        public Player(Vector3 spawn,float spawnrotation, int playerindex, Model model, CollisionSphere[] sphere, Model boundingSphere, CollisionManager collisionManager)
+        public Player(Vector3 spawn, float spawnrotation, int playerindex, Model boundingSphere, CollisionManager collisionManager, CharacterManager characterManager)
         {
+            this.characterManager = characterManager;
             this.position = spawn;
             this.playerindex = playerindex;
-            this.model = model;
+            this.model = characterManager.gibStruct(playerindex).model;
             this.sphereModel = boundingSphere;
-            this.sphere = sphere;
+            this.sphere = characterManager.gibStruct(playerindex).spheres;
             this.rotationy = spawnrotation;
             this.collisionManager = collisionManager;
 
