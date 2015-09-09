@@ -9,22 +9,40 @@ namespace WindowsGame1
     public class Collision
     {
         float enemyRotation;
-        float power;
+        float enemypower;
+        float enemyMass;
+        int enemyPlayerId;
 
-        public Collision( float enemyRotation, float power)
+        public Collision( float enemyRotation, float enemypower, float enemyMass, int enemyPlayerId)
         {
             
             this.enemyRotation = enemyRotation;
-            this.power = power;
+            this.enemypower = enemypower;
+            this.enemyPlayerId = enemyPlayerId;
         }
 
 
-        public float getPower()
+        public float getEnemyPower()
         {
-            return power;
+            return enemypower;
         }
 
         public float getEnemyDirection()
+        {
+            return enemyRotation;
+        }
+
+        public int getEnemyPlayerId()
+        {
+            return enemyPlayerId;
+        }
+
+        public float getEnemyMass()
+        {
+            return enemyMass;
+        }
+
+        public float getEnemyRotation()
         {
             return enemyRotation;
         }

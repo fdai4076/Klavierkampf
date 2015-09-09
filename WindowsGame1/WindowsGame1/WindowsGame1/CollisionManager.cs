@@ -38,7 +38,7 @@ namespace WindowsGame1
                         {
                             if (playerSpheres[x].getSphere().Intersects(enemySpheres[y].getSphere()))
                             {
-                                collisions[playerSpheres[x].getDirectionIndex()].Add(new Collision(players[i].rotationy, players[i].power));
+                                collisions[playerSpheres[x].getDirectionIndex()].Add(new Collision(players[i].rotationy, players[i].power, players[i].getMass(), players[i].getPlayerIndex()));
                             }
                         }
                     }
@@ -111,6 +111,54 @@ namespace WindowsGame1
             }
             return true;
         }
+
+        public bool canWalkForward (Player player)
+        {
+            CollisionSphere[] spheres = player.getCollisionSpheres();
+            for (int i = 0; i< players.Length; i++)
+            {
+                if(!(player.getPlayerIndex() == players[i].getPlayerIndex()))
+                {
+                    CollisionSphere[] enemySpheres = players[i].getCollisionSpheres();
+                    for (int x = 0; x < spheres.Length; x++)
+                    {
+                        for (int y = 0; y < enemySpheres.Length; y++)
+                        {
+                            if ((spheres[x].getSphere().Intersects(enemySpheres[y].getSphere())) && spheres[x].getDirectionIndex() == 0)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        public bool canWalkBackward(Player player)
+        {
+            CollisionSphere[] spheres = player.getCollisionSpheres();
+            for (int i = 0; i < players.Length; i++)
+            {
+                if (!(player.getPlayerIndex() == players[i].getPlayerIndex()))
+                {
+                    CollisionSphere[] enemySpheres = players[i].getCollisionSpheres();
+                    for (int x = 0; x < spheres.Length; x++)
+                    {
+                        for (int y = 0; y < enemySpheres.Length; y++)
+                        {
+                            if ((spheres[x].getSphere().Intersects(enemySpheres[y].getSphere())) && spheres[x].getDirectionIndex() == 2)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+
 
 
                     
