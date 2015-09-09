@@ -11,16 +11,19 @@ namespace WindowsGame1
     class Button
     {
         Texture2D texture;
+        Texture2D texture2;
+        Texture2D finalTexture;
         Vector2 position;
         Rectangle rectangle;
 
-        Color colour = new Color(255, 255, 255, 255);
-
         public Vector2 size;
 
-        public Button(Texture2D newTexture, GraphicsDevice graphics)
+        public Button(Texture2D newTexture, Texture2D newTexture2, GraphicsDevice graphics)
         {
             texture = newTexture;
+            texture2 = newTexture2;
+            finalTexture = newTexture;
+
 
             size = new Vector2(texture.Width, texture.Height);
         }
@@ -38,23 +41,9 @@ namespace WindowsGame1
             if (mouseRectangle.Intersects(rectangle))
             {
 
-                if (colour.A == 255)
+                if (finalTexture != texture2)
                 {
-                    down = false;
-                }
-
-                if (colour.A == 0)
-                {
-                    down = true;
-                }
-
-                if (down)
-                {
-                    colour.A += 3;
-                }
-                else
-                {
-                    colour.A -= 3;
+                    finalTexture = texture2;
                 }
 
                 if (mouse.LeftButton == ButtonState.Pressed)
@@ -65,9 +54,9 @@ namespace WindowsGame1
 
             }
 
-            else if (colour.A < 255)
+            else if (finalTexture == texture2)
             {
-                colour.A += 3;
+                finalTexture = texture;
                 isClicked = false;
             }
         }
@@ -79,7 +68,7 @@ namespace WindowsGame1
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, position, colour);
+            spriteBatch.Draw(finalTexture, position, Color.White);
         }
 
     }

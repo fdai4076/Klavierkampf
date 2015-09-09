@@ -41,7 +41,7 @@ namespace WindowsGame1
         private GameState gamestate;
 
         Button buttonPauseReturn, buttonPauseMainmenu;
-        BButton buttonSplahscreenStart, buttonSplashscreenHowtoplay, buttonOption, buttonExit;
+        Button buttonSplahscreenStart, buttonSplashscreenHowtoplay, buttonSplashscreenOption, buttonSplashscreenExit;
 
         Texture2D pausenMenu;
         Texture2D mainMenu;
@@ -113,17 +113,23 @@ namespace WindowsGame1
             pausenMenu = Content.Load<Texture2D>("Menu/Pause/PausenMenu");
             mainMenu = Content.Load<Texture2D>("Menu/splashMenu/SplashMenu");
 
-            buttonPauseReturn = new Button(Content.Load<Texture2D>("Menu/Pause/returnButton"), graphics.GraphicsDevice);
-            buttonPauseReturn.setPosition(new Vector2((515), (300)));
+            buttonPauseReturn = new Button(Content.Load<Texture2D>("Menu/Pause/returnButton"), Content.Load<Texture2D>("Menu/Pause/returnButton2"), graphics.GraphicsDevice);
+            buttonPauseReturn.setPosition(new Vector2(515, 300));
 
-            buttonPauseMainmenu = new Button(Content.Load<Texture2D>("Menu/SplashMenu/MainMenu"), graphics.GraphicsDevice);
-            buttonPauseMainmenu.setPosition(new Vector2((515), 475));
+            buttonPauseMainmenu = new Button(Content.Load<Texture2D>("Menu/Pause/MainMenu"), Content.Load<Texture2D>("Menu/Pause/MainMenu2"), graphics.GraphicsDevice);
+            buttonPauseMainmenu.setPosition(new Vector2(515, 475));
 
-            buttonSplahscreenStart = new BButton(Content.Load<Texture2D>("Menu/SplashMenu/StartButton"), graphics.GraphicsDevice);
-            buttonSplahscreenStart.setPosition(new Vector2(0, (screenHeight / 2)));
+            buttonSplahscreenStart = new Button(Content.Load<Texture2D>("Menu/SplashMenu/StartButton"), Content.Load<Texture2D>("Menu/SplashMenu/StartButton2"), graphics.GraphicsDevice);
+            buttonSplahscreenStart.setPosition(new Vector2(515, 300));
 
-            buttonSplashscreenHowtoplay = new BButton(Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay"), graphics.GraphicsDevice);
-            buttonSplashscreenHowtoplay.setPosition(new Vector2(0, (screenHeight / 3)));
+            buttonSplashscreenHowtoplay = new Button(Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay"), Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay2"), graphics.GraphicsDevice);
+            buttonSplashscreenHowtoplay.setPosition(new Vector2(515, 475));
+
+            buttonSplashscreenExit = new Button(Content.Load<Texture2D>("Menu/SplashMenu/ExitButton"), Content.Load<Texture2D>("Menu/SplashMenu/ExitButton2"), graphics.GraphicsDevice);
+            buttonSplashscreenExit.setPosition(new Vector2(515, 650));
+
+            buttonSplashscreenOption = new Button(Content.Load<Texture2D>("Menu/SplashMenu/OptionButton"), Content.Load<Texture2D>("Menu/SplashMenu/OptionButton2"), graphics.GraphicsDevice);
+            buttonSplashscreenOption.setPosition(new Vector2(515, 650));
 
 
         }
@@ -176,11 +182,14 @@ namespace WindowsGame1
 
                     if (buttonSplashscreenHowtoplay.isClicked == true)
                     {
-                        gamestate = GameState.ingame;
+                        gamestate = GameState.howtoplay;
                         IsMouseVisible = false;
                         buttonSplashscreenHowtoplay.isClicked = false;
                     }
                     buttonSplashscreenHowtoplay.Update(mouse);
+                    buttonSplashscreenExit.Update(mouse);
+                    buttonSplashscreenOption.Update(mouse);
+                    
                     break;
 
                 case GameState.character:
@@ -238,6 +247,7 @@ namespace WindowsGame1
                     }
                     buttonPauseMainmenu.Update(mouse);
                     buttonPauseReturn.Update(mouse);
+                    
                     break;
 
                 case GameState.result:
@@ -268,9 +278,11 @@ namespace WindowsGame1
 
                 case GameState.splashMenu:
                    
-                    spriteBatch.Draw(mainMenu, new Rectangle(0, 0, screenWidth, screenWidth), Color.White);
+                    spriteBatch.Draw(mainMenu, new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
                     buttonSplahscreenStart.Draw(spriteBatch);
                     buttonSplashscreenHowtoplay.Draw(spriteBatch);
+                    buttonSplashscreenOption.Draw(spriteBatch);
+                    buttonSplashscreenExit.Draw(spriteBatch);
 
                     break;
 
