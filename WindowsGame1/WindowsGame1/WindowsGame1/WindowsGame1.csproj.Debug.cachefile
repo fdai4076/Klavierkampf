@@ -19,10 +19,7 @@ Content\SpriteFont1.xnb
 Content\kuehlschrankTexture.xnb
 Content\Menu\Pause\PausenMenu.xnb
 Content\Menu\Pause\returnButton.xnb
-Content\Menu\SplashMenu\Exit.xnb
 Content\Menu\SplashMenu\Howtoplay.xnb
-Content\Menu\SplashMenu\MainMenu.xnb
-Content\Menu\SplashMenu\Option.xnb
 Content\Menu\SplashMenu\SplashMenu.xnb
 Content\Menu\SplashMenu\StartButton.xnb
 Content\arenaTextur.xnb
@@ -56,3 +53,9 @@ Content\Menu\Pause\MainMenu2.xnb
 Content\Menu\Pause\PausenMenu2.xnb
 Content\Menu\Pause\PausenMenu3.xnb
 Content\Menu\Pause\returnButton2.xnb
+Content\Menu\SplashMenu\ButtonBackground.xnb
+Content\Menu\SplashMenu\ButtonBackground2.xnb
+Content\Menu\Howtoplay\Background.xnb
+Content\Menu\Option\Background.xnb
+Content\Menu\Back.xnb
+Content\Menu\Back2.xnb
