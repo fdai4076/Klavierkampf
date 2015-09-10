@@ -80,7 +80,7 @@ namespace WindowsGame1
 
            
 
-            arenaBounding = new BoundingBox(new Vector3(-12.5f, 1f, -12.5f), new Vector3(12.5f, 1f, 12.5f));
+            arenaBounding = new BoundingBox(new Vector3(-12.5f, -1f, -12.5f), new Vector3(12.5f, 1f, 12.5f));
 
             Model[] modelle = new Model[] { klavier, kleiderschrank, sofa, kuehlschrank };
             CharacterManager characterManager = new CharacterManager(modelle); 
