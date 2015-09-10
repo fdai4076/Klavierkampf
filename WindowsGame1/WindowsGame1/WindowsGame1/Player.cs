@@ -13,6 +13,7 @@ namespace WindowsGame1
         public Vector3 position;
         private float[] cornerAngles;
         private bool[] itemActive;
+        private bool isAlive;
         private int directionId;
         private int playerindex;
         public float rotationy;
@@ -56,6 +57,7 @@ namespace WindowsGame1
             dashing = false;
             power = 1f;
             directionId = 4;
+            isAlive = true;
         }
 
         public void Draw(Matrix view, Matrix projection)
@@ -95,18 +97,27 @@ namespace WindowsGame1
 
         public void Update()
         {
+            if(isAlive)
+            {
 
             directionId = 4;
             currentSpeed = 0f;
 
             if (!collisionManager.canFall(this))
             {
-                position.Y -= 0.1f;
-                for (int i = 0; i < sphere.Length; i++)
-                {
-                    sphere[i].setCenterPos(new Vector3(sphere[i].getCenterPos().X, sphere[i].getCenterPos().Y - 0.1f, sphere[i].getCenterPos().Z));
-                }
+                
+                    position.Y -= 0.1f;
+                    for (int i = 0; i < sphere.Length; i++)
+                    {
+                        sphere[i].setCenterPos(new Vector3(sphere[i].getCenterPos().X, sphere[i].getCenterPos().Y - 0.1f, sphere[i].getCenterPos().Z));
+                    }
+
+                    if (collisionManager.outOfGame(this))
+                        isAlive = false;
             }
+                
+
+            
             if (playerindex == 0)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
@@ -303,6 +314,7 @@ namespace WindowsGame1
             }
             calculateCollisions();
         }
+       }
 
         public void calculateCollisions()
         {

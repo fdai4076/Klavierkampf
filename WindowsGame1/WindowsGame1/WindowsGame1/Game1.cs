@@ -32,8 +32,10 @@ namespace WindowsGame1
         Player player3;
         Player player4;
         SpriteFont font;
+        int count;
        
         private BoundingBox arenaBounding;
+        private BoundingBox groundBounding;
         public CollisionManager collisionManager;
         
 
@@ -70,7 +72,7 @@ namespace WindowsGame1
         protected override void Initialize()
         {
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1280f / 720f, 0.1f, 1000f);
-            view = Matrix.CreateLookAt(new Vector3(0, 20,0.1f), Vector3.Zero, Vector3.Up);
+            view = Matrix.CreateLookAt(new Vector3(3, 25,25), Vector3.Zero, Vector3.Up);
 
             base.Initialize();
             
@@ -80,12 +82,13 @@ namespace WindowsGame1
 
            
 
-            arenaBounding = new BoundingBox(new Vector3(-12.5f, -1f, -12.5f), new Vector3(12.5f, 1f, 12.5f));
+            arenaBounding = new BoundingBox(new Vector3(-12.5f, 1f, -12.5f), new Vector3(12.5f, 1f, 12.5f));
+            groundBounding = new BoundingBox (new Vector3(-25f, -1f, -25f), new Vector3 (25f, -1f, 25f));
 
             Model[] modelle = new Model[] { klavier, kleiderschrank, sofa, kuehlschrank };
             CharacterManager characterManager = new CharacterManager(modelle); 
 
-            collisionManager = new CollisionManager(arenaBounding);
+            collisionManager = new CollisionManager(arenaBounding, groundBounding);
             player1 = new Player(new Vector3(0, characterManager.getStruct(0).yPosition, -4), MathHelper.ToRadians(180f), 0, ultimatesphere, collisionManager, characterManager);
             player2 = new Player(new Vector3(0, characterManager.getStruct(1).yPosition, 4), 0, 1, ultimatesphere, collisionManager, characterManager);
             player3 = new Player(new Vector3(4, characterManager.getStruct(2).yPosition, 0), MathHelper.ToRadians(90f), 2, ultimatesphere, collisionManager, characterManager);
@@ -256,6 +259,7 @@ namespace WindowsGame1
                     player4.Update();
 
                     item.update();
+                    count = collisionManager.checkPlayerAlive();
 
                     if (Keyboard.GetState().IsKeyDown(Keys.P))
                         gamestate = GameState.pause;
@@ -368,7 +372,7 @@ namespace WindowsGame1
                     spriteBatch.DrawString(font, "radius1 " + MathHelper.ToDegrees((float)(player1.sphere[1].getAngleToModel())).ToString(), new Vector2(100, 350), Color.White);
                     spriteBatch.DrawString(font, "radius2 " + MathHelper.ToDegrees((float)(player1.sphere[2].getAngleToModel())).ToString(), new Vector2(100, 400), Color.White);
                     spriteBatch.DrawString(font, "radius3 " + MathHelper.ToDegrees((float)(player1.sphere[3].getAngleToModel())).ToString(), new Vector2(100, 450), Color.White);
-                    spriteBatch.DrawString(font, "collision" + (player1.sphere[0].getSphere().Intersects(arenaBounding)).ToString(), new Vector2(100, 500), Color.White);
+                    spriteBatch.DrawString(font, "count" +  count.ToString(), new Vector2(100, 500), Color.White);
                     //spriteBatch.End();
 
                     

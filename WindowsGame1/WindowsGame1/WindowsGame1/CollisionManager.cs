@@ -9,14 +9,16 @@ namespace WindowsGame1
 
     public class CollisionManager
     {
-        private Player[] players;
+        private List<Player> players;
         private BoundingBox arenaBounding;
+        private BoundingBox groundBounding;
         private List<Collision>[] collisions = new List<Collision>[4];
 
-        public CollisionManager(BoundingBox arenaBounding)
+        public CollisionManager(BoundingBox arenaBounding , BoundingBox groundBounding)
         {
-            players = null;
+            players = new List<Player>();
             this.arenaBounding = arenaBounding;
+            this.groundBounding = groundBounding;
             collisions[0] = new List<Collision>();
             collisions[1] = new List<Collision>();
             collisions[2] = new List<Collision>();
@@ -28,7 +30,7 @@ namespace WindowsGame1
         {
             clearCollisions();
             CollisionSphere[] playerSpheres = player.getCollisionSpheres();
-            for (int i = 0; i < players.Length; i++)
+            for (int i = 0; i < players.Count; i++)
             {
                 if (!(players[i].getPlayerIndex() == player.getPlayerIndex()))
                 {
@@ -68,9 +70,12 @@ namespace WindowsGame1
             return collisions;
         }
 
-        public void setPlayers(Player[] players)
+        public void setPlayers(Player[] playerarray)
         {
-            this.players = players;
+            for (int i = 0; i < playerarray.Length; i++)
+            {
+                this.players.Add(playerarray[i]);
+            }
         }
 
         private void clearCollisions()
@@ -84,7 +89,7 @@ namespace WindowsGame1
         public bool checkCanRotateRight(Player player, Vector3 modelPos)
         {
             CollisionSphere[] spheres = player.getCollisionSpheres();
-            for (int i = 0; i < players.Length; i++)
+            for (int i = 0; i < players.Count; i++)
             {
                 if (!(player.getPlayerIndex() == players[i].getPlayerIndex()))
                 {
@@ -110,7 +115,7 @@ namespace WindowsGame1
         public bool checkCanRotateLeft(Player player, Vector3 modelPos)
         {
             CollisionSphere[] spheres = player.getCollisionSpheres();
-            for (int i = 0; i < players.Length; i++)
+            for (int i = 0; i < players.Count; i++)
             {
                 if (!(player.getPlayerIndex() == players[i].getPlayerIndex()))
                 {
@@ -136,7 +141,7 @@ namespace WindowsGame1
         public bool canWalkForward(Player player)
         {
             CollisionSphere[] spheres = player.getCollisionSpheres();
-            for (int i = 0; i < players.Length; i++)
+            for (int i = 0; i < players.Count; i++)
             {
                 if (!(player.getPlayerIndex() == players[i].getPlayerIndex()))
                 {
@@ -159,7 +164,7 @@ namespace WindowsGame1
         public bool canWalkBackward(Player player)
         {
             CollisionSphere[] spheres = player.getCollisionSpheres();
-            for (int i = 0; i < players.Length; i++)
+            for (int i = 0; i < players.Count; i++)
             {
                 if (!(player.getPlayerIndex() == players[i].getPlayerIndex()))
                 {
@@ -192,6 +197,33 @@ namespace WindowsGame1
             }
             return false;
         }
+
+        public bool outOfGame(Player player)
+        {
+            CollisionSphere[] spheres = player.getCollisionSpheres();
+            foreach (CollisionSphere currentSphere in spheres)
+            {
+                if (currentSphere.getSphere().Intersects(groundBounding))
+                {
+                    for (int i = 0; i < players.Count; i++)
+                    {
+                        if (players[i].getPlayerIndex() == player.getPlayerIndex())
+                        {
+                            players.RemoveAt(i);
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        public int checkPlayerAlive()
+        {
+            return players.Count;
+        }
+
+
 
 
 
