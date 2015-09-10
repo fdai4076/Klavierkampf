@@ -13,9 +13,9 @@ namespace WindowsGame1
         float enemyMass;
         int enemyPlayerId;
 
-        public Collision( float enemyRotation, float enemypower, float enemyMass, int enemyPlayerId)
+        public Collision(float enemyRotation, float enemypower, float enemyMass, int enemyPlayerId)
         {
-            
+
             this.enemyRotation = enemyRotation;
             this.enemypower = enemypower;
             this.enemyPlayerId = enemyPlayerId;

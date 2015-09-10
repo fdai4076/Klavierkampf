@@ -11,6 +11,7 @@ namespace WindowsGame1
         public Model model;
         private Model sphereModel;
         public Vector3 position;
+        private float[] cornerAngles;
         private bool[] itemActive;
         private int directionId;
         private int playerindex;
@@ -22,6 +23,7 @@ namespace WindowsGame1
         public float power;
         public float mass;
         public CollisionSphere[] sphere;
+        public List<float> enemyPowers = new List<float>();
         private bool dashing;
         public CollisionManager collisionManager;
         private CharacterManager characterManager;
@@ -31,9 +33,10 @@ namespace WindowsGame1
             this.characterManager = characterManager;
             this.position = spawn;
             this.playerindex = playerindex;
-            this.model = characterManager.gibStruct(playerindex).model;
+            this.model = characterManager.getStruct(playerindex).model;
             this.sphereModel = boundingSphere;
-            this.sphere = characterManager.gibStruct(playerindex).spheres;
+            this.sphere = characterManager.getStruct(playerindex).spheres;
+            this.cornerAngles = characterManager.getStruct(playerindex).angle;
             this.rotationy = spawnrotation;
             this.collisionManager = collisionManager;
 
@@ -41,18 +44,18 @@ namespace WindowsGame1
             {
                 this.sphere[i].setCenterPos(new Vector3(spawn.X + this.sphere[i].getPosToModel().X, 1.2f, spawn.Z + this.sphere[i].getPosToModel().Z));
                 this.sphere[i].setAngleToModel(getAngle2Dim(this.sphere[i].getCenterPos(), this.position));
-                this.sphere[i].setRadius(Math.Sqrt(Math.Pow(position.X - sphere[i].getCenterPos().X,2) + Math.Pow(position.Z - sphere[i].getCenterPos().Z,2)));
+                this.sphere[i].setRadius(Math.Sqrt(Math.Pow(position.X - sphere[i].getCenterPos().X, 2) + Math.Pow(position.Z - sphere[i].getCenterPos().Z, 2)));
                 double radius = sphere[i].getRadius();
                 sphere[i].setCenterPos(new Vector3(
                                (float)(position.X + (Math.Cos(sphere[i].getAngleToModel() + rotationy) * radius)),
                                sphere[i].getCenterPos().Y,
                                (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
-            }          
+            }
             speed = 0.1f;
-            mass = 0.05f;
+            mass = 0.5f;
             dashing = false;
             power = 1f;
-            directionId = 5;
+            directionId = 4;
         }
 
         public void Draw(Matrix view, Matrix projection)
@@ -90,13 +93,13 @@ namespace WindowsGame1
             }
         }
 
-        public void Update(bool canFall)
+        public void Update()
         {
-            speed = 0.1f;
+
             directionId = 4;
             currentSpeed = 0f;
-           
-            if (!canFall)
+
+            if (!collisionManager.canFall(this))
             {
                 position.Y -= 0.1f;
                 for (int i = 0; i < sphere.Length; i++)
@@ -109,9 +112,9 @@ namespace WindowsGame1
                 if (Keyboard.GetState().IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
                 {
                     directionId = 3;
-                    if(collisionManager.checkCanRotateLeft(this, position))
+                    if (collisionManager.checkCanRotateLeft(this, position))
                     {
-                    rotationy += 0.01f; 
+                        rotationy += 0.01f;
                     }
                 }
 
@@ -131,12 +134,12 @@ namespace WindowsGame1
                     if (collisionManager.canWalkForward(this))
                     {
                         currentSpeed -= speed;
-                        if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing)
+                        if ((Keyboard.GetState().IsKeyDown(Keys.Space) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                         {
-                            currentSpeed *= 50f;
+                            currentSpeed *= 5f;
                         }
                     }
-                      
+
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
@@ -147,7 +150,7 @@ namespace WindowsGame1
                         currentSpeed += speed;
                     }
                 }
-                     
+
             }
 
             if (playerindex == 1)
@@ -155,31 +158,24 @@ namespace WindowsGame1
                 if (Keyboard.GetState().IsKeyDown(Keys.Left))
                 {
                     directionId = 3;
-                    rotationy += 0.01f;
-
-                    for (int i = 0; i < sphere.Length; i++)
+                    if (collisionManager.checkCanRotateLeft(this, position))
                     {
-                        double radius = sphere[i].getRadius();
-                        sphere[i].setCenterPos(new Vector3(
-                            (float)(position.X + (Math.Cos(sphere[i].getAngleToModel() + rotationy) * radius)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
+                        rotationy += 0.01f;
                     }
+
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Right))
                 {
                     directionId = 1;
-                    rotationy -= 0.01f;
 
-                    for (int i = 0; i < sphere.Length; i++)
+                    if (collisionManager.checkCanRotateRight(this, position))
                     {
-                        double radius = sphere[i].getRadius();
-                        sphere[i].setCenterPos(new Vector3(
-                            (float)(position.X + (Math.Cos(rotationy + sphere[i].getAngleToModel()) * radius)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(position.Z + (-Math.Sin(rotationy + sphere[i].getAngleToModel()) * radius))));
+                        rotationy -= 0.01f;
+
                     }
+
+
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Up))
@@ -187,15 +183,12 @@ namespace WindowsGame1
                     directionId = 0;
                     if (collisionManager.canWalkForward(this))
                     {
-                        position.Z -= (float)(speed * Math.Cos(rotationy));
-                        position.X -= (float)(speed * Math.Sin(rotationy));
-                        for (int i = 0; i < sphere.Length; i++)
+                        currentSpeed -= speed;
+                        if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                         {
-                            sphere[i].setCenterPos(new Vector3(
-                            (float)(sphere[i].getCenterPos().X - speed * Math.Sin(rotationy)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(sphere[i].getCenterPos().Z - speed * Math.Cos(rotationy))));
+                            currentSpeed *= 5f;
                         }
+
                     }
                 }
 
@@ -204,34 +197,21 @@ namespace WindowsGame1
                     directionId = 2;
                     if (collisionManager.canWalkBackward(this))
                     {
-                        position.Z += (float)(speed * Math.Cos(rotationy));
-                        position.X += (float)(speed * Math.Sin(rotationy));
-                        for (int i = 0; i < sphere.Length; i++)
-                        {
-                            sphere[i].setCenterPos(new Vector3(
-                            (float)(sphere[i].getCenterPos().X + speed * Math.Sin(rotationy)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(sphere[i].getCenterPos().Z + speed * Math.Cos(rotationy))));
-                        }
+                        currentSpeed += speed;
                     }
                 }
             }
-             
+
             if (playerindex == 2)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.J))
                 {
                     directionId = 3;
-                    rotationy += 0.01f;
-
-                    for (int i = 0; i < sphere.Length; i++)
+                    if (collisionManager.checkCanRotateLeft(this, position))
                     {
-                        double radius = sphere[i].getRadius();
-                        sphere[i].setCenterPos(new Vector3(
-                            (float)(position.X + (Math.Cos(sphere[i].getAngleToModel() + rotationy) * radius)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
+                        rotationy += 0.01f;
                     }
+
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.L))
@@ -239,13 +219,9 @@ namespace WindowsGame1
                     directionId = 1;
                     rotationy -= 0.01f;
 
-                    for (int i = 0; i < sphere.Length; i++)
+                    if (collisionManager.checkCanRotateRight(this, position))
                     {
-                        double radius = sphere[i].getRadius();
-                        sphere[i].setCenterPos(new Vector3(
-                            (float)(position.X + (Math.Cos(rotationy + sphere[i].getAngleToModel()) * radius)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(position.Z + (-Math.Sin(rotationy + sphere[i].getAngleToModel()) * radius))));
+                        rotationy -= 0.01f;
                     }
                 }
 
@@ -254,16 +230,14 @@ namespace WindowsGame1
                     directionId = 0;
                     if (collisionManager.canWalkForward(this))
                     {
-                        position.Z -= (float)(speed * Math.Cos(rotationy));
-                        position.X -= (float)(speed * Math.Sin(rotationy));
-                        for (int i = 0; i < sphere.Length; i++)
+                        currentSpeed -= speed;
+                        if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                         {
-                            sphere[i].setCenterPos(new Vector3(
-                            (float)(sphere[i].getCenterPos().X - speed * Math.Sin(rotationy)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(sphere[i].getCenterPos().Z - speed * Math.Cos(rotationy))));
+                            currentSpeed *= 5f;
                         }
+
                     }
+
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.K))
@@ -271,16 +245,9 @@ namespace WindowsGame1
                     directionId = 2;
                     if (collisionManager.canWalkBackward(this))
                     {
-                        position.Z += (float)(speed * Math.Cos(rotationy));
-                        position.X += (float)(speed * Math.Sin(rotationy));
-                        for (int i = 0; i < sphere.Length; i++)
-                        {
-                            sphere[i].setCenterPos(new Vector3(
-                            (float)(sphere[i].getCenterPos().X + speed * Math.Sin(rotationy)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(sphere[i].getCenterPos().Z + speed * Math.Cos(rotationy))));
-                        }
+                        currentSpeed += speed;
                     }
+
                 }
             }
 
@@ -289,31 +256,23 @@ namespace WindowsGame1
                 if (Keyboard.GetState().IsKeyDown(Keys.NumPad4))
                 {
                     directionId = 3;
-                    rotationy += 0.01f;
-
-                    for (int i = 0; i < sphere.Length; i++)
+                    if (collisionManager.checkCanRotateLeft(this, position))
                     {
-                        double radius = sphere[i].getRadius();
-                        sphere[i].setCenterPos(new Vector3(
-                            (float)(position.X + (Math.Cos(sphere[i].getAngleToModel() + rotationy) * radius)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
+                        rotationy += 0.01f;
                     }
+
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.NumPad6))
                 {
                     directionId = 1;
-                    rotationy -= 0.01f;
-
-                    for (int i = 0; i < sphere.Length; i++)
+                    if (collisionManager.checkCanRotateRight(this, position))
                     {
-                        double radius = sphere[i].getRadius();
-                        sphere[i].setCenterPos(new Vector3(
-                            (float)(position.X + (Math.Cos(rotationy + sphere[i].getAngleToModel()) * radius)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(position.Z + (-Math.Sin(rotationy + sphere[i].getAngleToModel()) * radius))));
+                        rotationy -= 0.01f;
                     }
+
+
+
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.NumPad8))
@@ -321,16 +280,15 @@ namespace WindowsGame1
                     directionId = 0;
                     if (collisionManager.canWalkForward(this))
                     {
-                        position.Z -= (float)(speed * Math.Cos(rotationy));
-                        position.X -= (float)(speed * Math.Sin(rotationy));
-                        for (int i = 0; i < sphere.Length; i++)
+                        currentSpeed -= speed;
+                        if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                         {
-                            sphere[i].setCenterPos(new Vector3(
-                            (float)(sphere[i].getCenterPos().X - speed * Math.Sin(rotationy)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(sphere[i].getCenterPos().Z - speed * Math.Cos(rotationy))));
+                            currentSpeed *= 5f;
                         }
+
                     }
+
+
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.NumPad5))
@@ -338,16 +296,9 @@ namespace WindowsGame1
                     directionId = 2;
                     if (collisionManager.canWalkBackward(this))
                     {
-                        position.Z += (float)(speed * Math.Cos(rotationy));
-                        position.X += (float)(speed * Math.Sin(rotationy));
-                        for (int i = 0; i < sphere.Length; i++)
-                        {
-                            sphere[i].setCenterPos(new Vector3(
-                            (float)(sphere[i].getCenterPos().X + speed * Math.Sin(rotationy)),
-                            sphere[i].getCenterPos().Y,
-                            (float)(sphere[i].getCenterPos().Z + speed * Math.Cos(rotationy))));
-                        }
+                        currentSpeed += speed;
                     }
+
                 }
             }
             calculateCollisions();
@@ -357,21 +308,28 @@ namespace WindowsGame1
         {
             List<int> collisionsWithPlayer = new List<int>();
             List<Collision>[] collisions = collisionManager.checkCollision(this);
-            if (directionId == 0 || directionId == 2)
-            {
-                foreach (Collision currentCollision in collisions[directionId])
+            /*    if (directionId == 0 || directionId == 2)
                 {
-                    if (!(collisionsWithPlayer.Contains(currentCollision.getEnemyPlayerId())))
+                    foreach (Collision currentCollision in collisions[directionId])
                     {
-                        float changeSpeed = speed - currentCollision.getEnemyMass();
-                        currentSpeed -= changeSpeed;
-                        if (currentSpeed < 0)
+                        if (!(collisionsWithPlayer.Contains(currentCollision.getEnemyPlayerId())))
                         {
-                            currentSpeed = 0;
+                            float changeSpeed = power - currentCollision.getEnemyMass();
+                            if (changeSpeed > 0)
+                            {
+                                if (directionId == 0)
+                                {
+                                    currentSpeed += changeSpeed;
+                                }
+                                else
+                                {
+                                    currentSpeed -= changeSpeed;
+                                }
+
+                            }
                         }
                     }
-                }
-            }
+                } */
 
             movePlayer();
             collisionsWithPlayer.Clear();
@@ -383,8 +341,12 @@ namespace WindowsGame1
                     if (!(collisionsWithPlayer.Contains(currentCollision.getEnemyPlayerId())))
                     {
                         collisionsWithPlayer.Add(currentCollision.getEnemyPlayerId());
-                        float enemyPower = currentCollision.getEnemyPower() - mass;
+                        float enemyPower = currentCollision.getEnemyPower();
                         if (enemyPower > 0)
+                        {
+                            enemyPowers.Add(currentCollision.getEnemyPower());
+                        }
+
                         {
                             movePlayer(enemyPower, currentCollision.getEnemyRotation());
                         }
@@ -394,7 +356,8 @@ namespace WindowsGame1
         }
 
 
-                        
+
+
 
 
 
@@ -404,7 +367,7 @@ namespace WindowsGame1
         {
             Vector2 sphereVector = new Vector2(spherePos.X - modelPos.X, spherePos.Z - modelPos.Z);
             double angle = (Vector2.Dot(new Vector2(1, 0), sphereVector)) / (Math.Sqrt(1) * Math.Sqrt(Math.Pow(sphereVector.X, 2) + Math.Pow(sphereVector.Y, 2)));
-            if (spherePos.Z-position.Z > 0)
+            if (spherePos.Z - position.Z > 0)
             {
                 return (MathHelper.ToRadians(360) - Math.Acos(angle));
             }
@@ -432,6 +395,7 @@ namespace WindowsGame1
             position.X += (float)(currentSpeed * Math.Sin(rotationy));
             for (int i = 0; i < sphere.Length; i++)
             {
+
                 sphere[i].setCenterPos(new Vector3(
                 (float)(sphere[i].getCenterPos().X + currentSpeed * Math.Sin(rotationy)),
                 sphere[i].getCenterPos().Y,
@@ -453,7 +417,7 @@ namespace WindowsGame1
         private void movePlayer(float power, float rotation)
         {
             position.Z += (float)(power * Math.Cos(rotation));
-            position.X += (float)(power * Math.Sin(-rotation));
+            position.X += (float)(power * Math.Sin(rotation));
             for (int i = 0; i < sphere.Length; i++)
             {
                 sphere[i].setCenterPos(new Vector3(
@@ -463,9 +427,29 @@ namespace WindowsGame1
             }
         }
 
+        public float[] getCornerAngles()
+        {
+            return cornerAngles;
+        }
+
+        public int getDirectionId()
+        {
+            return directionId;
+        }
+
+        public float getCurrentSpeed()
+        {
+            return currentSpeed;
+        }
+
+        public List<float> getEnemyPowerList()
+        {
+            return enemyPowers;
+        }
 
 
-       
+
+
 
     }
 }

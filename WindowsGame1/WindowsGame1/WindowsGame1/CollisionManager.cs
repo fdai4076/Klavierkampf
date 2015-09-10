@@ -6,15 +6,17 @@ using Microsoft.Xna.Framework;
 
 namespace WindowsGame1
 {
-    
+
     public class CollisionManager
     {
         private Player[] players;
+        private BoundingBox arenaBounding;
         private List<Collision>[] collisions = new List<Collision>[4];
-       
-        public CollisionManager()
+
+        public CollisionManager(BoundingBox arenaBounding)
         {
             players = null;
+            this.arenaBounding = arenaBounding;
             collisions[0] = new List<Collision>();
             collisions[1] = new List<Collision>();
             collisions[2] = new List<Collision>();
@@ -38,7 +40,26 @@ namespace WindowsGame1
                         {
                             if (playerSpheres[x].getSphere().Intersects(enemySpheres[y].getSphere()))
                             {
-                                collisions[playerSpheres[x].getDirectionIndex()].Add(new Collision(players[i].rotationy, players[i].power, players[i].getMass(), players[i].getPlayerIndex()));
+                                float enemyPower;
+                                if (players[i].getDirectionId() == 2 || players[i].getDirectionId() == 0)
+                                {
+                                    if (players[i].getCurrentSpeed() > 0)
+                                    {
+                                        enemyPower = players[i].power - player.getMass();
+                                    }
+                                    else
+                                    {
+                                        enemyPower = (players[i].power - player.getMass()) * (-1);
+                                    }
+
+                                }
+                                else
+                                {
+                                    enemyPower = 0;
+                                }
+
+
+                                collisions[playerSpheres[x].getDirectionIndex()].Add(new Collision(players[i].rotationy, enemyPower, players[i].getMass(), players[i].getPlayerIndex()));
                             }
                         }
                     }
@@ -73,8 +94,8 @@ namespace WindowsGame1
                         for (int y = 0; y < enemySpheres.Length; y++)
                         {
                             if (spheres[x].getSphere().Intersects(enemySpheres[y].getSphere()) &&
-                            ((spheres[x].getAngleToModel() > MathHelper.ToRadians(90) && spheres[x].getAngleToModel() <= MathHelper.ToRadians(160)) ||
-                            (spheres[x].getAngleToModel() > MathHelper.ToRadians(270) && spheres[x].getAngleToModel() <= MathHelper.ToRadians(340))))
+                            ((spheres[x].getAngleToModel() > MathHelper.ToRadians(90) && spheres[x].getAngleToModel() <= MathHelper.ToRadians(player.getCornerAngles()[0])) ||
+                            (spheres[x].getAngleToModel() > MathHelper.ToRadians(270) && spheres[x].getAngleToModel() <= MathHelper.ToRadians(player.getCornerAngles()[3]))))
                             {
                                 return false;
 
@@ -99,8 +120,8 @@ namespace WindowsGame1
                         for (int y = 0; y < enemySpheres.Length; y++)
                         {
                             if (spheres[x].getSphere().Intersects(enemySpheres[y].getSphere()) &&
-                            ((spheres[x].getAngleToModel() > MathHelper.ToRadians(20) && spheres[x].getAngleToModel() <= MathHelper.ToRadians(90)) ||
-                            (spheres[x].getAngleToModel() > MathHelper.ToRadians(200) && spheres[x].getAngleToModel() <= MathHelper.ToRadians(270))))
+                            ((spheres[x].getAngleToModel() > MathHelper.ToRadians(player.getCornerAngles()[1]) && spheres[x].getAngleToModel() <= MathHelper.ToRadians(90)) ||
+                            (spheres[x].getAngleToModel() > MathHelper.ToRadians(player.getCornerAngles()[2]) && spheres[x].getAngleToModel() <= MathHelper.ToRadians(270))))
                             {
                                 return false;
 
@@ -112,12 +133,12 @@ namespace WindowsGame1
             return true;
         }
 
-        public bool canWalkForward (Player player)
+        public bool canWalkForward(Player player)
         {
             CollisionSphere[] spheres = player.getCollisionSpheres();
-            for (int i = 0; i< players.Length; i++)
+            for (int i = 0; i < players.Length; i++)
             {
-                if(!(player.getPlayerIndex() == players[i].getPlayerIndex()))
+                if (!(player.getPlayerIndex() == players[i].getPlayerIndex()))
                 {
                     CollisionSphere[] enemySpheres = players[i].getCollisionSpheres();
                     for (int x = 0; x < spheres.Length; x++)
@@ -158,10 +179,26 @@ namespace WindowsGame1
             return true;
         }
 
+        public bool canFall(Player player)
+        {
+            CollisionSphere[] spheres = player.getCollisionSpheres();
+            foreach (CollisionSphere currentSphere in spheres)
+            {
+                if (currentSphere.getSphere().Intersects(arenaBounding))
+                {
+                    return true;
+                }
+
+            }
+            return false;
+        }
 
 
 
-                    
+
+
+
+
 
 
 
