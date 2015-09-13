@@ -459,6 +459,10 @@ namespace WindowsGame1
             return enemyPowers;
         }
 
+        public bool isDashing()
+        {
+            return dashing;
+        }
 
 
 

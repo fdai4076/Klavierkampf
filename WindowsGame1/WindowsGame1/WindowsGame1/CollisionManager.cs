@@ -42,23 +42,30 @@ namespace WindowsGame1
                         {
                             if (playerSpheres[x].getSphere().Intersects(enemySpheres[y].getSphere()))
                             {
-                                float enemyPower;
+                                float enemyPower = 0;
                                 if (players[i].getDirectionId() == 2 || players[i].getDirectionId() == 0)
                                 {
-                                    if (players[i].getCurrentSpeed() > 0)
+                                    if (players[i].isDashing())
                                     {
-                                        enemyPower = players[i].power - player.getMass();
+
+                                        if (players[i].getCurrentSpeed() > 0)
+                                        {
+                                            enemyPower = players[i].power - player.getMass();
+                                        }
+                                        else
+                                        {
+                                            enemyPower = (players[i].power - player.getMass()) * (-1);
+                                        }
+
                                     }
                                     else
                                     {
-                                        enemyPower = (players[i].power - player.getMass()) * (-1);
+                                        if (players[i].power > player.getMass())
+                                            enemyPower = players[i].getCurrentSpeed();
                                     }
+                                }
 
-                                }
-                                else
-                                {
-                                    enemyPower = 0;
-                                }
+                                
 
 
                                 collisions[playerSpheres[x].getDirectionIndex()].Add(new Collision(players[i].rotationy, enemyPower, players[i].getMass(), players[i].getPlayerIndex()));
