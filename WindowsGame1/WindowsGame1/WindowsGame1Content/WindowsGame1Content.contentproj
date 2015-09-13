@@ -231,6 +231,11 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+    <Compile Include="Menu\Background.png">
+      <Name>Background</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Menu\Charakterwahl\CBack.png">
       <Name>CBack</Name>
       <Importer>TextureImporter</Importer>
@@ -271,13 +276,18 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Menu\Howtoplay\Background.png">
-      <Name>Background</Name>
+    <Compile Include="Menu\Howtoplay\Screen0.png">
+      <Name>Screen0</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Menu\Logo\Background.png">
-      <Name>Background</Name>
+    <Compile Include="Menu\Howtoplay\Screen2.png">
+      <Name>Screen2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Menu\Howtoplay\Screen3.png">
+      <Name>Screen3</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -286,13 +296,8 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Menu\Logo\Logo3.png">
-      <Name>Logo3</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Menu\Logo\LogoBesch.png">
-      <Name>LogoBesch</Name>
+    <Compile Include="Menu\Logo\LogoScreen.png">
+      <Name>LogoScreen</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

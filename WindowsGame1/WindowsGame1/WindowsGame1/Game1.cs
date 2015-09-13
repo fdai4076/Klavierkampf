@@ -47,15 +47,17 @@ namespace WindowsGame1
         Button buttonSplahscreenStart, buttonSplashscreenHowtoplay, buttonSplashscreenExit;
         Button buttonCharakterBack, buttonCharakterFor;
         Button player1Back, player1For, player2Back, player2For, player3Back, player3For, player4Back, player4For;
+        Button howtoplayBack, howtoplayFor;
         Button optionMute;
 
         Texture2D buttonBackground, alroundscreen;
         Texture2D pause;
         Texture2D splashscreen;
-        Texture2D [] howtoplayscreen;
-        Texture2D logoPicture, logoBesch;
+        Texture2D [] howtoplayscreen = new Texture2D[4];
+        Texture2D logoPicture;
         Texture2D charakterwahl, player1Char, player2Char, player3Char, player4Char;
 
+        int howtoplayIndex, logoWartezeit;
         Color logoBeschColor;
         bool logoBeschInvisible;
 
@@ -89,12 +91,16 @@ namespace WindowsGame1
 
             logoBeschColor = new Color(255, 255, 255, 255);
 
+            logoWartezeit = 0;
+            howtoplayIndex = 0;
             buttonMiddle = 565;
             buttonPauseReturn.setPosition(new Vector2(buttonMiddle, 300));
             buttonPauseMainmenu.setPosition(new Vector2(buttonMiddle, 390));
             buttonSplahscreenStart.setPosition(new Vector2(buttonMiddle, 290));
             buttonSplashscreenHowtoplay.setPosition(new Vector2(buttonMiddle, 380));
             buttonSplashscreenExit.setPosition(new Vector2(buttonMiddle, 470));
+            howtoplayBack.setPosition(new Vector2(30, 640));
+            howtoplayFor.setPosition(new Vector2(1100, 640));
             buttonCharakterBack.setPosition(new Vector2(30, 640));
             buttonCharakterFor.setPosition(new Vector2(1100, 640));
 
@@ -145,9 +151,8 @@ namespace WindowsGame1
             ultimatesphere = Content.Load<Model>("ultimateSphere");
             // TODO: use this.Content to load your game content here
 
-            alroundscreen = Content.Load<Texture2D>("Menu/Logo/Background");
-            logoPicture = Content.Load<Texture2D>("Menu/Logo/Logo3");
-            logoBesch = Content.Load<Texture2D>("Menu/Logo/LogoBesch");
+            alroundscreen = Content.Load<Texture2D>("Menu/Background");
+            logoPicture = Content.Load<Texture2D>("Menu/Logo/LogoScreen");
             splashscreen = Content.Load<Texture2D>("Menu/splashMenu/SplashMenu");
             buttonBackground = Content.Load<Texture2D>("Menu/splashMenu/ButtonBackground2");
             charakterwahl = Content.Load<Texture2D>("Menu/Charakterwahl/Charakterwahl");
@@ -155,7 +160,10 @@ namespace WindowsGame1
             player2Char = Content.Load<Texture2D>("Menu/Charakterwahl/Char0");
             player3Char = Content.Load<Texture2D>("Menu/Charakterwahl/Char0");
             player4Char = Content.Load<Texture2D>("Menu/Charakterwahl/Char0");
-            //howtoplayscreen[0] = Content.Load<Texture2D>("Menu/Howtoplay/Background");
+            howtoplayscreen[0] = Content.Load<Texture2D>("Menu/Howtoplay/Screen0");
+            howtoplayscreen[1] = Content.Load<Texture2D>("Menu/Howtoplay/Screen3");
+            howtoplayscreen[2] = Content.Load<Texture2D>("Menu/Howtoplay/Screen2");
+            howtoplayscreen[3] = Content.Load<Texture2D>("Menu/Howtoplay/Screen3");
             pause = Content.Load<Texture2D>("Menu/Pause/Pause");
 
             buttonPauseReturn = new Button(Content.Load<Texture2D>("Menu/Pause/ButtonReturn"), Content.Load<Texture2D>("Menu/Pause/ButtonReturn2"), graphics.GraphicsDevice);
@@ -163,6 +171,8 @@ namespace WindowsGame1
             buttonSplahscreenStart = new Button(Content.Load<Texture2D>("Menu/SplashMenu/StartButton"), Content.Load<Texture2D>("Menu/SplashMenu/StartButton2"), graphics.GraphicsDevice);
             buttonSplashscreenHowtoplay = new Button(Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay"), Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay2"), graphics.GraphicsDevice);
             buttonSplashscreenExit = new Button(Content.Load<Texture2D>("Menu/SplashMenu/ExitButton"), Content.Load<Texture2D>("Menu/SplashMenu/ExitButton2"), graphics.GraphicsDevice);
+            howtoplayBack = new Button(Content.Load<Texture2D>("Menu/Back"), Content.Load<Texture2D>("Menu/Back2"), graphics.GraphicsDevice);
+            howtoplayFor = new Button(Content.Load<Texture2D>("Menu/For"), Content.Load<Texture2D>("Menu/For2"), graphics.GraphicsDevice);
             buttonCharakterBack = new Button(Content.Load<Texture2D>("Menu/Back"), Content.Load<Texture2D>("Menu/Back2"), graphics.GraphicsDevice);
             buttonCharakterFor = new Button(Content.Load<Texture2D>("Menu/For"), Content.Load<Texture2D>("Menu/For2"), graphics.GraphicsDevice);
             player1Back = new Button(Content.Load<Texture2D>("Menu/Charakterwahl/CBack"), Content.Load<Texture2D>("Menu/Charakterwahl/CBack2"), graphics.GraphicsDevice);
@@ -173,7 +183,6 @@ namespace WindowsGame1
             player3For = new Button(Content.Load<Texture2D>("Menu/Charakterwahl/CFor"), Content.Load<Texture2D>("Menu/Charakterwahl/CFor2"), graphics.GraphicsDevice);
             player4Back = new Button(Content.Load<Texture2D>("Menu/Charakterwahl/CBack"), Content.Load<Texture2D>("Menu/Charakterwahl/CBack2"), graphics.GraphicsDevice);
             player4For = new Button(Content.Load<Texture2D>("Menu/Charakterwahl/CFor"), Content.Load<Texture2D>("Menu/Charakterwahl/CFor2"), graphics.GraphicsDevice);
-
 
         }
 
@@ -208,14 +217,27 @@ namespace WindowsGame1
             switch (gamestate)
             {
                 case GameState.logo:
-                    
-                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                        gamestate = GameState.splashMenu;
 
-                    if (logoBeschColor.A == 255) logoBeschInvisible = false;
-                    if (logoBeschColor.A == 0) logoBeschInvisible = true;
-                    if (logoBeschInvisible) logoBeschColor.A += 3;
-                    else logoBeschColor.A -= 3;
+                    if (logoWartezeit >= 500)
+                    {
+                        if (logoBeschColor.A == 255) logoBeschInvisible = false;
+                        if (logoBeschColor.A == 0) logoBeschInvisible = true;
+                        if (logoBeschInvisible)
+                        {
+                            gamestate = GameState.splashMenu;
+                        }
+                        else
+                        {
+                            logoBeschColor.A -= 3;
+                            logoBeschColor.R -= 3;
+                            logoBeschColor.G -= 3;
+                            logoBeschColor.B -= 3;
+                        }
+                    }
+                    else
+                    {
+                        logoWartezeit += 1;
+                    }
 
                     break;
 
@@ -322,7 +344,44 @@ namespace WindowsGame1
                     break;
 
                 case GameState.howtoplay:
-              
+
+                    IsMouseVisible = true;
+
+                    if (howtoplayBack.isClicked == true)
+                    {
+                        if (howtoplayIndex == 0)
+                        {
+                            gamestate = GameState.splashMenu;
+                            howtoplayBack.isClicked = false;
+                            IsMouseVisible = false;
+                        }
+                        else
+                        {
+                            howtoplayIndex -= 1;
+                            howtoplayBack.isClicked = false;
+                        }
+
+                    }
+                    howtoplayBack.Update(mouse);
+
+                    if (howtoplayFor.isClicked == true)
+                    {
+                        if (howtoplayIndex == 3)
+                        {
+                            gamestate = GameState.splashMenu;
+                            howtoplayIndex = 0;
+                            howtoplayFor.isClicked = false;
+                            IsMouseVisible = false;
+                        }
+                        else
+                        {
+                            howtoplayIndex += 1;
+                            howtoplayFor.isClicked = false;
+                        }
+
+                    }
+                    howtoplayFor.Update(mouse);
+
                     break;
 
                 case GameState.ingame:
@@ -395,10 +454,8 @@ namespace WindowsGame1
             switch (gamestate)
             {
                 case GameState.logo:
-                    
-                    spriteBatch.Draw(alroundscreen, new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
-                    spriteBatch.Draw(logoPicture, new Rectangle(346, 0, logoPicture.Width, logoPicture.Height), Color.White);
-                    spriteBatch.Draw(logoBesch, new Rectangle(0, 420, logoBesch.Width, logoBesch.Height), logoBeschColor);
+
+                    spriteBatch.Draw(logoPicture, new Rectangle(0, 0, logoPicture.Width, logoPicture.Height), logoBeschColor);
 
                     break;
 
@@ -440,7 +497,9 @@ namespace WindowsGame1
 
                 case GameState.howtoplay:
 
-                    spriteBatch.Draw(howtoplayscreen[0], new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
+                    spriteBatch.Draw(howtoplayscreen[howtoplayIndex], new Rectangle(0, 0, howtoplayscreen[howtoplayIndex].Width, howtoplayscreen[howtoplayIndex].Height), Color.White);
+                    howtoplayBack.Draw(spriteBatch);
+                    howtoplayFor.Draw(spriteBatch);
 
                     break;
 

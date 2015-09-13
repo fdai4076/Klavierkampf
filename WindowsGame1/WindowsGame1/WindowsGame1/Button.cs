@@ -24,11 +24,8 @@ namespace WindowsGame1
             texture2 = newTexture2;
             finalTexture = newTexture;
 
-
             size = new Vector2(texture.Width, texture.Height);
         }
-
-        bool down;
 
 
         public bool isClicked;
@@ -49,7 +46,6 @@ namespace WindowsGame1
                 if (mouse.LeftButton == ButtonState.Pressed)
                 {
                     isClicked = true;
-
                 }
 
             }
