@@ -29,6 +29,7 @@ Content\schnellerTextur.xnb
 Content\umkehrenTextur.xnb
 Content\Menu\Back.xnb
 Content\Menu\Back2.xnb
+Content\Menu\Background.xnb
 Content\Menu\Charakterwahl\CBack.xnb
 Content\Menu\Charakterwahl\CBack2.xnb
 Content\Menu\Charakterwahl\CFor.xnb
@@ -37,7 +38,11 @@ Content\Menu\Charakterwahl\Char0.xnb
 Content\Menu\Charakterwahl\Charakterwahl.xnb
 Content\Menu\For.xnb
 Content\Menu\For2.xnb
+Content\Menu\Howtoplay\Screen0.xnb
+Content\Menu\Howtoplay\Screen2.xnb
+Content\Menu\Howtoplay\Screen3.xnb
 Content\Menu\Logo\Logo.xnb
+Content\Menu\Logo\LogoScreen.xnb
 Content\Menu\Option\Background.xnb
 Content\Menu\Pause\Background.xnb
 Content\Menu\Pause\ButtonMainmenu.xnb
@@ -66,8 +71,7 @@ Content\langsamerTextur_0.xnb
 Content\powerTextur_0.xnb
 Content\schnellerTextur_0.xnb
 Content\umkehrenTextur_0.xnb
-Content\Menu\Background.xnb
-Content\Menu\Howtoplay\Screen0.xnb
-Content\Menu\Howtoplay\Screen2.xnb
-Content\Menu\Howtoplay\Screen3.xnb
-Content\Menu\Logo\LogoScreen.xnb
+Content\Menu\Charakterwahl\char1.xnb
+Content\Menu\Charakterwahl\char2.xnb
+Content\Menu\Charakterwahl\char3.xnb
+Content\Menu\Charakterwahl\char4.xnb
