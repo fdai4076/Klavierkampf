@@ -50,13 +50,14 @@ namespace WindowsGame1
         Button player1Back, player1For, player2Back, player2For, player3Back, player3For, player4Back, player4For;
         Button howtoplayBack, howtoplayFor;
         Button optionMute;
+        Button buttonResultRetry, buttonResultMainMenu; 
 
         Texture2D buttonBackground, alroundscreen, buttonBackgroundPause;
         Texture2D pause;
         Texture2D splashscreen;
         Texture2D [] howtoplayscreen = new Texture2D[4];
         Texture2D logoPicture;
-        Texture2D charakterwahl, player1Char, player2Char, player3Char, player4Char;
+        Texture2D charakterwahl;
 
         Texture2D [] player1P = new Texture2D[5];
         Texture2D [] player2P = new Texture2D[5];
@@ -67,7 +68,7 @@ namespace WindowsGame1
 
         int resultIndex;
         int player1Index, player2Index, player3Index, player4Index;
-        int howtoplayIndex, logoWartezeit;
+        int howtoplayIndex;
         Color logoAnimation;
         Color resultAnimation;
         bool logoStatus;
@@ -96,7 +97,7 @@ namespace WindowsGame1
 
             base.Initialize();
             
-            gamestate = GameState.logo;
+            gamestate = GameState.result;
 
             logoAnimation = new Color(255, 255, 255, 255);
 
@@ -111,7 +112,10 @@ namespace WindowsGame1
             howtoplayFor.setPosition(new Vector2(1100, 640));
             buttonCharakterBack.setPosition(new Vector2(30, 640));
             buttonCharakterFor.setPosition(new Vector2(1100, 640));
-            resultIndex = 0;
+            resultIndex = 2;
+
+            buttonResultRetry.setPosition(new Vector2(1020, 440));
+            buttonResultMainMenu.setPosition(new Vector2(1020, 530));
 
             player1Back.setPosition(new Vector2(230, 260));
             player1For.setPosition(new Vector2(545, 260));
@@ -220,6 +224,9 @@ namespace WindowsGame1
             player3For = new Button(Content.Load<Texture2D>("Menu/Charakterwahl/CFor"), Content.Load<Texture2D>("Menu/Charakterwahl/CFor2"), graphics.GraphicsDevice);
             player4Back = new Button(Content.Load<Texture2D>("Menu/Charakterwahl/CBack"), Content.Load<Texture2D>("Menu/Charakterwahl/CBack2"), graphics.GraphicsDevice);
             player4For = new Button(Content.Load<Texture2D>("Menu/Charakterwahl/CFor"), Content.Load<Texture2D>("Menu/Charakterwahl/CFor2"), graphics.GraphicsDevice);
+
+            buttonResultMainMenu = new Button(Content.Load<Texture2D>("Menu/Result/ButtonMainmenu"), Content.Load<Texture2D>("Menu/Result/ButtonMainmenu2"), graphics.GraphicsDevice);
+            buttonResultRetry = new Button(Content.Load<Texture2D>("Menu/Result/ButtonMainmenu"), Content.Load<Texture2D>("Menu/Result/ButtonMainmenu2"), graphics.GraphicsDevice);
 
             results[0] = Content.Load<Texture2D>("Menu/Result/result0");
             results[1] = Content.Load<Texture2D>("Menu/Result/result1");
@@ -533,6 +540,26 @@ namespace WindowsGame1
                 case GameState.result:
 
                    // resultIndex = mitchell;
+                    IsMouseVisible = true;
+
+                    if (buttonResultMainMenu.isClicked == true && !down)
+                    {
+                        gamestate = GameState.splashMenu;
+                        IsMouseVisible = false;
+                        buttonResultMainMenu.isClicked = false;
+                    }
+                    buttonResultMainMenu.Update(mouse);
+
+                    
+                    if (buttonResultRetry.isClicked == true && !down)
+                    {
+                        
+                        gamestate = GameState.character;
+                        IsMouseVisible = false;
+                        buttonResultRetry.isClicked = false;
+                    }
+                    buttonResultRetry.Update(mouse);
+
 
                     break;
 
@@ -654,6 +681,10 @@ namespace WindowsGame1
             case GameState.result:
 
                 spriteBatch.Draw(results[resultIndex], new Rectangle(0, 0, results[resultIndex].Width, results[resultIndex].Height), Color.White);
+
+                buttonResultMainMenu.Draw(spriteBatch);
+                buttonResultRetry.Draw(spriteBatch);
+
                 break;
 
             }
