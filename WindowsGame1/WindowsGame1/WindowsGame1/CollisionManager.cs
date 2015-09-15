@@ -14,7 +14,7 @@ namespace WindowsGame1
         private BoundingBox groundBounding;
         private List<Collision>[] collisions = new List<Collision>[4];
 
-        public CollisionManager(BoundingBox arenaBounding , BoundingBox groundBounding)
+        public CollisionManager(BoundingBox arenaBounding, BoundingBox groundBounding)
         {
             players = new List<Player>();
             this.arenaBounding = arenaBounding;
@@ -65,7 +65,7 @@ namespace WindowsGame1
                                     }
                                 }
 
-                                
+
 
 
                                 collisions[playerSpheres[x].getDirectionIndex()].Add(new Collision(players[i].rotationy, enemyPower, players[i].getMass(), players[i].getPlayerIndex()));
@@ -230,16 +230,9 @@ namespace WindowsGame1
             return players.Count;
         }
 
-
-
-
-
-
-
-
-
-
-
-
+        public int winner()
+        {
+            return players[0].modelId;
+        }
     }
 }

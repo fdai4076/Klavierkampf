@@ -142,7 +142,7 @@ namespace WindowsGame1
             klavier.dashCountdown = 7000;
             klavier.power = 0.10f;
             klavier.mass = 0.05f;
-            klavier.yPosition = 2.1f;
+            klavier.yPosition = 2.2f;
             klavier.angle = new float[] { 164.0546f, 15.9454f, 195.9454f, 344.0546f };
 
             kleiderschrank.model = modelle[1];

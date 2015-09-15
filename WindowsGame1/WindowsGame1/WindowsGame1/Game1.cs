@@ -33,7 +33,8 @@ namespace WindowsGame1
         Player player4;
         SpriteFont font;
         int count;
-       
+        bool down;
+
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
         public CollisionManager collisionManager;
@@ -50,7 +51,7 @@ namespace WindowsGame1
         Button howtoplayBack, howtoplayFor;
         Button optionMute;
 
-        Texture2D buttonBackground, alroundscreen;
+        Texture2D buttonBackground, alroundscreen, buttonBackgroundPause;
         Texture2D pause;
         Texture2D splashscreen;
         Texture2D [] howtoplayscreen = new Texture2D[4];
@@ -97,11 +98,8 @@ namespace WindowsGame1
             
             gamestate = GameState.logo;
 
-            howtoplayscreen = new Texture2D[2];
-
             logoAnimation = new Color(255, 255, 255, 255);
 
-            logoWartezeit = 0;
             howtoplayIndex = 0;
             buttonMiddle = 565;
             buttonPauseReturn.setPosition(new Vector2(buttonMiddle, 300));
@@ -115,17 +113,17 @@ namespace WindowsGame1
             buttonCharakterFor.setPosition(new Vector2(1100, 640));
             resultIndex = 0;
 
-            player1Back.setPosition(new Vector2(270, 250));
-            player1For.setPosition(new Vector2(455, 250));
+            player1Back.setPosition(new Vector2(230, 260));
+            player1For.setPosition(new Vector2(545, 260));
 
-            player2Back.setPosition(new Vector2(770, 250));
-            player2For.setPosition(new Vector2(955, 250));
+            player2Back.setPosition(new Vector2(660, 260));
+            player2For.setPosition(new Vector2(970, 260));
 
-            player3Back.setPosition(new Vector2(270, 450));
-            player3For.setPosition(new Vector2(455, 450));
+            player3Back.setPosition(new Vector2(230, 500));
+            player3For.setPosition(new Vector2(545, 500));
 
-            player4Back.setPosition(new Vector2(770, 450));
-            player4For.setPosition(new Vector2(955, 450));
+            player4Back.setPosition(new Vector2(660, 500));
+            player4For.setPosition(new Vector2(970, 500));
 
             player1Index = 0;
             player2Index = 0;
@@ -136,13 +134,13 @@ namespace WindowsGame1
             groundBounding = new BoundingBox (new Vector3(-25f, -1f, -25f), new Vector3 (25f, -1f, 25f));
 
             Model[] modelle = new Model[] { klavier, kleiderschrank, sofa, kuehlschrank };
-            CharacterManager characterManager = new CharacterManager(modelle); 
+            CharacterManager characterManager = new CharacterManager(modelle);
 
             collisionManager = new CollisionManager(arenaBounding, groundBounding);
-            player1 = new Player(new Vector3(0, characterManager.getStruct(0).yPosition, -4), MathHelper.ToRadians(180f), 0, ultimatesphere, collisionManager, characterManager);
-            player2 = new Player(new Vector3(0, characterManager.getStruct(1).yPosition, 4), 0, 1, ultimatesphere, collisionManager, characterManager);
-            player3 = new Player(new Vector3(4, characterManager.getStruct(2).yPosition, 0), MathHelper.ToRadians(90f), 2, ultimatesphere, collisionManager, characterManager);
-            player4 = new Player(new Vector3(-4, characterManager.getStruct(3).yPosition, 0), MathHelper.ToRadians(-90f), 3, ultimatesphere, collisionManager, characterManager);
+            player1 = new Player(new Vector3(0, characterManager.getStruct(0).yPosition, -4), MathHelper.ToRadians(180f), 0, characterManager.getStruct(0).modelId, ultimatesphere, collisionManager, characterManager);
+            player2 = new Player(new Vector3(0, characterManager.getStruct(1).yPosition, 4), 0, 1, characterManager.getStruct(1).modelId, ultimatesphere, collisionManager, characterManager);
+            player3 = new Player(new Vector3(4, characterManager.getStruct(2).yPosition, 0), MathHelper.ToRadians(90f), 2, characterManager.getStruct(2).modelId, ultimatesphere, collisionManager, characterManager);
+            player4 = new Player(new Vector3(-4, characterManager.getStruct(3).yPosition, 0), MathHelper.ToRadians(-90f), 3, characterManager.getStruct(3).modelId, ultimatesphere, collisionManager, characterManager);
             collisionManager.setPlayers(new Player[] { player1, player2, player3, player4 });
             
         }
@@ -171,6 +169,7 @@ namespace WindowsGame1
             logoPicture = Content.Load<Texture2D>("Menu/Logo/LogoScreen");
             splashscreen = Content.Load<Texture2D>("Menu/splashMenu/SplashMenu");
             buttonBackground = Content.Load<Texture2D>("Menu/splashMenu/ButtonBackground2");
+            buttonBackgroundPause = Content.Load<Texture2D>("Menu/Pause/ButtonBackgroundPause");
             charakterwahl = Content.Load<Texture2D>("Menu/Charakterwahl/Charakterwahl");
             
             // P = Porträt
@@ -244,8 +243,13 @@ namespace WindowsGame1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                down = true;
+            if (Mouse.GetState().LeftButton == ButtonState.Released)
+                down = false;
 
+            base.Update(gameTime);
+            
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
@@ -260,7 +264,7 @@ namespace WindowsGame1
             {
                 case GameState.logo:
 
-                    if (logoWartezeit >= 500)
+                    if (gameTime.TotalGameTime.Seconds > 1)
                     {
                         if (logoAnimation.A == 255) logoStatus = false;
                         if (logoAnimation.A == 0) logoStatus = true;
@@ -276,10 +280,6 @@ namespace WindowsGame1
                             logoAnimation.B -= 3;
                         }
                     }
-                    else
-                    {
-                        logoWartezeit += 1;
-                    }
 
                     break;
 
@@ -287,7 +287,7 @@ namespace WindowsGame1
                     
                     IsMouseVisible = true;
 
-                    if (buttonSplahscreenStart.isClicked == true)
+                    if (buttonSplahscreenStart.isClicked == true && !down)
                     {
                         gamestate = GameState.character;
                         IsMouseVisible = false;
@@ -295,7 +295,7 @@ namespace WindowsGame1
                     }
                     buttonSplahscreenStart.Update(mouse);
 
-                    if (buttonSplashscreenHowtoplay.isClicked == true)
+                    if (buttonSplashscreenHowtoplay.isClicked == true && !down)
                     {
                         gamestate = GameState.howtoplay;
                         IsMouseVisible = false;
@@ -303,7 +303,7 @@ namespace WindowsGame1
                     }
                     buttonSplashscreenHowtoplay.Update(mouse);
 
-                    if (buttonSplashscreenExit.isClicked == true)
+                    if (buttonSplashscreenExit.isClicked == true && !down)
                     {
                         this.Exit();
                     }
@@ -316,7 +316,7 @@ namespace WindowsGame1
                     IsMouseVisible = true;
 
                     //Play1Charakterwahl Update
-                    if (player1Back.isClicked == true)
+                    if (player1Back.isClicked == true && !down)
                     {
                         if (player1Index == 0) player1Index = 4;
                         else player1Index -= 1;
@@ -325,7 +325,7 @@ namespace WindowsGame1
                     }
                     player1Back.Update(mouse);
 
-                     if (player1For.isClicked == true)
+                    if (player1For.isClicked == true && !down)
                     {
                         if (player1Index == 4) player1Index = 0;
                         else player1Index += 1;
@@ -335,7 +335,7 @@ namespace WindowsGame1
                     player1For.Update(mouse);
 
                     //Play2Charakterwahl Update
-                    if (player2Back.isClicked == true)
+                    if (player2Back.isClicked == true && !down)
                     {
                         if (player2Index == 0) player2Index = 4;
                         else player2Index -= 1;
@@ -344,7 +344,7 @@ namespace WindowsGame1
                     }
                     player2Back.Update(mouse);
 
-                     if (player2For.isClicked == true)
+                    if (player2For.isClicked == true && !down)
                     {
                         if (player2Index == 4) player2Index = 0;
                         else player2Index += 1;
@@ -354,7 +354,7 @@ namespace WindowsGame1
                     player2For.Update(mouse);
 
                     //Play3Charakterwahl Update
-                    if (player3Back.isClicked == true)
+                    if (player3Back.isClicked == true && !down)
                     {
                         if (player3Index == 0) player3Index = 4;
                         else player3Index -= 1;
@@ -363,7 +363,7 @@ namespace WindowsGame1
                     }
                     player3Back.Update(mouse);
 
-                    if (player3For.isClicked == true)
+                    if (player3For.isClicked == true && !down)
                     {
                         if (player3Index == 4) player3Index = 0;
                         else player3Index += 1;
@@ -373,7 +373,7 @@ namespace WindowsGame1
                     player3For.Update(mouse);
 
                     //Play4Charakterwahl Update
-                    if (player4Back.isClicked == true)
+                    if (player4Back.isClicked == true && !down)
                     {
                         if (player4Index == 0) player4Index = 4;
                         else player4Index -= 1;
@@ -382,7 +382,7 @@ namespace WindowsGame1
                     }
                     player4Back.Update(mouse);
 
-                    if (player4For.isClicked == true)
+                    if (player4For.isClicked == true && !down)
                     {
                         if (player4Index == 4) player4Index = 0;
                         else player4Index += 1;
@@ -391,7 +391,7 @@ namespace WindowsGame1
                     }
                     player4For.Update(mouse);
 
-                    if (buttonCharakterBack.isClicked == true)
+                    if (buttonCharakterBack.isClicked == true && !down)
                     {
                         gamestate = GameState.splashMenu;
                         IsMouseVisible = false;
@@ -399,7 +399,7 @@ namespace WindowsGame1
                     }
                     buttonCharakterBack.Update(mouse);
 
-                    if (buttonCharakterFor.isClicked == true)
+                    if (buttonCharakterFor.isClicked == true && !down)
                     {
                         if (player1Index != 0 && player2Index != 0)
                         {
@@ -446,7 +446,7 @@ namespace WindowsGame1
 
                     IsMouseVisible = true;
 
-                    if (howtoplayBack.isClicked == true)
+                    if (howtoplayBack.isClicked == true && !down)
                     {
                         if (howtoplayIndex == 0)
                         {
@@ -504,7 +504,7 @@ namespace WindowsGame1
                     item.update();
                     count = collisionManager.checkPlayerAlive();
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.P))
+                    if (Keyboard.GetState().IsKeyDown(Keys.P) && !down)
                         gamestate = GameState.pause;
 
                     break;
@@ -513,14 +513,14 @@ namespace WindowsGame1
                     
                     IsMouseVisible = true;
 
-                    if (buttonPauseReturn.isClicked == true)
+                    if (buttonPauseReturn.isClicked == true && !down)
                     {
                         gamestate = GameState.ingame;
                         IsMouseVisible = false; 
                         buttonPauseReturn.isClicked = false;
                     }
 
-                    if (buttonPauseMainmenu.isClicked == true)
+                    if (buttonPauseMainmenu.isClicked == true && !down)
                     {
                         gamestate = GameState.splashMenu;
                         buttonPauseMainmenu.isClicked = false;
@@ -532,7 +532,7 @@ namespace WindowsGame1
 
                 case GameState.result:
 
-                    resultIndex = mitchell;
+                   // resultIndex = mitchell;
 
                     break;
 
@@ -545,7 +545,7 @@ namespace WindowsGame1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
             
             
 
@@ -571,12 +571,11 @@ namespace WindowsGame1
                     break;
 
                 case GameState.character:
-                    
-                    spriteBatch.Draw(alroundscreen, new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
+                                        
                     spriteBatch.Draw(charakterwahl, new Rectangle(0, 0, charakterwahl.Width, charakterwahl.Height), Color.White);
                     
                     player1Back.Draw(spriteBatch);
-                    spriteBatch.Draw(player1P[player1Index], new Rectangle(335, 225, player1P[player1Index].Width, player1P[player1Index].Height), Color.White);
+                    spriteBatch.Draw(player1P[player1Index], new Rectangle(300, 225, player1P[player1Index].Width, player1P[player1Index].Height), Color.White);
                     player1For.Draw(spriteBatch);
 
                     player2Back.Draw(spriteBatch);
@@ -584,7 +583,7 @@ namespace WindowsGame1
                     player2For.Draw(spriteBatch);
 
                     player3Back.Draw(spriteBatch);
-                    spriteBatch.Draw(player3P[player3Index], new Rectangle(335, 425, player3P[player3Index].Width, player3P[player3Index].Height), Color.White);
+                    spriteBatch.Draw(player3P[player3Index], new Rectangle(300, 425, player3P[player3Index].Width, player3P[player3Index].Height), Color.White);
                     player3For.Draw(spriteBatch);
 
                     player4Back.Draw(spriteBatch);
@@ -645,9 +644,8 @@ namespace WindowsGame1
 
             case GameState.pause:
                 
-                spriteBatch.Draw(alroundscreen, new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
                 spriteBatch.Draw(pause, new Rectangle(0, 0, pause.Width, pause.Height), Color.White);
-                spriteBatch.Draw(buttonBackground, new Rectangle(490, 150, buttonBackground.Width, buttonBackground.Height), Color.White);
+                spriteBatch.Draw(buttonBackgroundPause, new Rectangle(480, 150, buttonBackgroundPause.Width, buttonBackgroundPause.Height), Color.White);
                 buttonPauseReturn.Draw(spriteBatch);
                 buttonPauseMainmenu.Draw(spriteBatch);
                 

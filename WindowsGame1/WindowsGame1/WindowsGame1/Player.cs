@@ -9,6 +9,7 @@ namespace WindowsGame1
     public class Player
     {
         public Model model;
+        public int modelId;
         private Model sphereModel;
         public Vector3 position;
         private float[] cornerAngles;
@@ -29,11 +30,12 @@ namespace WindowsGame1
         public CollisionManager collisionManager;
         private CharacterManager characterManager;
 
-        public Player(Vector3 spawn, float spawnrotation, int playerindex, Model boundingSphere, CollisionManager collisionManager, CharacterManager characterManager)
+        public Player(Vector3 spawn, float spawnrotation, int playerindex, int modelId, Model boundingSphere, CollisionManager collisionManager, CharacterManager characterManager)
         {
             this.characterManager = characterManager;
             this.position = spawn;
             this.playerindex = playerindex;
+            this.modelId = modelId;
             this.model = characterManager.getStruct(playerindex).model;
             this.sphereModel = boundingSphere;
             this.sphere = characterManager.getStruct(playerindex).spheres;
@@ -97,15 +99,15 @@ namespace WindowsGame1
 
         public void Update()
         {
-            if(isAlive)
+            if (isAlive)
             {
 
-            directionId = 4;
-            currentSpeed = 0f;
+                directionId = 4;
+                currentSpeed = 0f;
 
-            if (!collisionManager.canFall(this))
-            {
-                
+                if (!collisionManager.canFall(this))
+                {
+
                     position.Y -= 0.1f;
                     for (int i = 0; i < sphere.Length; i++)
                     {
@@ -114,207 +116,207 @@ namespace WindowsGame1
 
                     if (collisionManager.outOfGame(this))
                         isAlive = false;
-            }
-                
-
-            
-            if (playerindex == 0)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
-                {
-                    directionId = 3;
-                    if (collisionManager.checkCanRotateLeft(this, position))
-                    {
-                        rotationy += 0.01f;
-                    }
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.D) || GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
-                {
-                    directionId = 1;
-                    if (collisionManager.checkCanRotateRight(this, position))
-                    {
-                        rotationy -= 0.01f;
 
-                    }
-                }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.W) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
+                if (playerindex == 0)
                 {
-                    directionId = 0;
-                    if (collisionManager.canWalkForward(this))
+                    if (Keyboard.GetState().IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
                     {
-                        currentSpeed -= speed;
-                        if ((Keyboard.GetState().IsKeyDown(Keys.Space) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
+                        directionId = 3;
+                        if (collisionManager.checkCanRotateLeft(this, position))
                         {
-                            currentSpeed *= 5f;
+                            rotationy += 0.01f;
+                        }
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.D) || GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
+                    {
+                        directionId = 1;
+                        if (collisionManager.checkCanRotateRight(this, position))
+                        {
+                            rotationy -= 0.01f;
+
+                        }
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.W) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
+                    {
+                        directionId = 0;
+                        if (collisionManager.canWalkForward(this))
+                        {
+                            currentSpeed -= speed;
+                            if ((Keyboard.GetState().IsKeyDown(Keys.Tab) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
+                            {
+                                currentSpeed *= 5f;
+                            }
+                        }
+
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
+                    {
+                        directionId = 2;
+                        if (collisionManager.canWalkBackward(this))
+                        {
+                            currentSpeed += speed;
                         }
                     }
 
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
+                if (playerindex == 1)
                 {
-                    directionId = 2;
-                    if (collisionManager.canWalkBackward(this))
+                    if (Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.Two).DPad.Left == ButtonState.Pressed)
                     {
-                        currentSpeed += speed;
+                        directionId = 3;
+                        if (collisionManager.checkCanRotateLeft(this, position))
+                        {
+                            rotationy += 0.01f;
+                        }
+
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.Two).DPad.Right == ButtonState.Pressed)
+                    {
+                        directionId = 1;
+
+                        if (collisionManager.checkCanRotateRight(this, position))
+                        {
+                            rotationy -= 0.01f;
+
+                        }
+
+
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.Two).DPad.Up == ButtonState.Pressed)
+                    {
+                        directionId = 0;
+                        if (collisionManager.canWalkForward(this))
+                        {
+                            currentSpeed -= speed;
+                            if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.Two).Buttons.A == ButtonState.Pressed && !dashing))
+                            {
+                                currentSpeed *= 5f;
+                            }
+
+                        }
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.Two).DPad.Down == ButtonState.Pressed)
+                    {
+                        directionId = 2;
+                        if (collisionManager.canWalkBackward(this))
+                        {
+                            currentSpeed += speed;
+                        }
                     }
                 }
 
-            }
-
-            if (playerindex == 1)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                if (playerindex == 2)
                 {
-                    directionId = 3;
-                    if (collisionManager.checkCanRotateLeft(this, position))
+                    if (Keyboard.GetState().IsKeyDown(Keys.J) || GamePad.GetState(PlayerIndex.Three).DPad.Left == ButtonState.Pressed)
                     {
-                        rotationy += 0.01f;
+                        directionId = 3;
+                        if (collisionManager.checkCanRotateLeft(this, position))
+                        {
+                            rotationy += 0.01f;
+                        }
+
                     }
 
-                }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                {
-                    directionId = 1;
-
-                    if (collisionManager.checkCanRotateRight(this, position))
+                    if (Keyboard.GetState().IsKeyDown(Keys.L) || GamePad.GetState(PlayerIndex.Three).DPad.Right == ButtonState.Pressed)
                     {
+                        directionId = 1;
                         rotationy -= 0.01f;
 
+                        if (collisionManager.checkCanRotateRight(this, position))
+                        {
+                            rotationy -= 0.01f;
+                        }
                     }
 
-
-                }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                {
-                    directionId = 0;
-                    if (collisionManager.canWalkForward(this))
+                    if (Keyboard.GetState().IsKeyDown(Keys.I) || GamePad.GetState(PlayerIndex.Three).DPad.Up == ButtonState.Pressed)
                     {
-                        currentSpeed -= speed;
-                        if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
+                        directionId = 0;
+                        if (collisionManager.canWalkForward(this))
                         {
-                            currentSpeed *= 5f;
+                            currentSpeed -= speed;
+                            if ((Keyboard.GetState().IsKeyDown(Keys.Space) && !dashing) || (GamePad.GetState(PlayerIndex.Three).Buttons.A == ButtonState.Pressed && !dashing))
+                            {
+                                currentSpeed *= 5f;
+                            }
+
+                        }
+
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.K) || GamePad.GetState(PlayerIndex.Three).DPad.Down == ButtonState.Pressed)
+                    {
+                        directionId = 2;
+                        if (collisionManager.canWalkBackward(this))
+                        {
+                            currentSpeed += speed;
                         }
 
                     }
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                if (playerindex == 3)
                 {
-                    directionId = 2;
-                    if (collisionManager.canWalkBackward(this))
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad4) || GamePad.GetState(PlayerIndex.Four).DPad.Left == ButtonState.Pressed)
                     {
-                        currentSpeed += speed;
-                    }
-                }
-            }
-
-            if (playerindex == 2)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.J))
-                {
-                    directionId = 3;
-                    if (collisionManager.checkCanRotateLeft(this, position))
-                    {
-                        rotationy += 0.01f;
-                    }
-
-                }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.L))
-                {
-                    directionId = 1;
-                    rotationy -= 0.01f;
-
-                    if (collisionManager.checkCanRotateRight(this, position))
-                    {
-                        rotationy -= 0.01f;
-                    }
-                }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.I))
-                {
-                    directionId = 0;
-                    if (collisionManager.canWalkForward(this))
-                    {
-                        currentSpeed -= speed;
-                        if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
+                        directionId = 3;
+                        if (collisionManager.checkCanRotateLeft(this, position))
                         {
-                            currentSpeed *= 5f;
+                            rotationy += 0.01f;
                         }
 
                     }
 
-                }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.K))
-                {
-                    directionId = 2;
-                    if (collisionManager.canWalkBackward(this))
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad6) || GamePad.GetState(PlayerIndex.Four).DPad.Right == ButtonState.Pressed)
                     {
-                        currentSpeed += speed;
-                    }
-
-                }
-            }
-
-            if (playerindex == 3)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.NumPad4))
-                {
-                    directionId = 3;
-                    if (collisionManager.checkCanRotateLeft(this, position))
-                    {
-                        rotationy += 0.01f;
-                    }
-
-                }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.NumPad6))
-                {
-                    directionId = 1;
-                    if (collisionManager.checkCanRotateRight(this, position))
-                    {
-                        rotationy -= 0.01f;
-                    }
-
-
-
-                }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.NumPad8))
-                {
-                    directionId = 0;
-                    if (collisionManager.canWalkForward(this))
-                    {
-                        currentSpeed -= speed;
-                        if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
+                        directionId = 1;
+                        if (collisionManager.checkCanRotateRight(this, position))
                         {
-                            currentSpeed *= 5f;
+                            rotationy -= 0.01f;
+                        }
+
+
+
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad8) || GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Pressed)
+                    {
+                        directionId = 0;
+                        if (collisionManager.canWalkForward(this))
+                        {
+                            currentSpeed -= speed;
+                            if ((Keyboard.GetState().IsKeyDown(Keys.NumPad0) && !dashing) || (GamePad.GetState(PlayerIndex.Four).Buttons.A == ButtonState.Pressed && !dashing))
+                            {
+                                currentSpeed *= 5f;
+                            }
+
+                        }
+
+
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad5) || GamePad.GetState(PlayerIndex.Four).DPad.Down == ButtonState.Pressed)
+                    {
+                        directionId = 2;
+                        if (collisionManager.canWalkBackward(this))
+                        {
+                            currentSpeed += speed;
                         }
 
                     }
-
-
                 }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.NumPad5))
-                {
-                    directionId = 2;
-                    if (collisionManager.canWalkBackward(this))
-                    {
-                        currentSpeed += speed;
-                    }
-
-                }
+                calculateCollisions();
             }
-            calculateCollisions();
         }
-       }
 
         public void calculateCollisions()
         {
