@@ -52,17 +52,14 @@ namespace WindowsGame1
         Button optionMute;
         Button buttonResultRetry, buttonResultMainMenu; 
 
-        Texture2D buttonBackground, alroundscreen, buttonBackgroundPause;
+        Texture2D buttonBackground, buttonBackgroundPause;
         Texture2D pause;
         Texture2D splashscreen;
         Texture2D [] howtoplayscreen = new Texture2D[4];
         Texture2D logoPicture;
         Texture2D charakterwahl;
 
-        Texture2D [] player1P = new Texture2D[5];
-        Texture2D [] player2P = new Texture2D[5];
-        Texture2D [] player3P = new Texture2D[5];
-        Texture2D [] player4P = new Texture2D[5];
+        Texture2D[] character = new Texture2D[5];
 
         Texture2D [] results = new Texture2D[4];
 
@@ -97,7 +94,7 @@ namespace WindowsGame1
 
             base.Initialize();
             
-            gamestate = GameState.result;
+            gamestate = GameState.splashMenu;
 
             logoAnimation = new Color(255, 255, 255, 255);
 
@@ -112,7 +109,6 @@ namespace WindowsGame1
             howtoplayFor.setPosition(new Vector2(1100, 640));
             buttonCharakterBack.setPosition(new Vector2(30, 640));
             buttonCharakterFor.setPosition(new Vector2(1100, 640));
-            resultIndex = 2;
 
             buttonResultRetry.setPosition(new Vector2(1020, 440));
             buttonResultMainMenu.setPosition(new Vector2(1020, 530));
@@ -169,37 +165,17 @@ namespace WindowsGame1
             ultimatesphere = Content.Load<Model>("ultimateSphere");
             // TODO: use this.Content to load your game content here
 
-            alroundscreen = Content.Load<Texture2D>("Menu/Background");
             logoPicture = Content.Load<Texture2D>("Menu/Logo/LogoScreen");
             splashscreen = Content.Load<Texture2D>("Menu/splashMenu/SplashMenu");
             buttonBackground = Content.Load<Texture2D>("Menu/splashMenu/ButtonBackground2");
             buttonBackgroundPause = Content.Load<Texture2D>("Menu/Pause/ButtonBackgroundPause");
             charakterwahl = Content.Load<Texture2D>("Menu/Charakterwahl/Charakterwahl");
-            
-            // P = Porträt
-            player1P[0] = Content.Load<Texture2D>("Menu/Charakterwahl/Char0");
-            player1P[1] = Content.Load<Texture2D>("Menu/Charakterwahl/Char1");
-            player1P[2] = Content.Load<Texture2D>("Menu/Charakterwahl/Char2");
-            player1P[3] = Content.Load<Texture2D>("Menu/Charakterwahl/Char3");
-            player1P[4] = Content.Load<Texture2D>("Menu/Charakterwahl/Char4");
 
-            player2P[0] = Content.Load<Texture2D>("Menu/Charakterwahl/Char0");
-            player2P[1] = Content.Load<Texture2D>("Menu/Charakterwahl/Char1");
-            player2P[2] = Content.Load<Texture2D>("Menu/Charakterwahl/Char2");
-            player2P[3] = Content.Load<Texture2D>("Menu/Charakterwahl/Char3");
-            player2P[4] = Content.Load<Texture2D>("Menu/Charakterwahl/Char4");
-
-            player3P[0] = Content.Load<Texture2D>("Menu/Charakterwahl/Char0");
-            player3P[1] = Content.Load<Texture2D>("Menu/Charakterwahl/Char1");
-            player3P[2] = Content.Load<Texture2D>("Menu/Charakterwahl/Char2");
-            player3P[3] = Content.Load<Texture2D>("Menu/Charakterwahl/Char3");
-            player3P[4] = Content.Load<Texture2D>("Menu/Charakterwahl/Char4");
-
-            player4P[0] = Content.Load<Texture2D>("Menu/Charakterwahl/Char0");
-            player4P[1] = Content.Load<Texture2D>("Menu/Charakterwahl/Char1");
-            player4P[2] = Content.Load<Texture2D>("Menu/Charakterwahl/Char2");
-            player4P[3] = Content.Load<Texture2D>("Menu/Charakterwahl/Char3");
-            player4P[4] = Content.Load<Texture2D>("Menu/Charakterwahl/Char4");
+            character[0] = Content.Load<Texture2D>("Menu/Charakterwahl/Char0");
+            character[1] = Content.Load<Texture2D>("Menu/Charakterwahl/Char1");
+            character[2] = Content.Load<Texture2D>("Menu/Charakterwahl/Char2");
+            character[3] = Content.Load<Texture2D>("Menu/Charakterwahl/Char3");
+            character[4] = Content.Load<Texture2D>("Menu/Charakterwahl/Char4");
 
             howtoplayscreen[0] = Content.Load<Texture2D>("Menu/Howtoplay/Screen0");
             howtoplayscreen[1] = Content.Load<Texture2D>("Menu/Howtoplay/Screen3");
@@ -216,6 +192,7 @@ namespace WindowsGame1
             howtoplayFor = new Button(Content.Load<Texture2D>("Menu/For"), Content.Load<Texture2D>("Menu/For2"), graphics.GraphicsDevice);
             buttonCharakterBack = new Button(Content.Load<Texture2D>("Menu/Back"), Content.Load<Texture2D>("Menu/Back2"), graphics.GraphicsDevice);
             buttonCharakterFor = new Button(Content.Load<Texture2D>("Menu/For"), Content.Load<Texture2D>("Menu/For2"), graphics.GraphicsDevice);
+            
             player1Back = new Button(Content.Load<Texture2D>("Menu/Charakterwahl/CBack"), Content.Load<Texture2D>("Menu/Charakterwahl/CBack2"), graphics.GraphicsDevice);
             player1For = new Button(Content.Load<Texture2D>("Menu/Charakterwahl/CFor"), Content.Load<Texture2D>("Menu/Charakterwahl/CFor2"), graphics.GraphicsDevice);
             player2Back = new Button(Content.Load<Texture2D>("Menu/Charakterwahl/CBack"), Content.Load<Texture2D>("Menu/Charakterwahl/CBack2"), graphics.GraphicsDevice);
@@ -226,12 +203,12 @@ namespace WindowsGame1
             player4For = new Button(Content.Load<Texture2D>("Menu/Charakterwahl/CFor"), Content.Load<Texture2D>("Menu/Charakterwahl/CFor2"), graphics.GraphicsDevice);
 
             buttonResultMainMenu = new Button(Content.Load<Texture2D>("Menu/Result/ButtonMainmenu"), Content.Load<Texture2D>("Menu/Result/ButtonMainmenu2"), graphics.GraphicsDevice);
-            buttonResultRetry = new Button(Content.Load<Texture2D>("Menu/Result/ButtonMainmenu"), Content.Load<Texture2D>("Menu/Result/ButtonMainmenu2"), graphics.GraphicsDevice);
+            buttonResultRetry = new Button(Content.Load<Texture2D>("Menu/Result/ButtonResultRetry"), Content.Load<Texture2D>("Menu/Result/ButtonResultRetry2"), graphics.GraphicsDevice);
 
             results[0] = Content.Load<Texture2D>("Menu/Result/result0");
             results[1] = Content.Load<Texture2D>("Menu/Result/result1");
-            results[3] = Content.Load<Texture2D>("Menu/Result/result2");
-            results[2] = Content.Load<Texture2D>("Menu/Result/result3");
+            results[2] = Content.Load<Texture2D>("Menu/Result/result2");
+            results[3] = Content.Load<Texture2D>("Menu/Result/result3");
         }
 
         /// <summary>
@@ -325,8 +302,7 @@ namespace WindowsGame1
                     //Play1Charakterwahl Update
                     if (player1Back.isClicked == true && !down)
                     {
-                        if (player1Index == 0) player1Index = 4;
-                        else player1Index -= 1;
+                        player1Index = (player1Index - 1)%5;
 
                         player1Back.isClicked = false;
                     }
@@ -334,8 +310,7 @@ namespace WindowsGame1
 
                     if (player1For.isClicked == true && !down)
                     {
-                        if (player1Index == 4) player1Index = 0;
-                        else player1Index += 1;
+                        player1Index = (player1Index + 1) % 5;
 
                         player1For.isClicked = false;
                     }
@@ -344,8 +319,7 @@ namespace WindowsGame1
                     //Play2Charakterwahl Update
                     if (player2Back.isClicked == true && !down)
                     {
-                        if (player2Index == 0) player2Index = 4;
-                        else player2Index -= 1;
+                        player2Index = (player2Index - 1) % 5;
 
                         player2Back.isClicked = false;
                     }
@@ -353,8 +327,7 @@ namespace WindowsGame1
 
                     if (player2For.isClicked == true && !down)
                     {
-                        if (player2Index == 4) player2Index = 0;
-                        else player2Index += 1;
+                        player2Index = (player2Index + 1) % 5;
 
                         player2For.isClicked = false;
                     }
@@ -363,8 +336,7 @@ namespace WindowsGame1
                     //Play3Charakterwahl Update
                     if (player3Back.isClicked == true && !down)
                     {
-                        if (player3Index == 0) player3Index = 4;
-                        else player3Index -= 1;
+                        player3Index = (player3Index - 1) % 5;
 
                         player3Back.isClicked = false;
                     }
@@ -372,8 +344,7 @@ namespace WindowsGame1
 
                     if (player3For.isClicked == true && !down)
                     {
-                        if (player3Index == 4) player3Index = 0;
-                        else player3Index += 1;
+                        player3Index = (player3Index + 1) % 5;
 
                         player3For.isClicked = false;
                     }
@@ -382,8 +353,7 @@ namespace WindowsGame1
                     //Play4Charakterwahl Update
                     if (player4Back.isClicked == true && !down)
                     {
-                        if (player4Index == 0) player4Index = 4;
-                        else player4Index -= 1;
+                        player4Index = (player4Index - 1) % 5;
 
                         player4Back.isClicked = false;
                     }
@@ -391,8 +361,7 @@ namespace WindowsGame1
 
                     if (player4For.isClicked == true && !down)
                     {
-                        if (player4Index == 4) player4Index = 0;
-                        else player4Index += 1;
+                        player4Index = (player4Index + 1) % 5;
 
                         player4For.isClicked = false;
                     }
@@ -408,7 +377,7 @@ namespace WindowsGame1
 
                     if (buttonCharakterFor.isClicked == true && !down)
                     {
-                        if (player1Index != 0 && player2Index != 0)
+                       if (player1Index != 0 && player2Index != 0)
                         {
                             if (player1Index != player2Index && player1Index != player3Index && player1Index != player4Index)
                             {
@@ -426,6 +395,7 @@ namespace WindowsGame1
                                                     IsMouseVisible = false;
                                                 }
                                             }
+                             
                                             else
                                             {
                                                 gamestate = GameState.ingame;
@@ -443,8 +413,7 @@ namespace WindowsGame1
                         }
                      }
                         
-                        buttonCharakterBack.isClicked = false;
-                    
+                    buttonCharakterBack.isClicked = false;
                     buttonCharakterFor.Update(mouse);
 
                     break;
@@ -491,17 +460,6 @@ namespace WindowsGame1
                     break;
 
                 case GameState.ingame:
-                   /* for (int i = 0; i < player1.getBound().Length; i++)
-                    {
-                        for (int j = 0; j < player2.getBound().Length; j++)
-                        {
-                            if (player1.getBound()[i].Intersects(player2.getBound()[j]))
-                            {
-                                test = false;
-                            }
-                        }
-                    }
-                     */
 
                     player1.Update();
                     player2.Update();
@@ -513,6 +471,11 @@ namespace WindowsGame1
 
                     if (Keyboard.GetState().IsKeyDown(Keys.P) && !down)
                         gamestate = GameState.pause;
+
+                    if (count == 1)
+                    {
+                        gamestate = GameState.result;
+                    }
 
                     break;
 
@@ -539,7 +502,7 @@ namespace WindowsGame1
 
                 case GameState.result:
 
-                   // resultIndex = mitchell;
+                    resultIndex = collisionManager.winner();
                     IsMouseVisible = true;
 
                     if (buttonResultMainMenu.isClicked == true && !down)
@@ -552,8 +515,7 @@ namespace WindowsGame1
 
                     
                     if (buttonResultRetry.isClicked == true && !down)
-                    {
-                        
+                    {                       
                         gamestate = GameState.character;
                         IsMouseVisible = false;
                         buttonResultRetry.isClicked = false;
@@ -598,23 +560,22 @@ namespace WindowsGame1
                     break;
 
                 case GameState.character:
-                                        
                     spriteBatch.Draw(charakterwahl, new Rectangle(0, 0, charakterwahl.Width, charakterwahl.Height), Color.White);
                     
                     player1Back.Draw(spriteBatch);
-                    spriteBatch.Draw(player1P[player1Index], new Rectangle(300, 225, player1P[player1Index].Width, player1P[player1Index].Height), Color.White);
+                    spriteBatch.Draw(character[player1Index], new Rectangle(295, 180, character[player1Index].Width, character[player1Index].Height), Color.White);
                     player1For.Draw(spriteBatch);
 
                     player2Back.Draw(spriteBatch);
-                    spriteBatch.Draw(player2P[player2Index], new Rectangle(835, 225, player2P[player2Index].Width, player2P[player2Index].Height), Color.White);
+                    spriteBatch.Draw(character[player2Index], new Rectangle(725, 180, character[player2Index].Width, character[player2Index].Height), Color.White);
                     player2For.Draw(spriteBatch);
 
                     player3Back.Draw(spriteBatch);
-                    spriteBatch.Draw(player3P[player3Index], new Rectangle(300, 425, player3P[player3Index].Width, player3P[player3Index].Height), Color.White);
+                    spriteBatch.Draw(character[player3Index], new Rectangle(295, 425, character[player3Index].Width, character[player3Index].Height), Color.White);
                     player3For.Draw(spriteBatch);
 
                     player4Back.Draw(spriteBatch);
-                    spriteBatch.Draw(player4P[player4Index], new Rectangle(835, 425, player4P[player4Index].Width, player4P[player4Index].Height), Color.White);
+                    spriteBatch.Draw(character[player4Index], new Rectangle(725, 425, character[player4Index].Width, character[player4Index].Height), Color.White);
                     player4For.Draw(spriteBatch);
 
                     buttonCharakterBack.Draw(spriteBatch);
@@ -652,19 +613,8 @@ namespace WindowsGame1
 
                     item.draw(view, projection);
 
-                    //spriteBatch.Begin();
-                    spriteBatch.DrawString(font, "Sphere0 " + player1.sphere[0].getCenterPos().ToString(), new Vector2(100, 100), Color.White);
-                    spriteBatch.DrawString(font, "Sphere1 " + player1.sphere[1].getCenterPos().ToString(), new Vector2(100, 150), Color.White);
-                    spriteBatch.DrawString(font, "Sphere2 " + player1.sphere[2].getCenterPos().ToString(), new Vector2(100, 200), Color.White);
-                    spriteBatch.DrawString(font, "Sphere3 " + player1.sphere[3].getCenterPos().ToString(), new Vector2(100, 250), Color.White);
-                    spriteBatch.DrawString(font, "radius0 " + MathHelper.ToDegrees((float)(player1.sphere[0].getAngleToModel())).ToString(), new Vector2(100, 300), Color.White);
-                    spriteBatch.DrawString(font, "radius1 " + MathHelper.ToDegrees((float)(player1.sphere[1].getAngleToModel())).ToString(), new Vector2(100, 350), Color.White);
-                    spriteBatch.DrawString(font, "radius2 " + MathHelper.ToDegrees((float)(player1.sphere[2].getAngleToModel())).ToString(), new Vector2(100, 400), Color.White);
-                    spriteBatch.DrawString(font, "radius3 " + MathHelper.ToDegrees((float)(player1.sphere[3].getAngleToModel())).ToString(), new Vector2(100, 450), Color.White);
-                    spriteBatch.DrawString(font, "count" +  count.ToString(), new Vector2(100, 500), Color.White);
-                    //spriteBatch.End();
-
-                    
+                    //spriteBatch.DrawString(font, "Sphere0 " + player1.sphere[0].getCenterPos().ToString(), new Vector2(100, 100), Color.White);
+                    //spriteBatch.DrawString(font, "Sphere1 " + player1.sphere[1].getCenterPos().ToString(), new Vector2(100, 150), Color.White);                  
 
                     base.Draw(gameTime);
                 break;
@@ -689,6 +639,7 @@ namespace WindowsGame1
 
             }
             spriteBatch.End();
+
             //http://xboxforums.create.msdn.com/forums/t/1796.aspx :
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
