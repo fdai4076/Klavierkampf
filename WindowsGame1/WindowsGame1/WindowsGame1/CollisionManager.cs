@@ -45,7 +45,7 @@ namespace WindowsGame1
                             {
                                 if (playerSpheres[x].getSphere().Intersects(enemySpheres[y].getSphere()))
                                 {
-                                    collisions[playerSpheres[x].getDirectionIndex()].Add(new Collision(players[i].getCurrentSpeed(), players[i].rotationy, players[i].power, players[i].getMass(), players[i].getDirectionId()));
+                                    collisions[playerSpheres[x].getDirectionIndex()].Add(new Collision(players[i].getCurrentSpeed(), players[i].getRotationY(), players[i].getPower(), players[i].getMass(), players[i].getDirectionId()));
                                     alreadyCollideWithEnemy.Add(players[i].getPlayerIndex());
                                 }
                             }
@@ -56,12 +56,14 @@ namespace WindowsGame1
             return collisions;
         }
 
-        public void setPlayers(Player[] playerarray)
+        public void setPlayers(List<Player>playerlist)
         {
-            for (int i = 0; i < playerarray.Length; i++)
+            players.Clear();
+            for (int i = 0; i < playerlist.Count; i++)
             {
-                this.players.Add(playerarray[i]);
+                players.Add(playerlist[i]);
             }
+   
         }
 
         private void clearCollisions()
@@ -138,10 +140,10 @@ namespace WindowsGame1
                         {
                             if ((spheres[x].getSphere().Intersects(enemySpheres[y].getSphere())) && spheres[x].getDirectionIndex() == 0)
                             {
-                                if (players[i].getMass() > player.power)
+                                if (players[i].getMass() > player.getPower())
                                     return false;
 
-                                if ((players[i].getDirectionId() == enemySpheres[y].getDirectionIndex()) && players[i].power == player.power && players[i].getMass() == player.getMass())
+                                if ((players[i].getDirectionId() == enemySpheres[y].getDirectionIndex()) && players[i].getPower() == player.getPower() && players[i].getMass() == player.getMass())
                                     return false;
                             }
                         }
@@ -165,10 +167,10 @@ namespace WindowsGame1
                         {
                             if ((spheres[x].getSphere().Intersects(enemySpheres[y].getSphere())) && spheres[x].getDirectionIndex() == 2)
                             {
-                                if (players[i].getMass() > player.power)
+                                if (players[i].getMass() > player.getPower())
                                     return false;
 
-                                if ((players[i].getDirectionId() == enemySpheres[y].getDirectionIndex()) && players[i].power == player.power && players[i].getMass() == player.getMass())
+                                if ((players[i].getDirectionId() == enemySpheres[y].getDirectionIndex()) && players[i].getPower() == player.getPower() && players[i].getMass() == player.getMass())
                                     return false;
                             }
                         }
@@ -219,7 +221,7 @@ namespace WindowsGame1
 
         public int winner()
         {
-            return players[0].modelId;
+            return players[0].getModelId();
         }
 
 

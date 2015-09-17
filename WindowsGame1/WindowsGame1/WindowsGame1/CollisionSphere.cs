@@ -17,7 +17,7 @@ namespace WindowsGame1
         public CollisionSphere (Vector3 pos, int directionIndex)
         {
             
-            posToModel = pos;
+            this.posToModel = pos;
             sphere.Radius = 0.2f;
             this.directionIndex = directionIndex;
             

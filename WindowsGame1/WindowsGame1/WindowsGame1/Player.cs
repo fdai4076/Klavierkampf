@@ -8,57 +8,69 @@ namespace WindowsGame1
 {
     public class Player
     {
-        public float allEnemyMass;
-        public Model model;
+        private float allEnemyMass;
+        private Model model;
         private Model sphereModel;
-        public Vector3 position;
-        public Vector3 changePosition;
+        private Vector3 position;
+        private Vector3 changePosition;
         private float[] cornerAngles;
         private bool[] itemActive;
         private bool isAlive;
-        public int directionId;
+        private int directionId;
         private int playerindex;
         public float rotationy;
-        public float speed;
+        private float speed;
         private float currentSpeed;
-        public float power;
-        public float mass;
-        public CollisionSphere[] sphere;
-        public List<float> enemyPowers = new List<float>();
+        private float power;
+        private float mass;
+        private CollisionSphere[] sphere;
+        private List<float> enemyPowers = new List<float>();
         private bool dashing;
-        public CollisionManager collisionManager;
-        private CharacterManager characterManager;
-        public int modelId;
+        private CollisionManager collisionManager;
+        private int modelId;
+        private float rotationSpeed;
+        private float dashPower;
+        private float dashCountdown;
 
 
-        public Player(Vector3 spawn, float spawnrotation, int playerindex, int modelId, Model boundingSphere, CollisionManager collisionManager, CharacterManager characterManager)
+        public Player(Vector3 spawn, float spawnrotation, int playerindex, CollisionManager collisionManager, CharacterManager.Moebel data,Model sphereModel)
         {
-            this.characterManager = characterManager;
             this.position = spawn;
-            this.playerindex = playerindex;
-            this.model = characterManager.getStruct(playerindex).model;
-            this.sphereModel = boundingSphere;
-            this.sphere = characterManager.getStruct(playerindex).spheres;
-            this.cornerAngles = characterManager.getStruct(playerindex).angle;
+            position.Y= data.yPosition;
             this.rotationy = spawnrotation;
+            this.playerindex = playerindex;
             this.collisionManager = collisionManager;
-            this.modelId = modelId;
 
+            this.model = data.model;
+            this.modelId = data.modelId;
+            sphere = new CollisionSphere[data.spheres.Length];
+            for (int i = 0; i < data.spheres.Length; i++)
+            {
+                this.sphere[i] = data.spheres[i];
+            }
+
+            this.speed = data.speed;
+            this.rotationSpeed = data.rotationSpeed;
+            this.dashPower = data.dashpower;
+            this.dashCountdown = data.dashCountdown;
+            this.power = data.power;
+            this.mass = data.mass;  
+            this.cornerAngles = data.angle;
+            this.sphereModel = sphereModel;
+            
             for (int i = 0; i < this.sphere.Length; i++)
             {
-                this.sphere[i].setCenterPos(new Vector3(spawn.X + this.sphere[i].getPosToModel().X, 1.2f, spawn.Z + this.sphere[i].getPosToModel().Z));
+                this.sphere[i].setCenterPos(new Vector3(position.X + this.sphere[i].getPosToModel().X, 1.2f, position.Z + this.sphere[i].getPosToModel().Z));
                 this.sphere[i].setAngleToModel(getAngle2Dim(this.sphere[i].getCenterPos(), this.position));
                 this.sphere[i].setRadius(Math.Sqrt(Math.Pow(position.X - sphere[i].getCenterPos().X, 2) + Math.Pow(position.Z - sphere[i].getCenterPos().Z, 2)));
                 double radius = sphere[i].getRadius();
-                sphere[i].setCenterPos(new Vector3(
+                this.sphere[i].setCenterPos(new Vector3(
                                (float)(position.X + (Math.Cos(sphere[i].getAngleToModel() + rotationy) * radius)),
                                sphere[i].getCenterPos().Y,
                                (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
             }
-            speed = 0.1f;
-            mass = 0.5f;
+            
             dashing = false;
-            power = 1f;
             directionId = 4;
             isAlive = true;
             changePosition = new Vector3(0, 0, 0);
@@ -92,8 +104,8 @@ namespace WindowsGame1
                     basic.View = view;
                     basic.Projection = projection;
                     basic.EnableDefaultLighting();
-                    basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-                    basic.Alpha = 0.5f;
+                    //basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                    //basic.Alpha = 0.5f;
                 }
                 mesh.Draw();
             }
@@ -498,6 +510,33 @@ namespace WindowsGame1
         {
             return dashing;
         }
+
+        public float getPower()
+        {
+            return power;
+        }
+
+        public int getModelId()
+        {
+            return modelId;
+        }
+
+        public float getRotationY()
+        {
+            return rotationy;
+        }
+
+        public Vector3 getSpawn()
+        {
+            return position;
+        }
+
+        public float getyPosition()
+        {
+            return position.Y;
+        }
+
+        
 
     }
 }
