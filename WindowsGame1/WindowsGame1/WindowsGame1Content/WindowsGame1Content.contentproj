@@ -42,34 +42,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Grundklotz.fbx">
-      <Name>Grundklotz</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="arena.fbx">
       <Name>arena</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
-    <Compile Include="klavier.fbx">
+    <Compile Include="Moebel\klavier.fbx">
       <Name>klavier</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
-    <Compile Include="kleiderschrank.fbx">
+    <Compile Include="Moebel\kleiderschrank.fbx">
       <Name>kleiderschrank</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
-    <Compile Include="sofa.fbx">
+    <Compile Include="Moebel\sofa.fbx">
       <Name>sofa</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
-    <Compile Include="stuhl.fbx">
+    <Compile Include="Moebel\stuhl.fbx">
       <Name>stuhl</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
@@ -83,33 +76,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="sphere_01.fbx">
-      <Name>sphere_01</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-    <Compile Include="sphere_02.fbx">
-      <Name>sphere_02</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-    <Compile Include="sphere_03.fbx">
-      <Name>sphere_03</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-    <Compile Include="sphere_04.fbx">
-      <Name>sphere_04</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-    <Compile Include="sphere_05.fbx">
-      <Name>sphere_05</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="ultimateSphere.fbx">
       <Name>ultimateSphere</Name>
       <Importer>FbxImporter</Importer>
@@ -117,14 +83,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="kuehlschrank.fbx">
+    <Compile Include="Moebel\kuehlschrank.fbx">
       <Name>kuehlschrank</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="kuehlschrankTexture.png">
+    <Compile Include="Moebel\kuehlschrankTexture.png">
       <Name>kuehlschrankTexture</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -138,83 +104,83 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="klavierTextur.png">
+    <Compile Include="Moebel\klavierTextur.png">
       <Name>klavierTextur</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="kleiderschrankTextur.png">
+    <Compile Include="Moebel\kleiderschrankTextur.png">
       <Name>kleiderschrankTextur</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="kuehlschrankTextur.png">
+    <Compile Include="Moebel\kuehlschrankTextur.png">
       <Name>kuehlschrankTextur</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="sofaTextur.png">
+    <Compile Include="Moebel\sofaTextur.png">
       <Name>sofaTextur</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="stuhlTextur.png">
+    <Compile Include="Moebel\stuhlTextur.png">
       <Name>stuhlTextur</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="langsamerTextur.png">
+    <Compile Include="Items\langsamerTextur.png">
       <Name>langsamerTextur</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="itemLangsamer.fbx">
+    <Compile Include="Items\itemLangsamer.fbx">
       <Name>itemLangsamer</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="powerTextur.png">
+    <Compile Include="Items\powerTextur.png">
       <Name>powerTextur</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="schnellerTextur.png">
+    <Compile Include="Items\schnellerTextur.png">
       <Name>schnellerTextur</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="umkehrenTextur.png">
+    <Compile Include="Items\umkehrenTextur.png">
       <Name>umkehrenTextur</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="itemPower.fbx">
+    <Compile Include="Items\itemPower.fbx">
       <Name>itemPower</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
-    <Compile Include="itemSchneller.fbx">
+    <Compile Include="Items\itemSchneller.fbx">
       <Name>itemSchneller</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
-    <Compile Include="itemUmkehren.fbx">
+    <Compile Include="Items\itemUmkehren.fbx">
       <Name>itemUmkehren</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
@@ -488,6 +454,18 @@
       <Name>player1</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Menu\Howtoplay\Screen1.png">
+      <Name>Screen1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Menu\Howtoplay\Screen4.png">
+      <Name>Screen4</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

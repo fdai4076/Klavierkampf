@@ -16,65 +16,57 @@ namespace WindowsGame1
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        Model klavier;
-        Model kleiderschrank;
-        Model stuhl;
-        Model sofa;
-        Model kuehlschrank;
-        Model arena;
-        Model ultimatesphere;
-        Matrix view, projection;
-        Item item;
-        Model[] identifier;
-        List<Player> playerList;
-        Vector3[] spawnPoints;
-        float [] spawnRotation;
-        CharacterManager characterManager;
-        
-        SpriteFont font;
-        int count;
-        bool down;
-        bool showError;
-        int i;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private Model klavier,kleiderschrank,stuhl,sofa,kuehlschrank,arena,ultimatesphere;
+        private Matrix view, projection;
+        private Item item;
+        private Model[] identifier;
+        private List<Player> playerList;
+        private Vector3[] spawnPoints;
+        private float[] spawnRotation;
+        private CharacterManager characterManager;
 
+        private SpriteFont font;
+        private int count;
+        private bool down;
+        private bool showError;
+   
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
-        public CollisionManager collisionManager;
-        
+        private CollisionManager collisionManager;
 
-        enum GameState { logo, splashMenu, character, howtoplay, ingame, pause, result };
+
+        private enum GameState { logo, splashMenu, character, howtoplay, ingame, pause, result };
         private GameState gamestate;
 
-        int buttonMiddle;
-        Button buttonPauseReturn, buttonPauseMainmenu;
-        Button buttonSplahscreenStart, buttonSplashscreenHowtoplay, buttonSplashscreenExit;
-        Button buttonCharakterBack, buttonCharakterFor;
-        Button player1Back, player1For, player2Back, player2For, player3Back, player3For, player4Back, player4For;
-        Button howtoplayBack, howtoplayFor;
-        Button optionMute;
-        Button buttonResultNewGame, buttonResultMainMenu; 
+        private Button buttonPauseReturn, buttonPauseMainmenu;
+        private Button buttonSplahscreenStart, buttonSplashscreenHowtoplay, buttonSplashscreenExit;
+        private Button buttonCharakterBack, buttonCharakterFor;
+        private Button player1Back, player1For, player2Back, player2For, player3Back, player3For, player4Back, player4For;
+        private Button howtoplayBack, howtoplayFor;
+        private Button optionMute;
+        private Button buttonResultNewGame, buttonResultMainMenu;
 
-        Texture2D buttonBackground, buttonBackgroundPause;
-        Texture2D pause;
-        Texture2D splashscreen;
-        Texture2D [] howtoplayscreen = new Texture2D[4];
-        Texture2D logoPicture;
-        Texture2D charakterwahl;
+        private Texture2D buttonBackground, buttonBackgroundPause;
+        private Texture2D pause;
+        private Texture2D splashscreen;
+        private Texture2D[] howtoplayscreen = new Texture2D[5];
+        private Texture2D logoPicture;
+        private Texture2D charakterwahl;
 
-        Texture2D[] character = new Texture2D[5];
+        private Texture2D[] character = new Texture2D[5];
 
-        Texture2D [] results = new Texture2D[4];
+        private Texture2D[] results = new Texture2D[4];
 
-        int resultIndex;
-        int player1Index, player2Index, player3Index, player4Index;
-        int howtoplayIndex;
-        Color logoAnimation;
-        Color resultAnimation;
-        bool logoStatus;
+        private int resultIndex;
+        private int player1Index, player2Index, player3Index, player4Index;
+        private int howtoplayIndex;
+        private Color logoAnimation;
+        private Color resultAnimation;
+        private bool logoStatus;
 
-        int screenWidth = 1280, screenHeight = 720;
+        private int screenWidth = 1280, screenHeight = 720;
 
         public Game1()
         {
@@ -101,7 +93,7 @@ namespace WindowsGame1
             base.Initialize();
 
             spawnPoints = new Vector3[]{new Vector3(0,0,-4),new Vector3(0,0,4),new Vector3(4,0,0),new Vector3(-4,0,0)};
-            spawnRotation = new float[]{MathHelper.ToRadians(180f),0,MathHelper.ToRadians(90f),MathHelper.ToRadians(-90f)};
+            spawnRotation = new float[] { MathHelper.ToRadians(180f), 0, MathHelper.ToRadians(90f), MathHelper.ToRadians(-90f) };
             
             gamestate = GameState.splashMenu;
             playerList = new List<Player>();
@@ -109,19 +101,18 @@ namespace WindowsGame1
             logoAnimation = new Color(255, 255, 255, 255);
 
             howtoplayIndex = 0;
-            buttonMiddle = 565;
-            buttonPauseReturn.setPosition(new Vector2(buttonMiddle, 300));
-            buttonPauseMainmenu.setPosition(new Vector2(buttonMiddle, 390));
-            buttonSplahscreenStart.setPosition(new Vector2(buttonMiddle, 290));
-            buttonSplashscreenHowtoplay.setPosition(new Vector2(buttonMiddle, 380));
-            buttonSplashscreenExit.setPosition(new Vector2(buttonMiddle, 470));
+            buttonPauseReturn.setPosition(new Vector2(555, 300));
+            buttonPauseMainmenu.setPosition(new Vector2(555, 390));
+            buttonSplahscreenStart.setPosition(new Vector2(565, 290));
+            buttonSplashscreenHowtoplay.setPosition(new Vector2(565, 380));
+            buttonSplashscreenExit.setPosition(new Vector2(565, 470));
             howtoplayBack.setPosition(new Vector2(30, 640));
             howtoplayFor.setPosition(new Vector2(1100, 640));
             buttonCharakterBack.setPosition(new Vector2(30, 640));
             buttonCharakterFor.setPosition(new Vector2(1100, 640));
 
-            buttonResultNewGame.setPosition(new Vector2(1020, 440));
-            buttonResultMainMenu.setPosition(new Vector2(1020, 530));
+            buttonResultNewGame.setPosition(new Vector2(1020, 510));
+            buttonResultMainMenu.setPosition(new Vector2(1020, 600));
 
             player1Back.setPosition(new Vector2(230, 260));
             player1For.setPosition(new Vector2(545, 260));
@@ -162,13 +153,13 @@ namespace WindowsGame1
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("SpriteFont1");
-            klavier = Content.Load<Model>("klavier");
-            kleiderschrank = Content.Load<Model>("kleiderschrank");
-            sofa = Content.Load<Model>("sofa");
-            kuehlschrank = Content.Load<Model>("kuehlschrank");
-            stuhl = Content.Load<Model>("stuhl");
+            klavier = Content.Load<Model>("Moebel/klavier");
+            kleiderschrank = Content.Load<Model>("Moebel/kleiderschrank");
+            sofa = Content.Load<Model>("Moebel/sofa");
+            kuehlschrank = Content.Load<Model>("Moebel/kuehlschrank");
+            stuhl = Content.Load<Model>("Moebel/stuhl");
             arena = Content.Load<Model>("arena");
-            item = new Item(Content.Load<Model>("itemLangsamer"), new Vector3(0, 3, 0));
+            item = new Item(Content.Load<Model>("Items/itemLangsamer"), new Vector3(0, 3, 0));
             ultimatesphere = Content.Load<Model>("ultimateSphere");
             identifier = new Model[] { Content.Load<Model>("player1"), Content.Load<Model>("player1"), Content.Load<Model>("player1"), Content.Load<Model>("player1") };
            
@@ -187,9 +178,11 @@ namespace WindowsGame1
             character[4] = Content.Load<Texture2D>("Menu/Charakterwahl/Char0");
 
             howtoplayscreen[0] = Content.Load<Texture2D>("Menu/Howtoplay/Screen0");
-            howtoplayscreen[1] = Content.Load<Texture2D>("Menu/Howtoplay/Screen3");
+            howtoplayscreen[1] = Content.Load<Texture2D>("Menu/Howtoplay/Screen1");
             howtoplayscreen[2] = Content.Load<Texture2D>("Menu/Howtoplay/Screen2");
             howtoplayscreen[3] = Content.Load<Texture2D>("Menu/Howtoplay/Screen3");
+            howtoplayscreen[4] = Content.Load<Texture2D>("Menu/Howtoplay/Screen4");
+
             pause = Content.Load<Texture2D>("Menu/Pause/Pause");
 
             buttonPauseReturn = new Button(Content.Load<Texture2D>("Menu/Pause/ButtonReturn"), Content.Load<Texture2D>("Menu/Pause/ButtonReturn2"), graphics.GraphicsDevice);
@@ -495,7 +488,7 @@ namespace WindowsGame1
 
                     if (howtoplayFor.isClicked == true && !down)
                     {
-                        if (howtoplayIndex == 3)
+                        if (howtoplayIndex == 4)
                         {
                             gamestate = GameState.splashMenu;
                             howtoplayIndex = 0;
@@ -669,7 +662,7 @@ namespace WindowsGame1
                     }
                     for (int i = 0; i < playerList.Count; i++)
                     {
-                        Matrix world2 = Matrix.Identity * Matrix.CreateTranslation(new Vector3(playerList[i].getSpawn().X, playerList[i].getyPosition()+2, playerList[i].getSpawn().Z));
+                        Matrix world2 = Matrix.Identity * Matrix.CreateTranslation(new Vector3(playerList[i].getSpawn().X, playerList[i].getIdentifierPos(), playerList[i].getSpawn().Z));
                         foreach (ModelMesh mesh in identifier[playerList[i].getPlayerIndex()].Meshes)
                         {
                             foreach (BasicEffect basic in mesh.Effects)
@@ -692,8 +685,8 @@ namespace WindowsGame1
                     item.draw(view, projection);
 
 
-                    spriteBatch.DrawString(font, "Sphere1 " + playerList[0].rotationy.ToString(), new Vector2(100, 100), Color.Black);
-                    spriteBatch.DrawString(font, "Sphere2 " + playerList[1].rotationy.ToString(), new Vector2(100, 150), Color.Black);                  
+                    //spriteBatch.DrawString(font, "Sphere1 " + playerList[0].rotationy.ToString(), new Vector2(100, 100), Color.Black);
+                    //spriteBatch.DrawString(font, "Sphere2 " + playerList[1].rotationy.ToString(), new Vector2(100, 150), Color.Black);                  
 
                     base.Draw(gameTime);
                 break;

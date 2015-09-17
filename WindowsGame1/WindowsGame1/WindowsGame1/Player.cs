@@ -18,7 +18,7 @@ namespace WindowsGame1
         private bool isAlive;
         private int directionId;
         private int playerindex;
-        public float rotationy;
+        private float rotationy;
         private float speed;
         private float currentSpeed;
         private float power;
@@ -31,6 +31,7 @@ namespace WindowsGame1
         private float rotationSpeed;
         private float dashPower;
         private float dashCountdown;
+        private float identifierPos;
 
 
         public Player(Vector3 spawn, float spawnrotation, int playerindex, CollisionManager collisionManager, CharacterManager.Moebel data,Model sphereModel)
@@ -56,6 +57,7 @@ namespace WindowsGame1
             this.power = data.power;
             this.mass = data.mass;  
             this.cornerAngles = data.angle;
+            this.identifierPos = data.identifierPos;
             this.sphereModel = sphereModel;
             
             for (int i = 0; i < this.sphere.Length; i++)
@@ -104,8 +106,8 @@ namespace WindowsGame1
                     basic.View = view;
                     basic.Projection = projection;
                     basic.EnableDefaultLighting();
-                    //basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-                    //basic.Alpha = 0.5f;
+                   // basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                   // basic.Alpha = 0.5f;
                 }
                 mesh.Draw();
             }
@@ -531,12 +533,9 @@ namespace WindowsGame1
             return position;
         }
 
-        public float getyPosition()
+        public float getIdentifierPos()
         {
-            return position.Y;
+            return identifierPos;
         }
-
-        
-
     }
 }

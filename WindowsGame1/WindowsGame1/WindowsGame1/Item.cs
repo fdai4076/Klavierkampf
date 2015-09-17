@@ -8,18 +8,18 @@ using Microsoft.Xna.Framework;
 namespace WindowsGame1
 {
 
-    class Item
+    public class Item
     {
-        Model itemModel;
-        Vector3 position;
+        private Model itemModel;
+        private Vector3 position;
 
-        float rotationy;
-        
-        enum ItemState {schnell, langsam, umkehren, power}
+        private float rotationy;
+
+        private enum ItemState { schnell, langsam, umkehren, power}
         private ItemState itemstate;
 
-        public Item(Model ueModel, Vector3 uePosition){
-
+        public Item(Model ueModel, Vector3 uePosition)
+        {
             itemModel = ueModel;
             position = uePosition;
             //itemstate = ueItemState;
@@ -34,7 +34,6 @@ namespace WindowsGame1
 
         public void draw(Matrix view, Matrix projection)
         {
-
             Matrix world = Matrix.Identity * Matrix.CreateRotationY(rotationy) * Matrix.CreateTranslation(position);
 
             foreach (ModelMesh mesh in itemModel.Meshes)
@@ -48,13 +47,6 @@ namespace WindowsGame1
                 }
                 mesh.Draw();
             }
-
         }
-
-
-
-
-    }
-
-        
+    }       
 }

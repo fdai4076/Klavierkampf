@@ -8,11 +8,11 @@ namespace WindowsGame1
 {
     public class Collision
     {
-        float enemyRotation;
-        float enemypower;
-        float enemyMass;
-        int enemyDirectionId;
-        float enemySpeed;
+        private float enemyRotation;
+        private float enemypower;
+        private float enemyMass;
+        private int enemyDirectionId;
+        private float enemySpeed;
 
 
         public Collision(float enemySpeed, float enemyRotation, float enemypower, float enemyMass, int enemyDirectionId)

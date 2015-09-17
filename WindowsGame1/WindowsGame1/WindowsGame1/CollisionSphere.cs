@@ -7,12 +7,12 @@ namespace WindowsGame1
 {
     public class CollisionSphere
     {
-        BoundingSphere sphere;
-        int id;
-        Vector3 posToModel;
-        double angleToModel;
-        double radius;
-        int directionIndex;
+        private BoundingSphere sphere;
+        private int id;
+        private Vector3 posToModel;
+        private double angleToModel;
+        private double radius;
+        private int directionIndex;
 
         public CollisionSphere (Vector3 pos, int directionIndex)
         {

@@ -8,15 +8,15 @@ using Microsoft.Xna.Framework.Input;
 
 namespace WindowsGame1
 {
-    class Button
+    public class Button
     {
-        Texture2D texture;
-        Texture2D texture2;
-        Texture2D finalTexture;
-        Vector2 position;
-        Rectangle rectangle;
+        private Texture2D texture;
+        private Texture2D texture2;
+        private Texture2D finalTexture;
+        private Vector2 position;
+        private Rectangle rectangle;
 
-        public Vector2 size;
+        private Vector2 size;
 
         public Button(Texture2D newTexture, Texture2D newTexture2, GraphicsDevice graphics)
         {
