@@ -685,8 +685,8 @@ namespace WindowsGame1
                     item.draw(view, projection);
 
 
-                    //spriteBatch.DrawString(font, "Sphere1 " + playerList[0].rotationy.ToString(), new Vector2(100, 100), Color.Black);
-                    //spriteBatch.DrawString(font, "Sphere2 " + playerList[1].rotationy.ToString(), new Vector2(100, 150), Color.Black);                  
+                    spriteBatch.DrawString(font, "Sphere1 " + playerList[0].getCollisionSpheres()[0].getPosToModel().ToString(), new Vector2(100, 100), Color.Black);
+                    spriteBatch.DrawString(font, "Sphere2 " + playerList[0].test.ToString(), new Vector2(100, 150), Color.Black);                  
 
                     base.Draw(gameTime);
                 break;

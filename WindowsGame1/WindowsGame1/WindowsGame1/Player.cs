@@ -32,6 +32,7 @@ namespace WindowsGame1
         private float dashPower;
         private float dashCountdown;
         private float identifierPos;
+        public int test;
 
 
         public Player(Vector3 spawn, float spawnrotation, int playerindex, CollisionManager collisionManager, CharacterManager.Moebel data,Model sphereModel)
@@ -45,10 +46,13 @@ namespace WindowsGame1
             this.model = data.model;
             this.modelId = data.modelId;
             sphere = new CollisionSphere[data.spheres.Length];
+            test = data.spheres.Length;
             for (int i = 0; i < data.spheres.Length; i++)
             {
-                this.sphere[i] = data.spheres[i];
+                sphere[i] = new CollisionSphere(data.spheres[i].getPosToModel(), data.spheres[i].getId());
             }
+
+            
 
             this.speed = data.speed;
             this.rotationSpeed = data.rotationSpeed;
@@ -106,8 +110,8 @@ namespace WindowsGame1
                     basic.View = view;
                     basic.Projection = projection;
                     basic.EnableDefaultLighting();
-                   // basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-                   // basic.Alpha = 0.5f;
+                   basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                   basic.Alpha = 0.5f;
                 }
                 mesh.Draw();
             }
