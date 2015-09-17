@@ -11,14 +11,19 @@ namespace WindowsGame1
         float enemyRotation;
         float enemypower;
         float enemyMass;
-        int enemyPlayerId;
+        int enemyDirectionId;
+        float enemySpeed;
 
-        public Collision(float enemyRotation, float enemypower, float enemyMass, int enemyPlayerId)
+
+        public Collision(float enemySpeed, float enemyRotation, float enemypower, float enemyMass, int enemyDirectionId)
         {
 
             this.enemyRotation = enemyRotation;
             this.enemypower = enemypower;
-            this.enemyPlayerId = enemyPlayerId;
+            this.enemyMass = enemyMass;
+            this.enemyDirectionId = enemyDirectionId;
+            this.enemySpeed = enemySpeed;
+
         }
 
 
@@ -27,15 +32,11 @@ namespace WindowsGame1
             return enemypower;
         }
 
-        public float getEnemyDirection()
+        public int getEnemyDirection()
         {
-            return enemyRotation;
+            return enemyDirectionId;
         }
 
-        public int getEnemyPlayerId()
-        {
-            return enemyPlayerId;
-        }
 
         public float getEnemyMass()
         {
@@ -46,5 +47,11 @@ namespace WindowsGame1
         {
             return enemyRotation;
         }
+
+        public float getEnemySpeed()
+        {
+            return enemySpeed;
+        }
     }
+
 }

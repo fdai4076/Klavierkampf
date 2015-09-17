@@ -72,6 +72,8 @@ Content\Menu\Result\result2.xnb
 Content\Menu\Result\result3.xnb
 Content\Menu\Result\ButtonMainmenu.xnb
 Content\Menu\Result\ButtonMainmenu2.xnb
+Content\Menu\Result\ButtonResultRetry.xnb
+Content\Menu\Result\ButtonResultRetry2.xnb
 Content\arenaTextur_0.xnb
 Content\klavierTextur_0.xnb
 Content\kleiderschrankTextur_0.xnb
@@ -82,5 +84,3 @@ Content\langsamerTextur_0.xnb
 Content\powerTextur_0.xnb
 Content\schnellerTextur_0.xnb
 Content\umkehrenTextur_0.xnb
-Content\Menu\Result\ButtonResultRetry.xnb
-Content\Menu\Result\ButtonResultRetry2.xnb

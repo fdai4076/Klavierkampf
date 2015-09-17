@@ -13,6 +13,7 @@ namespace WindowsGame1
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
         private List<Collision>[] collisions = new List<Collision>[4];
+        private List<int> alreadyCollideWithEnemy = new List<int>();
 
         public CollisionManager(BoundingBox arenaBounding, BoundingBox groundBounding)
         {
@@ -30,45 +31,23 @@ namespace WindowsGame1
         {
             clearCollisions();
             CollisionSphere[] playerSpheres = player.getCollisionSpheres();
+            alreadyCollideWithEnemy.Clear();
             for (int i = 0; i < players.Count; i++)
             {
-                if (!(players[i].getPlayerIndex() == player.getPlayerIndex()))
+                if (player.getPlayerIndex() != players[i].getPlayerIndex())
                 {
                     CollisionSphere[] enemySpheres = players[i].getCollisionSpheres();
-
                     for (int x = 0; x < playerSpheres.Length; x++)
                     {
                         for (int y = 0; y < enemySpheres.Length; y++)
                         {
-                            if (playerSpheres[x].getSphere().Intersects(enemySpheres[y].getSphere()))
+                            if (!(alreadyCollideWithEnemy.Contains(players[i].getPlayerIndex())))
                             {
-                                float enemyPower = 0;
-                                if (players[i].getDirectionId() == 2 || players[i].getDirectionId() == 0)
+                                if (playerSpheres[x].getSphere().Intersects(enemySpheres[y].getSphere()))
                                 {
-                                    if (players[i].isDashing())
-                                    {
-
-                                        if (players[i].getCurrentSpeed() > 0)
-                                        {
-                                            enemyPower = players[i].power - player.getMass();
-                                        }
-                                        else
-                                        {
-                                            enemyPower = (players[i].power - player.getMass()) * (-1);
-                                        }
-
-                                    }
-                                    else
-                                    {
-                                        if (players[i].power > player.getMass())
-                                            enemyPower = players[i].getCurrentSpeed();
-                                    }
+                                    collisions[playerSpheres[x].getDirectionIndex()].Add(new Collision(players[i].getCurrentSpeed(), players[i].rotationy, players[i].power, players[i].getMass(), players[i].getDirectionId()));
+                                    alreadyCollideWithEnemy.Add(players[i].getPlayerIndex());
                                 }
-
-
-
-
-                                collisions[playerSpheres[x].getDirectionIndex()].Add(new Collision(players[i].rotationy, enemyPower, players[i].getMass(), players[i].getPlayerIndex()));
                             }
                         }
                     }
@@ -159,7 +138,11 @@ namespace WindowsGame1
                         {
                             if ((spheres[x].getSphere().Intersects(enemySpheres[y].getSphere())) && spheres[x].getDirectionIndex() == 0)
                             {
-                                return false;
+                                if (players[i].getMass() > player.power)
+                                    return false;
+
+                                if ((players[i].getDirectionId() == enemySpheres[y].getDirectionIndex()) && players[i].power == player.power && players[i].getMass() == player.getMass())
+                                    return false;
                             }
                         }
                     }
@@ -182,7 +165,11 @@ namespace WindowsGame1
                         {
                             if ((spheres[x].getSphere().Intersects(enemySpheres[y].getSphere())) && spheres[x].getDirectionIndex() == 2)
                             {
-                                return false;
+                                if (players[i].getMass() > player.power)
+                                    return false;
+
+                                if ((players[i].getDirectionId() == enemySpheres[y].getDirectionIndex()) && players[i].power == player.power && players[i].getMass() == player.getMass())
+                                    return false;
                             }
                         }
                     }
@@ -234,5 +221,17 @@ namespace WindowsGame1
         {
             return players[0].modelId;
         }
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

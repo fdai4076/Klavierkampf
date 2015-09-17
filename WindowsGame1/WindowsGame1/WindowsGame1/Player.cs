@@ -8,18 +8,17 @@ namespace WindowsGame1
 {
     public class Player
     {
+        public float allEnemyMass;
         public Model model;
-        public int modelId;
         private Model sphereModel;
         public Vector3 position;
+        public Vector3 changePosition;
         private float[] cornerAngles;
         private bool[] itemActive;
         private bool isAlive;
-        private int directionId;
+        public int directionId;
         private int playerindex;
         public float rotationy;
-        public double faktorz;
-        public double faktory;
         public float speed;
         private float currentSpeed;
         public float power;
@@ -29,19 +28,21 @@ namespace WindowsGame1
         private bool dashing;
         public CollisionManager collisionManager;
         private CharacterManager characterManager;
+        public int modelId;
+
 
         public Player(Vector3 spawn, float spawnrotation, int playerindex, int modelId, Model boundingSphere, CollisionManager collisionManager, CharacterManager characterManager)
         {
             this.characterManager = characterManager;
             this.position = spawn;
             this.playerindex = playerindex;
-            this.modelId = modelId;
             this.model = characterManager.getStruct(playerindex).model;
             this.sphereModel = boundingSphere;
             this.sphere = characterManager.getStruct(playerindex).spheres;
             this.cornerAngles = characterManager.getStruct(playerindex).angle;
             this.rotationy = spawnrotation;
             this.collisionManager = collisionManager;
+            this.modelId = modelId;
 
             for (int i = 0; i < this.sphere.Length; i++)
             {
@@ -60,6 +61,7 @@ namespace WindowsGame1
             power = 1f;
             directionId = 4;
             isAlive = true;
+            changePosition = new Vector3(0, 0, 0);
         }
 
         public void Draw(Matrix view, Matrix projection)
@@ -103,7 +105,8 @@ namespace WindowsGame1
             {
 
                 directionId = 4;
-                currentSpeed = 0f;
+                currentSpeed = 0;
+
 
                 if (!collisionManager.canFall(this))
                 {
@@ -146,12 +149,15 @@ namespace WindowsGame1
                         directionId = 0;
                         if (collisionManager.canWalkForward(this))
                         {
+
                             currentSpeed -= speed;
-                            if ((Keyboard.GetState().IsKeyDown(Keys.Tab) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
+                            if ((Keyboard.GetState().IsKeyDown(Keys.Space) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
+
                             }
                         }
+
 
                     }
 
@@ -159,16 +165,15 @@ namespace WindowsGame1
                     {
                         directionId = 2;
                         if (collisionManager.canWalkBackward(this))
-                        {
                             currentSpeed += speed;
-                        }
                     }
+
 
                 }
 
                 if (playerindex == 1)
                 {
-                    if (Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.Two).DPad.Left == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.Left))
                     {
                         directionId = 3;
                         if (collisionManager.checkCanRotateLeft(this, position))
@@ -178,7 +183,7 @@ namespace WindowsGame1
 
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.Two).DPad.Right == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.Right))
                     {
                         directionId = 1;
 
@@ -191,33 +196,36 @@ namespace WindowsGame1
 
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.Two).DPad.Up == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.Up))
                     {
                         directionId = 0;
                         if (collisionManager.canWalkForward(this))
                         {
+
                             currentSpeed -= speed;
-                            if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.Two).Buttons.A == ButtonState.Pressed && !dashing))
+                            if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
                             }
-
                         }
+
+
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.Two).DPad.Down == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.Down))
                     {
                         directionId = 2;
                         if (collisionManager.canWalkBackward(this))
                         {
                             currentSpeed += speed;
                         }
+
                     }
                 }
 
                 if (playerindex == 2)
                 {
-                    if (Keyboard.GetState().IsKeyDown(Keys.J) || GamePad.GetState(PlayerIndex.Three).DPad.Left == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.J))
                     {
                         directionId = 3;
                         if (collisionManager.checkCanRotateLeft(this, position))
@@ -227,7 +235,7 @@ namespace WindowsGame1
 
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.L) || GamePad.GetState(PlayerIndex.Three).DPad.Right == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.L))
                     {
                         directionId = 1;
                         rotationy -= 0.01f;
@@ -238,35 +246,39 @@ namespace WindowsGame1
                         }
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.I) || GamePad.GetState(PlayerIndex.Three).DPad.Up == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.I))
                     {
                         directionId = 0;
                         if (collisionManager.canWalkForward(this))
                         {
+
                             currentSpeed -= speed;
-                            if ((Keyboard.GetState().IsKeyDown(Keys.Space) && !dashing) || (GamePad.GetState(PlayerIndex.Three).Buttons.A == ButtonState.Pressed && !dashing))
+                            if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
                             }
-
                         }
+
+
 
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.K) || GamePad.GetState(PlayerIndex.Three).DPad.Down == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.K))
                     {
                         directionId = 2;
                         if (collisionManager.canWalkBackward(this))
                         {
+
                             currentSpeed += speed;
                         }
+
 
                     }
                 }
 
                 if (playerindex == 3)
                 {
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad4) || GamePad.GetState(PlayerIndex.Four).DPad.Left == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad4))
                     {
                         directionId = 3;
                         if (collisionManager.checkCanRotateLeft(this, position))
@@ -276,7 +288,7 @@ namespace WindowsGame1
 
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad6) || GamePad.GetState(PlayerIndex.Four).DPad.Right == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad6))
                     {
                         directionId = 1;
                         if (collisionManager.checkCanRotateRight(this, position))
@@ -288,86 +300,105 @@ namespace WindowsGame1
 
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad8) || GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad8))
                     {
                         directionId = 0;
                         if (collisionManager.canWalkForward(this))
                         {
+
                             currentSpeed -= speed;
-                            if ((Keyboard.GetState().IsKeyDown(Keys.NumPad0) && !dashing) || (GamePad.GetState(PlayerIndex.Four).Buttons.A == ButtonState.Pressed && !dashing))
+                            if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
                             }
-
                         }
+
+
 
 
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad5) || GamePad.GetState(PlayerIndex.Four).DPad.Down == ButtonState.Pressed)
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad5))
                     {
                         directionId = 2;
                         if (collisionManager.canWalkBackward(this))
                         {
+
                             currentSpeed += speed;
                         }
+
 
                     }
                 }
                 calculateCollisions();
+                movePlayer();
             }
         }
 
         public void calculateCollisions()
         {
-            List<int> collisionsWithPlayer = new List<int>();
+            allEnemyMass = 0;
             List<Collision>[] collisions = collisionManager.checkCollision(this);
-            /*    if (directionId == 0 || directionId == 2)
-                {
-                    foreach (Collision currentCollision in collisions[directionId])
-                    {
-                        if (!(collisionsWithPlayer.Contains(currentCollision.getEnemyPlayerId())))
-                        {
-                            float changeSpeed = power - currentCollision.getEnemyMass();
-                            if (changeSpeed > 0)
-                            {
-                                if (directionId == 0)
-                                {
-                                    currentSpeed += changeSpeed;
-                                }
-                                else
-                                {
-                                    currentSpeed -= changeSpeed;
-                                }
-
-                            }
-                        }
-                    }
-                } */
-
-            movePlayer();
-            collisionsWithPlayer.Clear();
-
             for (int i = 0; i < collisions.Length; i++)
             {
                 foreach (Collision currentCollision in collisions[i])
                 {
-                    if (!(collisionsWithPlayer.Contains(currentCollision.getEnemyPlayerId())))
-                    {
-                        collisionsWithPlayer.Add(currentCollision.getEnemyPlayerId());
-                        float enemyPower = currentCollision.getEnemyPower();
-                        if (enemyPower > 0)
-                        {
-                            enemyPowers.Add(currentCollision.getEnemyPower());
-                        }
 
+                    if (directionId == i)
+                    {
+                        allEnemyMass += currentCollision.getEnemyMass();
+                    }
+                    if (currentCollision.getEnemyDirection() != directionId)
+                    {
+                        if (currentCollision.getEnemyPower() > mass)
                         {
-                            movePlayer(enemyPower, currentCollision.getEnemyRotation());
+                            changePosition.X += (float)(currentCollision.getEnemySpeed() *
+                                ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
+                                Math.Sin(currentCollision.getEnemyRotation()));
+
+                            changePosition.Z += (float)(currentCollision.getEnemySpeed() *
+                              ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
+                              Math.Cos(currentCollision.getEnemyRotation()));
+
+
+
+                        }
+                    }
+                    else
+                    {
+                        if (currentCollision.getEnemyDirection() != 4 && currentCollision.getEnemySpeed() > currentSpeed)
+                        {
+                            changePosition.X += (float)((currentCollision.getEnemySpeed() - currentSpeed) *
+                                ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
+                                Math.Sin(currentCollision.getEnemyRotation()));
+
+                            changePosition.Z += (float)((currentCollision.getEnemySpeed() - currentSpeed) *
+                                ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
+                                Math.Cos(currentCollision.getEnemyRotation()));
                         }
                     }
                 }
             }
+
+            if (power > allEnemyMass)
+            {
+                changePosition.X += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Sin(rotationy));
+                changePosition.Z += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Cos(rotationy));
+            }
+
+
+
+
+
+
+
+
+
+
+
         }
+
+
 
 
 
@@ -405,15 +436,15 @@ namespace WindowsGame1
 
         private void movePlayer()
         {
-            position.Z += (float)(currentSpeed * Math.Cos(rotationy));
-            position.X += (float)(currentSpeed * Math.Sin(rotationy));
+            position.Z += changePosition.Z;
+            position.X += changePosition.X;
             for (int i = 0; i < sphere.Length; i++)
             {
 
                 sphere[i].setCenterPos(new Vector3(
-                (float)(sphere[i].getCenterPos().X + currentSpeed * Math.Sin(rotationy)),
+                (float)(sphere[i].getCenterPos().X + changePosition.X),
                 sphere[i].getCenterPos().Y,
-                (float)(sphere[i].getCenterPos().Z + currentSpeed * Math.Cos(rotationy))));
+                (float)(sphere[i].getCenterPos().Z + changePosition.Z)));
             }
             for (int i = 0; i < sphere.Length; i++)
             {
@@ -423,6 +454,8 @@ namespace WindowsGame1
                     sphere[i].getCenterPos().Y,
                     (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
             }
+
+            changePosition = new Vector3(0, 0, 0);
 
 
 
@@ -465,9 +498,6 @@ namespace WindowsGame1
         {
             return dashing;
         }
-
-
-
 
     }
 }
