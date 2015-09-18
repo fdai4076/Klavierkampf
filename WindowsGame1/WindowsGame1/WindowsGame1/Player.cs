@@ -31,7 +31,6 @@ namespace WindowsGame1
         private float rotationSpeed;
         private float dashPower;
         private float dashCountdown;
-        private float identifierPos;
         public int test;
 
 
@@ -52,8 +51,6 @@ namespace WindowsGame1
                 sphere[i] = new CollisionSphere(data.spheres[i].getPosToModel(), data.spheres[i].getId());
             }
 
-            
-
             this.speed = data.speed;
             this.rotationSpeed = data.rotationSpeed;
             this.dashPower = data.dashpower;
@@ -61,7 +58,6 @@ namespace WindowsGame1
             this.power = data.power;
             this.mass = data.mass;  
             this.cornerAngles = data.angle;
-            this.identifierPos = data.identifierPos;
             this.sphereModel = sphereModel;
             
             for (int i = 0; i < this.sphere.Length; i++)
@@ -110,8 +106,8 @@ namespace WindowsGame1
                     basic.View = view;
                     basic.Projection = projection;
                     basic.EnableDefaultLighting();
-                   basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-                   basic.Alpha = 0.5f;
+                    basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                    basic.Alpha = 0.5f;
                 }
                 mesh.Draw();
             }
@@ -121,14 +117,11 @@ namespace WindowsGame1
         {
             if (isAlive)
             {
-
                 directionId = 4;
                 currentSpeed = 0;
 
-
                 if (!collisionManager.canFall(this))
                 {
-
                     position.Y -= 0.1f;
                     for (int i = 0; i < sphere.Length; i++)
                     {
@@ -175,8 +168,6 @@ namespace WindowsGame1
 
                             }
                         }
-
-
                     }
 
                     if (Keyboard.GetState().IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
@@ -185,52 +176,44 @@ namespace WindowsGame1
                         if (collisionManager.canWalkBackward(this))
                             currentSpeed += speed;
                     }
-
-
                 }
 
                 if (playerindex == 1)
                 {
-                    if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                    if (Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.Two).DPad.Left == ButtonState.Pressed)
                     {
                         directionId = 3;
                         if (collisionManager.checkCanRotateLeft(this, position))
                         {
                             rotationy += 0.01f;
                         }
-
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                    if (Keyboard.GetState().IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.Two).DPad.Right == ButtonState.Pressed)
                     {
                         directionId = 1;
 
                         if (collisionManager.checkCanRotateRight(this, position))
                         {
                             rotationy -= 0.01f;
-
                         }
-
-
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                    if (Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.Two).DPad.Up == ButtonState.Pressed)
                     {
                         directionId = 0;
                         if (collisionManager.canWalkForward(this))
                         {
 
                             currentSpeed -= speed;
-                            if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
+                            if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.Two).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
                             }
                         }
-
-
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                    if (Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.Two).DPad.Down == ButtonState.Pressed)
                     {
                         directionId = 2;
                         if (collisionManager.canWalkBackward(this))
@@ -243,17 +226,16 @@ namespace WindowsGame1
 
                 if (playerindex == 2)
                 {
-                    if (Keyboard.GetState().IsKeyDown(Keys.J))
+                    if (Keyboard.GetState().IsKeyDown(Keys.J) || GamePad.GetState(PlayerIndex.Three).DPad.Left == ButtonState.Pressed)
                     {
                         directionId = 3;
                         if (collisionManager.checkCanRotateLeft(this, position))
                         {
                             rotationy += 0.01f;
                         }
-
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.L))
+                    if (Keyboard.GetState().IsKeyDown(Keys.L) || GamePad.GetState(PlayerIndex.Three).DPad.Right == ButtonState.Pressed)
                     {
                         directionId = 1;
                         rotationy -= 0.01f;
@@ -264,24 +246,21 @@ namespace WindowsGame1
                         }
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.I))
+                    if (Keyboard.GetState().IsKeyDown(Keys.I) || GamePad.GetState(PlayerIndex.Three).DPad.Up == ButtonState.Pressed)
                     {
                         directionId = 0;
                         if (collisionManager.canWalkForward(this))
                         {
 
                             currentSpeed -= speed;
-                            if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
+                            if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.Three).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
                             }
                         }
-
-
-
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.K))
+                    if (Keyboard.GetState().IsKeyDown(Keys.K) || GamePad.GetState(PlayerIndex.Three).DPad.Down == ButtonState.Pressed)
                     {
                         directionId = 2;
                         if (collisionManager.canWalkBackward(this))
@@ -289,14 +268,12 @@ namespace WindowsGame1
 
                             currentSpeed += speed;
                         }
-
-
                     }
                 }
 
                 if (playerindex == 3)
                 {
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad4))
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad4) || GamePad.GetState(PlayerIndex.Four).DPad.Left == ButtonState.Pressed)
                     {
                         directionId = 3;
                         if (collisionManager.checkCanRotateLeft(this, position))
@@ -306,37 +283,30 @@ namespace WindowsGame1
 
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad6))
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad6) || GamePad.GetState(PlayerIndex.Four).DPad.Right == ButtonState.Pressed)
                     {
                         directionId = 1;
                         if (collisionManager.checkCanRotateRight(this, position))
                         {
                             rotationy -= 0.01f;
                         }
-
-
-
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad8))
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad8) || GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Pressed)
                     {
                         directionId = 0;
                         if (collisionManager.canWalkForward(this))
                         {
 
                             currentSpeed -= speed;
-                            if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
+                            if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.Four).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
                             }
                         }
-
-
-
-
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad5))
+                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad5) || GamePad.GetState(PlayerIndex.Four).DPad.Down == ButtonState.Pressed)
                     {
                         directionId = 2;
                         if (collisionManager.canWalkBackward(this))
@@ -377,9 +347,6 @@ namespace WindowsGame1
                             changePosition.Z += (float)(currentCollision.getEnemySpeed() *
                               ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
                               Math.Cos(currentCollision.getEnemyRotation()));
-
-
-
                         }
                     }
                     else
@@ -403,28 +370,7 @@ namespace WindowsGame1
                 changePosition.X += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Sin(rotationy));
                 changePosition.Z += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Cos(rotationy));
             }
-
-
-
-
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
-
-
-
 
         public double getAngle2Dim(Vector3 spherePos, Vector3 modelPos)
         {
@@ -532,14 +478,10 @@ namespace WindowsGame1
             return rotationy;
         }
 
-        public Vector3 getSpawn()
+        public Vector3 getPosition()
         {
             return position;
         }
 
-        public float getIdentifierPos()
-        {
-            return identifierPos;
-        }
     }
 }

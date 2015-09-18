@@ -18,7 +18,7 @@ namespace WindowsGame1
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private Model klavier,kleiderschrank,stuhl,sofa,kuehlschrank,arena,ultimatesphere;
+        private Model klavier,kleiderschrank,stuhl,sofa,kuehlschrank,arena,ultimatesphere,ground;
         private Matrix view, projection;
         private Item item;
         private Model[] identifier;
@@ -31,6 +31,8 @@ namespace WindowsGame1
         private int count;
         private bool down;
         private bool showError;
+        private bool sound;
+        private bool mute;
    
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
@@ -50,9 +52,9 @@ namespace WindowsGame1
 
         private Texture2D buttonBackground, buttonBackgroundPause;
         private Texture2D pause;
-        private Texture2D splashscreen;
+        private Texture2D splashscreen, lautsprecherX;
         private Texture2D[] howtoplayscreen = new Texture2D[5];
-        private Texture2D logoPicture;
+        private Texture2D logoPicture,logoklein;
         private Texture2D charakterwahl;
 
         private Texture2D[] character = new Texture2D[5];
@@ -67,6 +69,11 @@ namespace WindowsGame1
         private bool logoStatus;
 
         private int screenWidth = 1280, screenHeight = 720;
+
+        private SoundEffect soundEffect;
+        private SoundEffectInstance soundEffectInstance;
+
+
 
         public Game1()
         {
@@ -85,7 +92,6 @@ namespace WindowsGame1
         /// </summary>
         protected override void Initialize()
         {
-            
 
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1280f / 720f, 0.1f, 1000f);
             view = Matrix.CreateLookAt(new Vector3(3, 25,25), Vector3.Zero, Vector3.Up);
@@ -95,7 +101,7 @@ namespace WindowsGame1
             spawnPoints = new Vector3[]{new Vector3(0,0,-4),new Vector3(0,0,4),new Vector3(4,0,0),new Vector3(-4,0,0)};
             spawnRotation = new float[] { MathHelper.ToRadians(180f), 0, MathHelper.ToRadians(90f), MathHelper.ToRadians(-90f) };
             
-            gamestate = GameState.splashMenu;
+            gamestate = GameState.logo;
             playerList = new List<Player>();
 
             logoAnimation = new Color(255, 255, 255, 255);
@@ -106,6 +112,8 @@ namespace WindowsGame1
             buttonSplahscreenStart.setPosition(new Vector2(565, 290));
             buttonSplashscreenHowtoplay.setPosition(new Vector2(565, 380));
             buttonSplashscreenExit.setPosition(new Vector2(565, 470));
+            optionMute.setPosition(new Vector2(565, 555));
+         
             howtoplayBack.setPosition(new Vector2(30, 640));
             howtoplayFor.setPosition(new Vector2(1100, 640));
             buttonCharakterBack.setPosition(new Vector2(30, 640));
@@ -140,6 +148,9 @@ namespace WindowsGame1
             collisionManager = new CollisionManager(arenaBounding, groundBounding);
 
             showError = false;
+            sound = true;
+            mute = true;
+            soundEffectInstance = soundEffect.CreateInstance();
             
         }
 
@@ -161,14 +172,17 @@ namespace WindowsGame1
             arena = Content.Load<Model>("arena");
             item = new Item(Content.Load<Model>("Items/itemLangsamer"), new Vector3(0, 3, 0));
             ultimatesphere = Content.Load<Model>("ultimateSphere");
-            identifier = new Model[] { Content.Load<Model>("player1"), Content.Load<Model>("player1"), Content.Load<Model>("player1"), Content.Load<Model>("player1") };
-           
+            identifier = new Model[] { Content.Load<Model>("player1"), Content.Load<Model>("player2"), Content.Load<Model>("player3"), Content.Load<Model>("player4") };
+            ground = Content.Load<Model>("grasBoden");
             // TODO: use this.Content to load your game content here
 
             logoPicture = Content.Load<Texture2D>("Menu/Logo/LogoScreen");
             splashscreen = Content.Load<Texture2D>("Menu/splashMenu/SplashMenu");
+            logoklein = Content.Load<Texture2D>("Menu/splashMenu/logo");
             buttonBackground = Content.Load<Texture2D>("Menu/splashMenu/ButtonBackground2");
             buttonBackgroundPause = Content.Load<Texture2D>("Menu/Pause/ButtonBackgroundPause");
+            optionMute = new Button(Content.Load<Texture2D>("Menu/splashMenu/Lautsprecher"), Content.Load<Texture2D>("Menu/splashMenu/Lautsprecher2"), graphics.GraphicsDevice);
+            lautsprecherX = Content.Load<Texture2D>("Menu/splashMenu/lautsprecherX");
             charakterwahl = Content.Load<Texture2D>("Menu/Charakterwahl/Charakterwahl");
 
             character[0] = Content.Load<Texture2D>("Menu/Charakterwahl/Char1");
@@ -211,6 +225,8 @@ namespace WindowsGame1
             results[1] = Content.Load<Texture2D>("Menu/Result/result1");
             results[2] = Content.Load<Texture2D>("Menu/Result/result2");
             results[3] = Content.Load<Texture2D>("Menu/Result/result3");
+
+            soundEffect = Content.Load<SoundEffect>("Rocket");
         }
 
         /// <summary>
@@ -229,6 +245,11 @@ namespace WindowsGame1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (sound)
+            {
+                soundEffectInstance.Play();
+                sound = false;
+            }
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 down = true;
             if (Mouse.GetState().LeftButton == ButtonState.Released)
@@ -294,7 +315,23 @@ namespace WindowsGame1
                         this.Exit();
                     }
                     buttonSplashscreenExit.Update(mouse);
-                    
+
+                    if (optionMute.isClicked == true && !down)
+                    {
+                        if (mute)
+                        {
+                            soundEffectInstance.Stop();
+                        }
+                        else
+                        {
+                            soundEffectInstance.Play();
+                        }
+                                    
+                        optionMute.isClicked = false;
+                        mute = !mute;
+             
+                    }
+                    optionMute.Update(mouse);
                     break;
 
                 case GameState.character:
@@ -603,9 +640,18 @@ namespace WindowsGame1
                    
                     spriteBatch.Draw(splashscreen, new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
                     spriteBatch.Draw(buttonBackground, new Rectangle (490,150,buttonBackground.Width,buttonBackground.Height),Color.White);
+                    spriteBatch.Draw(logoklein, new Rectangle(590, 180, logoklein.Width, logoklein.Height), Color.White);
                     buttonSplahscreenStart.Draw(spriteBatch);
                     buttonSplashscreenHowtoplay.Draw(spriteBatch);
                     buttonSplashscreenExit.Draw(spriteBatch);
+                    optionMute.Draw(spriteBatch);
+                    if (!mute)
+                    {
+                        spriteBatch.Draw(lautsprecherX, new Rectangle(565, 555, lautsprecherX.Width, lautsprecherX.Height), Color.White);
+
+                    }
+                  
+                    
 
                     break;
 
@@ -662,7 +708,7 @@ namespace WindowsGame1
                     }
                     for (int i = 0; i < playerList.Count; i++)
                     {
-                        Matrix world2 = Matrix.Identity * Matrix.CreateTranslation(new Vector3(playerList[i].getSpawn().X, playerList[i].getIdentifierPos(), playerList[i].getSpawn().Z));
+                        Matrix world2 = Matrix.Identity * Matrix.CreateTranslation(new Vector3(playerList[i].getPosition().X-0.6f, playerList[i].getPosition().Y+2, playerList[i].getPosition().Z));
                         foreach (ModelMesh mesh in identifier[playerList[i].getPlayerIndex()].Meshes)
                         {
                             foreach (BasicEffect basic in mesh.Effects)
@@ -675,6 +721,18 @@ namespace WindowsGame1
                             mesh.Draw();
                         }
                     }
+                    Matrix world3 = Matrix.Identity*Matrix.CreateTranslation(new Vector3(-5,-1,0));
+                    foreach (ModelMesh mesh in ground.Meshes)
+                    {
+                        foreach (BasicEffect basic in mesh.Effects)
+                        {
+                            basic.World = world3;
+                            basic.View = view;
+                            basic.Projection = projection;
+                            basic.EnableDefaultLighting();
+                        }
+                        mesh.Draw();
+                    }
 
                     for (int i = 0; i < playerList.Count; i++)
                     {
@@ -685,8 +743,8 @@ namespace WindowsGame1
                     item.draw(view, projection);
 
 
-                    spriteBatch.DrawString(font, "Sphere1 " + playerList[0].getCollisionSpheres()[0].getPosToModel().ToString(), new Vector2(100, 100), Color.Black);
-                    spriteBatch.DrawString(font, "Sphere2 " + playerList[0].test.ToString(), new Vector2(100, 150), Color.Black);                  
+                    //spriteBatch.DrawString(font, "Sphere1 " + playerList[0].getCollisionSpheres()[0].getPosToModel().ToString(), new Vector2(100, 100), Color.Black);
+                    //spriteBatch.DrawString(font, "Sphere2 " + playerList[0].test.ToString(), new Vector2(100, 150), Color.Black);                  
 
                     base.Draw(gameTime);
                 break;

@@ -35,7 +35,6 @@ namespace WindowsGame1
             public float mass;
             public float yPosition;
             public float[] angle;
-            public float identifierPos;
 
         };
 
@@ -145,7 +144,6 @@ namespace WindowsGame1
             klavier.mass = 0.05f;
             klavier.yPosition = 2.2f;
             klavier.angle = new float[] { 164.0546f, 15.9454f, 195.9454f, 344.0546f };
-            klavier.identifierPos = 3.2f;
 
             kleiderschrank.model = modelle[1];
             kleiderschrank.modelId = 1;
@@ -158,7 +156,6 @@ namespace WindowsGame1
             kleiderschrank.mass = 0.05f;
             kleiderschrank.yPosition = 2.8625f;
             kleiderschrank.angle = new float[] { 158.1986f, 21.8014f, 201.8014f, 338.1986f };
-            kleiderschrank.identifierPos = 4.725f;
 
             sofa.model = modelle[2];
             sofa.modelId = 2;
@@ -171,7 +168,6 @@ namespace WindowsGame1
             sofa.mass = 0.05f;
             sofa.yPosition = 1.7425f;
             sofa.angle = new float[] { 160.0169f, 19.9831f, 199.9831f, 340.0169f };
-            sofa.identifierPos = 2.485f;
 
             kuehlschrank.model = modelle[3];
             kuehlschrank.modelId = 3;
@@ -184,7 +180,6 @@ namespace WindowsGame1
             kuehlschrank.mass = 0.05f;
             kuehlschrank.yPosition = 2.403f;
             kuehlschrank.angle = new float[] { 135f, 45f, 225f, 315f };
-            kuehlschrank.identifierPos = 3.806f;
 
         }
 
