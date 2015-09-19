@@ -12,7 +12,7 @@ namespace WindowsGame1
         private Model model;
         private Model sphereModel;
         private Vector3 position;
-        private Vector3 changePosition;
+        
         private float[] cornerAngles;
         private bool[] itemActive;
         private bool isAlive;
@@ -24,14 +24,13 @@ namespace WindowsGame1
         private float power;
         private float mass;
         private CollisionSphere[] sphere;
-        private List<float> enemyPowers = new List<float>();
         private bool dashing;
         private CollisionManager collisionManager;
         private int modelId;
         private float rotationSpeed;
         private float dashPower;
-        private float dashCountdown;
-        public int test;
+        private double dashCountdown;
+        private TimeSpan dashTime;
 
 
         public Player(Vector3 spawn, float spawnrotation, int playerindex, CollisionManager collisionManager, CharacterManager.Moebel data,Model sphereModel)
@@ -45,10 +44,11 @@ namespace WindowsGame1
             this.model = data.model;
             this.modelId = data.modelId;
             sphere = new CollisionSphere[data.spheres.Length];
-            test = data.spheres.Length;
+            
+            
             for (int i = 0; i < data.spheres.Length; i++)
             {
-                sphere[i] = new CollisionSphere(data.spheres[i].getPosToModel(), data.spheres[i].getId());
+                sphere[i] = new CollisionSphere(data.spheres[i].getPosToModel(), data.spheres[i].getDirectionIndex());
             }
 
             this.speed = data.speed;
@@ -75,7 +75,10 @@ namespace WindowsGame1
             dashing = false;
             directionId = 4;
             isAlive = true;
-            changePosition = new Vector3(0, 0, 0);
+            dashTime = new TimeSpan();
+            
+            
+            
         }
 
         public void Draw(Matrix view, Matrix projection)
@@ -113,7 +116,7 @@ namespace WindowsGame1
             }
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             if (isAlive)
             {
@@ -165,6 +168,9 @@ namespace WindowsGame1
                             if ((Keyboard.GetState().IsKeyDown(Keys.Space) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
+                                power += dashPower;
+                                dashing = false;
+                                dashTime = gameTime.TotalGameTime;
 
                             }
                         }
@@ -174,7 +180,9 @@ namespace WindowsGame1
                     {
                         directionId = 2;
                         if (collisionManager.canWalkBackward(this))
+                        {
                             currentSpeed += speed;
+                        }
                     }
                 }
 
@@ -209,6 +217,9 @@ namespace WindowsGame1
                             if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.Two).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
+                                power += dashPower;
+                                dashing = false;
+                                dashTime = gameTime.TotalGameTime;
                             }
                         }
                     }
@@ -256,6 +267,9 @@ namespace WindowsGame1
                             if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.Three).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
+                                power += dashPower;
+                                dashing = false;
+                                dashTime = gameTime.TotalGameTime;
                             }
                         }
                     }
@@ -267,6 +281,7 @@ namespace WindowsGame1
                         {
 
                             currentSpeed += speed;
+                            
                         }
                     }
                 }
@@ -302,6 +317,9 @@ namespace WindowsGame1
                             if ((Keyboard.GetState().IsKeyDown(Keys.Subtract) && !dashing) || (GamePad.GetState(PlayerIndex.Four).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
+                                power += dashPower;
+                                dashing = false;
+                                dashTime = gameTime.TotalGameTime;
                             }
                         }
                     }
@@ -318,12 +336,13 @@ namespace WindowsGame1
 
                     }
                 }
-                calculateCollisions();
+                
                 movePlayer();
+                checkCanDash(gameTime);
             }
         }
 
-        public void calculateCollisions()
+     /*   public void calculateCollisions()
         {
             allEnemyMass = 0;
             List<Collision>[] collisions = collisionManager.checkCollision(this);
@@ -364,14 +383,14 @@ namespace WindowsGame1
                     }
                 }
             }
-
+            
             if (power > allEnemyMass)
             {
                 changePosition.X += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Sin(rotationy));
                 changePosition.Z += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Cos(rotationy));
             }
         }
-
+        */
         public double getAngle2Dim(Vector3 spherePos, Vector3 modelPos)
         {
             Vector2 sphereVector = new Vector2(spherePos.X - modelPos.X, spherePos.Z - modelPos.Z);
@@ -400,15 +419,15 @@ namespace WindowsGame1
 
         private void movePlayer()
         {
-            position.Z += changePosition.Z;
-            position.X += changePosition.X;
+            Vector3 collisionVector = collisionManager.calculateCollisions(this);
+            position += collisionVector;
             for (int i = 0; i < sphere.Length; i++)
             {
 
                 sphere[i].setCenterPos(new Vector3(
-                (float)(sphere[i].getCenterPos().X + changePosition.X),
+                (float)(sphere[i].getCenterPos().X + collisionVector.X),
                 sphere[i].getCenterPos().Y,
-                (float)(sphere[i].getCenterPos().Z + changePosition.Z)));
+                (float)(sphere[i].getCenterPos().Z + collisionVector.Z)));
             }
             for (int i = 0; i < sphere.Length; i++)
             {
@@ -419,23 +438,23 @@ namespace WindowsGame1
                     (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
             }
 
-            changePosition = new Vector3(0, 0, 0);
-
-
-
         }
 
-        private void movePlayer(float power, float rotation)
+        public void checkCanDash(GameTime gameTime)
         {
-            position.Z += (float)(power * Math.Cos(rotation));
-            position.X += (float)(power * Math.Sin(rotation));
-            for (int i = 0; i < sphere.Length; i++)
+            if (dashTime + TimeSpan.FromMilliseconds(dashCountdown) <= gameTime.TotalGameTime)
             {
-                sphere[i].setCenterPos(new Vector3(
-                (float)(sphere[i].getCenterPos().X + power * Math.Sin(rotation)),
-                sphere[i].getCenterPos().Y,
-                (float)(sphere[i].getCenterPos().Z + power * Math.Cos(-rotation))));
+                dashing = false;
             }
+
+           
+        }
+
+
+      
+        public TimeSpan getDashTime()
+        {
+            return (dashTime + TimeSpan.FromMilliseconds(dashCountdown));
         }
 
         public float[] getCornerAngles()
@@ -453,11 +472,7 @@ namespace WindowsGame1
             return currentSpeed;
         }
 
-        public List<float> getEnemyPowerList()
-        {
-            return enemyPowers;
-        }
-
+       
         public bool isDashing()
         {
             return dashing;

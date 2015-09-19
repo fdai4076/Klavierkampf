@@ -547,7 +547,7 @@ namespace WindowsGame1
 
                     for (int i = 0; i < playerList.Count; i++)
                     {
-                        playerList[i].Update();
+                        playerList[i].Update(gameTime);
                     }
 
                     item.update();
@@ -741,10 +741,13 @@ namespace WindowsGame1
                    
 
                     item.draw(view, projection);
+                    
 
-
-                    //spriteBatch.DrawString(font, "Sphere1 " + playerList[0].getCollisionSpheres()[0].getPosToModel().ToString(), new Vector2(100, 100), Color.Black);
-                    //spriteBatch.DrawString(font, "Sphere2 " + playerList[0].test.ToString(), new Vector2(100, 150), Color.Black);                  
+                    spriteBatch.DrawString(font, "Sphere " + playerList[0].getCurrentSpeed().ToString(), new Vector2(100, 100), Color.Black);
+                    spriteBatch.DrawString(font, "P1-DID " + collisionManager.canWalkForward(playerList[0]).ToString(), new Vector2(100, 150), Color.Black);
+                    
+                    spriteBatch.DrawString(font, "P1-Time " + playerList[0].getDashTime().ToString(), new Vector2(100, 200), Color.Black);
+                    spriteBatch.DrawString(font, "P2-Speed" + playerList[1].getCurrentSpeed().ToString(), new Vector2(100, 250), Color.Black); 
 
                     base.Draw(gameTime);
                 break;

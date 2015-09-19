@@ -136,12 +136,12 @@ namespace WindowsGame1
             klavier.model = modelle[0];
             klavier.modelId = 0;
             klavier.spheres = klavierBounding;
-            klavier.speed = 0.100f;
+            klavier.speed = 0.200f;
             klavier.rotationSpeed = 0.06f;
             klavier.dashpower = 0.05f;
             klavier.dashCountdown = 7000;
             klavier.power = 0.10f;
-            klavier.mass = 0.05f;
+            klavier.mass = 0.10f;
             klavier.yPosition = 2.2f;
             klavier.angle = new float[] { 164.0546f, 15.9454f, 195.9454f, 344.0546f };
 

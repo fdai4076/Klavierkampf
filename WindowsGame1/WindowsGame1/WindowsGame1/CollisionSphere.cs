@@ -8,7 +8,6 @@ namespace WindowsGame1
     public class CollisionSphere
     {
         private BoundingSphere sphere;
-        private int id;
         private Vector3 posToModel;
         private double angleToModel;
         private double radius;
@@ -43,15 +42,9 @@ namespace WindowsGame1
             this.angleToModel = angleToModel;
         }
 
-        public int getId()
-        {
-            return id;
-        }
+       
 
-        public void setId(int id)
-        {
-            this.id = id;
-        }
+       
 
         public Vector3 getCenterPos()
         {
