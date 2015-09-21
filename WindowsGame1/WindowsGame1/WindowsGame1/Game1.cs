@@ -70,7 +70,7 @@ namespace WindowsGame1
 
         private int screenWidth = 1280, screenHeight = 720;
 
-        private SoundEffect soundEffect;
+        private Song backgroundMusic;
         private SoundEffectInstance soundEffectInstance;
 
 
@@ -92,7 +92,7 @@ namespace WindowsGame1
         /// </summary>
         protected override void Initialize()
         {
-
+          
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1280f / 720f, 0.1f, 1000f);
             view = Matrix.CreateLookAt(new Vector3(3, 25,25), Vector3.Zero, Vector3.Up);
 
@@ -140,7 +140,7 @@ namespace WindowsGame1
             player4Index = 4;
 
             arenaBounding = new BoundingBox(new Vector3(-12.5f, 1f, -12.5f), new Vector3(12.5f, 1f, 12.5f));
-            groundBounding = new BoundingBox (new Vector3(-25f, -1f, -25f), new Vector3 (25f, -1f, 25f));
+            groundBounding = new BoundingBox (new Vector3(-25f, -7f, -25f), new Vector3 (25f, -7f, 25f));
 
             Model[] modelle = new Model[] { klavier, kleiderschrank, sofa, kuehlschrank };
             characterManager = new CharacterManager(modelle);
@@ -148,9 +148,8 @@ namespace WindowsGame1
             collisionManager = new CollisionManager(arenaBounding, groundBounding);
 
             showError = false;
-            sound = true;
+            sound = false;
             mute = true;
-            soundEffectInstance = soundEffect.CreateInstance();
             
         }
 
@@ -226,7 +225,7 @@ namespace WindowsGame1
             results[2] = Content.Load<Texture2D>("Menu/Result/result2");
             results[3] = Content.Load<Texture2D>("Menu/Result/result3");
 
-            soundEffect = Content.Load<SoundEffect>("Rocket");
+            backgroundMusic = Content.Load<Song>("Rocket");
         }
 
         /// <summary>
@@ -245,11 +244,8 @@ namespace WindowsGame1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (sound)
-            {
-                soundEffectInstance.Play();
-                sound = false;
-            }
+            if (MediaPlayer.State != MediaState.Playing) MediaPlayer.Play(backgroundMusic);
+
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 down = true;
             if (Mouse.GetState().LeftButton == ButtonState.Released)
@@ -320,11 +316,11 @@ namespace WindowsGame1
                     {
                         if (mute)
                         {
-                            soundEffectInstance.Stop();
+                            MediaPlayer.Volume=0;
                         }
                         else
                         {
-                            soundEffectInstance.Play();
+                            MediaPlayer.Volume= 1;
                         }
                                     
                         optionMute.isClicked = false;

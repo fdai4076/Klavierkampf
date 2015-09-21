@@ -520,13 +520,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Rocket.wav">
-      <Name>Rocket</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Menu\SplashMenu\Lautsprecher.png">
       <Name>Lautsprecher</Name>
       <Importer>TextureImporter</Importer>
@@ -550,6 +543,13 @@
       <Name>LautsprecherX</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Rocket.mp3">
+      <Name>Rocket</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

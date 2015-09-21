@@ -262,7 +262,7 @@ namespace WindowsGame1
                                     if (enemyPower > playerMass)
                                     {
 
-                                        if (playerList[i].getDirectionId() == player.getDirectionId())
+                                        if (((playerCollisionSpheres[x].getDirectionIndex()+2)%4) == enemyCollisionSpheres[y].getDirectionIndex())
                                         {
                                             enemySpeed -= player.getCurrentSpeed();
                                         }
