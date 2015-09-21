@@ -138,7 +138,7 @@ namespace WindowsGame1
             klavier.spheres = klavierBounding;
             klavier.speed = 0.200f;
             klavier.rotationSpeed = 0.06f;
-            klavier.dashpower = 0.05f;
+            klavier.dashpower = 0.1f;
             klavier.dashCountdown = 7000;
             klavier.power = 0.10f;
             klavier.mass = 0.10f;

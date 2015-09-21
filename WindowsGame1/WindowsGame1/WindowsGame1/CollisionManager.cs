@@ -250,6 +250,7 @@ namespace WindowsGame1
                                     float enemyMass = playerList[i].getMass();
                                     float enemyRotation = playerList[i].getRotationY();
                                     float enemySpeed = playerList[i].getCurrentSpeed();
+                                    float enemyDashPower = playerList[i].getcurrentDashPower();
                                     float playerMass = player.getMass();
                                     
 
@@ -265,8 +266,8 @@ namespace WindowsGame1
                                         {
                                             enemySpeed -= player.getCurrentSpeed();
                                         }
-                                            collisionVector.X += (float)(enemySpeed * ((enemyPower - playerMass) / enemyPower) * Math.Sin(enemyRotation));
-                                            collisionVector.Z += (float)(enemySpeed * ((enemyPower - playerMass) / enemyPower) * Math.Cos(enemyRotation));
+                                            collisionVector.X += (float)(enemySpeed * ((enemyPower   - playerMass) / enemyPower)   * Math.Sin(enemyRotation));
+                                            collisionVector.Z += (float)(enemySpeed * ((enemyPower  - playerMass) / enemyPower)  * Math.Cos(enemyRotation));
                                         
                                     }
                                 }
@@ -278,11 +279,12 @@ namespace WindowsGame1
             if (player.getPower() > enemyMasses)
             {
                 float playerPower = player.getPower();
+                float playerDashPower = player.getcurrentDashPower();
                 float playerSpeed = player.getCurrentSpeed();
                 float playerRotation = player.getRotationY();
 
-                collisionVector.X += (float)(playerSpeed * ((playerPower - enemyMasses) / playerPower) * Math.Sin(playerRotation));
-                collisionVector.Z += (float)(playerSpeed * ((playerPower - enemyMasses) / playerPower) * Math.Cos(playerRotation));
+                collisionVector.X += (float)(playerSpeed * (((playerPower ) - enemyMasses) / (playerPower)) * Math.Sin(playerRotation));
+                collisionVector.Z += (float)(playerSpeed * (((playerPower ) - enemyMasses) / (playerPower)) * Math.Cos(playerRotation));
             }
             return collisionVector;
         }

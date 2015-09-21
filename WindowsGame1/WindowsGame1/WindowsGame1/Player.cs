@@ -8,7 +8,7 @@ namespace WindowsGame1
 {
     public class Player
     {
-        private float allEnemyMass;
+       
         private Model model;
         private Model sphereModel;
         private Vector3 position;
@@ -31,6 +31,8 @@ namespace WindowsGame1
         private float dashPower;
         private double dashCountdown;
         private TimeSpan dashTime;
+        public float currentDashPower;
+        
 
 
         public Player(Vector3 spawn, float spawnrotation, int playerindex, CollisionManager collisionManager, CharacterManager.Moebel data,Model sphereModel)
@@ -122,6 +124,7 @@ namespace WindowsGame1
             {
                 directionId = 4;
                 currentSpeed = 0;
+                currentDashPower = 0f;
 
                 if (!collisionManager.canFall(this))
                 {
@@ -168,8 +171,8 @@ namespace WindowsGame1
                             if ((Keyboard.GetState().IsKeyDown(Keys.Space) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
-                                power += dashPower;
-                                dashing = false;
+                                currentDashPower = dashPower;
+                                dashing = true;
                                 dashTime = gameTime.TotalGameTime;
 
                             }
@@ -454,7 +457,8 @@ namespace WindowsGame1
       
         public TimeSpan getDashTime()
         {
-            return (dashTime + TimeSpan.FromMilliseconds(dashCountdown));
+           return (dashTime + TimeSpan.FromMilliseconds(dashCountdown));
+            
         }
 
         public float[] getCornerAngles()
@@ -496,6 +500,11 @@ namespace WindowsGame1
         public Vector3 getPosition()
         {
             return position;
+        }
+
+        public float getcurrentDashPower()
+        {
+            return currentDashPower;
         }
 
     }

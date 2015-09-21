@@ -743,11 +743,11 @@ namespace WindowsGame1
                     item.draw(view, projection);
                     
 
-                    spriteBatch.DrawString(font, "Sphere " + playerList[0].getCurrentSpeed().ToString(), new Vector2(100, 100), Color.Black);
+                    spriteBatch.DrawString(font, "power " + playerList[0].getcurrentDashPower().ToString(), new Vector2(100, 100), Color.Black);
                     spriteBatch.DrawString(font, "P1-DID " + collisionManager.canWalkForward(playerList[0]).ToString(), new Vector2(100, 150), Color.Black);
                     
                     spriteBatch.DrawString(font, "P1-Time " + playerList[0].getDashTime().ToString(), new Vector2(100, 200), Color.Black);
-                    spriteBatch.DrawString(font, "P2-Speed" + playerList[1].getCurrentSpeed().ToString(), new Vector2(100, 250), Color.Black); 
+                    spriteBatch.DrawString(font, "P2-GameTime" + gameTime.TotalGameTime.ToString(), new Vector2(100, 250), Color.Black); 
 
                     base.Draw(gameTime);
                 break;
