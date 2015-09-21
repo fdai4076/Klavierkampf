@@ -30,9 +30,11 @@ namespace WindowsGame1
         private SpriteFont font;
         private int count;
         private bool down;
+        private bool down2;
         private bool showError;
         private bool sound;
         private bool mute;
+        private bool gamePadOn;
    
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
@@ -43,11 +45,10 @@ namespace WindowsGame1
         private GameState gamestate;
 
         private Button buttonPauseReturn, buttonPauseMainmenu;
-        private Button buttonSplahscreenStart, buttonSplashscreenHowtoplay, buttonSplashscreenExit;
         private Button buttonCharakterBack, buttonCharakterFor;
         private Button player1Back, player1For, player2Back, player2For, player3Back, player3For, player4Back, player4For;
         private Button howtoplayBack, howtoplayFor;
-        private Button optionMute;
+        private Button[] splashMenuButtons = new Button[4];
         private Button buttonResultNewGame, buttonResultMainMenu;
 
         private Texture2D buttonBackground, buttonBackgroundPause;
@@ -61,6 +62,7 @@ namespace WindowsGame1
 
         private Texture2D[] results = new Texture2D[4];
 
+ 	    private int splashScreenIndex;
         private int resultIndex;
         private int player1Index, player2Index, player3Index, player4Index;
         private int howtoplayIndex;
@@ -109,10 +111,11 @@ namespace WindowsGame1
             howtoplayIndex = 0;
             buttonPauseReturn.setPosition(new Vector2(555, 300));
             buttonPauseMainmenu.setPosition(new Vector2(555, 390));
-            buttonSplahscreenStart.setPosition(new Vector2(565, 290));
-            buttonSplashscreenHowtoplay.setPosition(new Vector2(565, 380));
-            buttonSplashscreenExit.setPosition(new Vector2(565, 470));
-            optionMute.setPosition(new Vector2(565, 555));
+
+            splashMenuButtons[0].setPosition(new Vector2(565, 290));
+            splashMenuButtons[1].setPosition(new Vector2(565, 380));
+            splashMenuButtons[2].setPosition(new Vector2(565, 470));
+            splashMenuButtons[3].setPosition(new Vector2(565, 555));
          
             howtoplayBack.setPosition(new Vector2(30, 640));
             howtoplayFor.setPosition(new Vector2(1100, 640));
@@ -150,6 +153,7 @@ namespace WindowsGame1
             showError = false;
             sound = false;
             mute = true;
+   	        gamePadOn = GamePad.GetState(PlayerIndex.One).IsConnected;
             
         }
 
@@ -169,7 +173,7 @@ namespace WindowsGame1
             kuehlschrank = Content.Load<Model>("Moebel/kuehlschrank");
             stuhl = Content.Load<Model>("Moebel/stuhl");
             arena = Content.Load<Model>("arena");
-            item = new Item(Content.Load<Model>("Items/itemLangsamer"), new Vector3(0, 3, 0));
+            //item = new Item(Content.Load<Model>("Items/itemLangsamer"), new Vector3(0, 3, 0));
             ultimatesphere = Content.Load<Model>("ultimateSphere");
             identifier = new Model[] { Content.Load<Model>("player1"), Content.Load<Model>("player2"), Content.Load<Model>("player3"), Content.Load<Model>("player4") };
             ground = Content.Load<Model>("grasBoden");
@@ -180,7 +184,6 @@ namespace WindowsGame1
             logoklein = Content.Load<Texture2D>("Menu/splashMenu/logo");
             buttonBackground = Content.Load<Texture2D>("Menu/splashMenu/ButtonBackground2");
             buttonBackgroundPause = Content.Load<Texture2D>("Menu/Pause/ButtonBackgroundPause");
-            optionMute = new Button(Content.Load<Texture2D>("Menu/splashMenu/Lautsprecher"), Content.Load<Texture2D>("Menu/splashMenu/Lautsprecher2"), graphics.GraphicsDevice);
             lautsprecherX = Content.Load<Texture2D>("Menu/splashMenu/lautsprecherX");
             charakterwahl = Content.Load<Texture2D>("Menu/Charakterwahl/Charakterwahl");
 
@@ -200,9 +203,10 @@ namespace WindowsGame1
 
             buttonPauseReturn = new Button(Content.Load<Texture2D>("Menu/Pause/ButtonReturn"), Content.Load<Texture2D>("Menu/Pause/ButtonReturn2"), graphics.GraphicsDevice);
             buttonPauseMainmenu = new Button(Content.Load<Texture2D>("Menu/Pause/ButtonMainmenu"), Content.Load<Texture2D>("Menu/Pause/ButtonMainmenu2"), graphics.GraphicsDevice);
-            buttonSplahscreenStart = new Button(Content.Load<Texture2D>("Menu/SplashMenu/StartButton"), Content.Load<Texture2D>("Menu/SplashMenu/StartButton2"), graphics.GraphicsDevice);
-            buttonSplashscreenHowtoplay = new Button(Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay"), Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay2"), graphics.GraphicsDevice);
-            buttonSplashscreenExit = new Button(Content.Load<Texture2D>("Menu/SplashMenu/ExitButton"), Content.Load<Texture2D>("Menu/SplashMenu/ExitButton2"), graphics.GraphicsDevice);
+            splashMenuButtons[0] = new Button(Content.Load<Texture2D>("Menu/SplashMenu/StartButton"), Content.Load<Texture2D>("Menu/SplashMenu/StartButton2"), graphics.GraphicsDevice);
+            splashMenuButtons[1] = new Button(Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay"), Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay2"), graphics.GraphicsDevice);
+            splashMenuButtons[2] = new Button(Content.Load<Texture2D>("Menu/SplashMenu/ExitButton"), Content.Load<Texture2D>("Menu/SplashMenu/ExitButton2"), graphics.GraphicsDevice);
+            splashMenuButtons[3] = new Button(Content.Load<Texture2D>("Menu/splashMenu/Lautsprecher"), Content.Load<Texture2D>("Menu/splashMenu/Lautsprecher2"), graphics.GraphicsDevice);
             howtoplayBack = new Button(Content.Load<Texture2D>("Menu/Back"), Content.Load<Texture2D>("Menu/Back2"), graphics.GraphicsDevice);
             howtoplayFor = new Button(Content.Load<Texture2D>("Menu/For"), Content.Load<Texture2D>("Menu/For2"), graphics.GraphicsDevice);
             buttonCharakterBack = new Button(Content.Load<Texture2D>("Menu/Back"), Content.Load<Texture2D>("Menu/Back2"), graphics.GraphicsDevice);
@@ -244,12 +248,67 @@ namespace WindowsGame1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+
+/*
+            GamePadState currentState = GamePad.GetState(PlayerIndex.One);
+
+            if (currentState.IsConnected && currentState.Buttons.A ==
+                ButtonState.Pressed)
+            {
+                vibrationAmount =
+                    MathHelper.Clamp(vibrationAmount + 0.03f, 0.0f, 1.0f);
+                GamePad.SetVibration(PlayerIndex.One,
+                    vibrationAmount, vibrationAmount);
+            }
+            else
+            {
+                vibrationAmount =
+                    MathHelper.Clamp(vibrationAmount - 0.05f, 0.0f, 1.0f);
+                GamePad.SetVibration(PlayerIndex.One,
+                    vibrationAmount, vibrationAmount);
+            }
+            */
+
+
             if (MediaPlayer.State != MediaState.Playing) MediaPlayer.Play(backgroundMusic);
 
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                down = true;
-            if (Mouse.GetState().LeftButton == ButtonState.Released)
-                down = false;
+
+ 	    if (gamePadOn == true)
+            {
+                if (GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
+                    down = true;
+                if (GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Released)
+                    down = false;
+
+                if (GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
+                    down2 = true;
+                if (GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Released)
+                    down2 = false;
+
+                /*
+                if (GamePad.GetState(PlayerIndex.Two).DPad.Up == ButtonState.Pressed)
+                    down = true;
+                if (GamePad.GetState(PlayerIndex.Two).DPad.Up == ButtonState.Released)
+                    down = false;
+                
+                if (GamePad.GetState(PlayerIndex.Three).DPad.Up == ButtonState.Pressed)
+                    down = true;
+                if (GamePad.GetState(PlayerIndex.Three).DPad.Up == ButtonState.Released)
+                    down = false;
+
+                if (GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Pressed)
+                    down = true;
+                if (GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Released)
+                    down = false;
+                */
+	    }
+            else
+            {
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    down = true;
+                if (Mouse.GetState().LeftButton == ButtonState.Released)
+                    down = false;
+            }
 
             base.Update(gameTime);
             
@@ -288,46 +347,85 @@ namespace WindowsGame1
 
                 case GameState.splashMenu:
                     
-                    IsMouseVisible = true;
-
-                    if (buttonSplahscreenStart.isClicked == true && !down)
+                    if (gamePadOn == true)
                     {
-                        gamestate = GameState.character;
-                        IsMouseVisible = false;
-                        buttonSplahscreenStart.isClicked = false;
-                    }
-                    buttonSplahscreenStart.Update(mouse);
+                        splashMenuButtons[splashScreenIndex].UpdatePad(1);
 
-                    if (buttonSplashscreenHowtoplay.isClicked == true && !down)
-                    {
-                        gamestate = GameState.howtoplay;
-                        IsMouseVisible = false;
-                        buttonSplashscreenHowtoplay.isClicked = false;
-                    }
-                    buttonSplashscreenHowtoplay.Update(mouse);
-
-                    if (buttonSplashscreenExit.isClicked == true && !down)
-                    {
-                        this.Exit();
-                    }
-                    buttonSplashscreenExit.Update(mouse);
-
-                    if (optionMute.isClicked == true && !down)
-                    {
-                        if (mute)
+                        if ((GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed || GamePad.GetState(PlayerIndex.Two).DPad.Up == ButtonState.Pressed || GamePad.GetState(PlayerIndex.Three).DPad.Up == ButtonState.Pressed || GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Pressed) && !down)
                         {
-                            MediaPlayer.Volume=0;
+                            if (splashScreenIndex == 0)
+                            {
+                                splashMenuButtons[splashScreenIndex].UpdatePad(0);
+                                splashScreenIndex = 3;
+                                splashMenuButtons[splashScreenIndex].UpdatePad(1);
+                            }
+                            else
+                            {
+                                splashMenuButtons[splashScreenIndex].UpdatePad(0);
+                                splashScreenIndex -= 1;
+                                splashMenuButtons[splashScreenIndex].UpdatePad(1);
+                            }
                         }
-                        else
+
+                        if ((GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed || GamePad.GetState(PlayerIndex.Two).DPad.Down == ButtonState.Pressed || GamePad.GetState(PlayerIndex.Three).DPad.Down == ButtonState.Pressed || GamePad.GetState(PlayerIndex.Four).DPad.Down == ButtonState.Pressed) && !down2)
                         {
-                            MediaPlayer.Volume= 1;
+                            if (splashScreenIndex == 3)
+                            {
+                                splashMenuButtons[splashScreenIndex].UpdatePad(0);
+                                splashScreenIndex = 0;
+                                splashMenuButtons[splashScreenIndex].UpdatePad(1);
+                            }
+                            else
+                            {
+                                splashMenuButtons[splashScreenIndex].UpdatePad(0);
+                                splashScreenIndex += 1;
+                                splashMenuButtons[splashScreenIndex].UpdatePad(1);
+                            }
                         }
-                                    
-                        optionMute.isClicked = false;
-                        mute = !mute;
-             
                     }
-                    optionMute.Update(mouse);
+                    else
+                    {
+                        IsMouseVisible = true;
+
+                        if (splashMenuButtons[0].isClicked == true && !down)
+                        {
+                            gamestate = GameState.character;
+                            IsMouseVisible = false;
+                            splashMenuButtons[0].isClicked = false;
+                        }
+                        splashMenuButtons[0].Update(mouse);
+
+                        if (splashMenuButtons[1].isClicked == true && !down)
+                        {
+                            gamestate = GameState.howtoplay;
+                            IsMouseVisible = false;
+                            splashMenuButtons[1].isClicked = false;
+                        }
+                        splashMenuButtons[1].Update(mouse);
+
+                        if (splashMenuButtons[2].isClicked == true && !down)
+                        {
+                            this.Exit();
+                        }
+                        splashMenuButtons[2].Update(mouse);
+
+                        if (splashMenuButtons[3].isClicked == true && !down)
+                        {
+                            if (mute)
+                            {
+                                soundEffectInstance.Stop();
+                            }
+                            else
+                            {
+                                soundEffectInstance.Play();
+                            }
+
+                            splashMenuButtons[3].isClicked = false;
+                            mute = !mute;
+
+                        }
+                        splashMenuButtons[3].Update(mouse);
+                    }
                     break;
 
                 case GameState.character:
@@ -637,11 +735,13 @@ namespace WindowsGame1
                     spriteBatch.Draw(splashscreen, new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
                     spriteBatch.Draw(buttonBackground, new Rectangle (490,150,buttonBackground.Width,buttonBackground.Height),Color.White);
                     spriteBatch.Draw(logoklein, new Rectangle(590, 180, logoklein.Width, logoklein.Height), Color.White);
-                    buttonSplahscreenStart.Draw(spriteBatch);
-                    buttonSplashscreenHowtoplay.Draw(spriteBatch);
-                    buttonSplashscreenExit.Draw(spriteBatch);
-                    optionMute.Draw(spriteBatch);
-                    if (!mute)
+
+                    splashMenuButtons[0].Draw(spriteBatch);
+                    splashMenuButtons[1].Draw(spriteBatch);
+                    splashMenuButtons[2].Draw(spriteBatch);
+                    splashMenuButtons[3].Draw(spriteBatch);
+                    
+		    if (!mute)
                     {
                         spriteBatch.Draw(lautsprecherX, new Rectangle(565, 555, lautsprecherX.Width, lautsprecherX.Height), Color.White);
 

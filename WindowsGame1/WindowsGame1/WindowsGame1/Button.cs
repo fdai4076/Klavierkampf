@@ -15,6 +15,8 @@ namespace WindowsGame1
         private Texture2D finalTexture;
         private Vector2 position;
         private Rectangle rectangle;
+        private int aktiv;
+        private int pressed;
 
         private Vector2 size;
 
@@ -23,12 +25,14 @@ namespace WindowsGame1
             texture = newTexture;
             texture2 = newTexture2;
             finalTexture = newTexture;
+            aktiv = pressed = 0;
 
             size = new Vector2(texture.Width, texture.Height);
         }
 
 
         public bool isClicked;
+
         public void Update(MouseState mouse)
         {
             rectangle = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
@@ -52,6 +56,28 @@ namespace WindowsGame1
 
             else if (finalTexture == texture2)
             {
+                finalTexture = texture;
+                isClicked = false;
+            }
+        }
+
+        public void UpdatePad(int aktiv)
+        {
+            this.aktiv = aktiv;
+
+            if (aktiv == 1)
+            {
+                finalTexture = texture2;
+
+                if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed)
+                {
+                    isClicked = true;
+                    aktiv = 0;
+                }
+            }
+            else
+            {
+                aktiv = 0;
                 finalTexture = texture;
                 isClicked = false;
             }

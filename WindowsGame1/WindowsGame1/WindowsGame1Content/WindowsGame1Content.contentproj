@@ -546,10 +546,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Rocket.mp3">
+    <Compile Include="Rocket.wav">
       <Name>Rocket</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
