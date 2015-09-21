@@ -283,8 +283,8 @@ namespace WindowsGame1
                 float playerSpeed = player.getCurrentSpeed();
                 float playerRotation = player.getRotationY();
 
-                collisionVector.X += (float)(playerSpeed * (((playerPower ) - enemyMasses) / (playerPower)) * Math.Sin(playerRotation));
-                collisionVector.Z += (float)(playerSpeed * (((playerPower ) - enemyMasses) / (playerPower)) * Math.Cos(playerRotation));
+                collisionVector.X += (float)(playerSpeed * ((playerPower  - enemyMasses) / playerPower) * Math.Sin(playerRotation));
+                collisionVector.Z += (float)(playerSpeed * ((playerPower - enemyMasses) / playerPower) * Math.Cos(playerRotation));
             }
             return collisionVector;
         }
