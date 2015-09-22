@@ -38,6 +38,7 @@ namespace WindowsGame1
    
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
+        private BoundingBox waterBounding;
         private CollisionManager collisionManager;
 
 
@@ -73,9 +74,7 @@ namespace WindowsGame1
         private int screenWidth = 1280, screenHeight = 720;
 
         private Song backgroundMusic;
-        private SoundEffectInstance soundEffectInstance;
-
-
+        private SoundEffect bubble;
 
         public Game1()
         {
@@ -144,6 +143,7 @@ namespace WindowsGame1
 
             arenaBounding = new BoundingBox(new Vector3(-12.5f, 1f, -12.5f), new Vector3(12.5f, 1f, 12.5f));
             groundBounding = new BoundingBox (new Vector3(-25f, -7f, -25f), new Vector3 (25f, -7f, 25f));
+            waterBounding = new BoundingBox(new Vector3(-25f, -1f, -25f), new Vector3(25f, -1f, 25f));
 
             Model[] modelle = new Model[] { klavier, kleiderschrank, sofa, kuehlschrank };
             characterManager = new CharacterManager(modelle);
@@ -176,7 +176,7 @@ namespace WindowsGame1
             //item = new Item(Content.Load<Model>("Items/itemLangsamer"), new Vector3(0, 3, 0));
             ultimatesphere = Content.Load<Model>("ultimateSphere");
             identifier = new Model[] { Content.Load<Model>("player1"), Content.Load<Model>("player2"), Content.Load<Model>("player3"), Content.Load<Model>("player4") };
-            ground = Content.Load<Model>("grasBoden");
+            ground = Content.Load<Model>("wasserBoden");
             // TODO: use this.Content to load your game content here
 
             logoPicture = Content.Load<Texture2D>("Menu/Logo/LogoScreen");
@@ -230,6 +230,7 @@ namespace WindowsGame1
             results[3] = Content.Load<Texture2D>("Menu/Result/result3");
 
             backgroundMusic = Content.Load<Song>("Rocket");
+            bubble = Content.Load<SoundEffect>("bubble");
         }
 
         /// <summary>
@@ -248,7 +249,7 @@ namespace WindowsGame1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-
+             
 /*
             GamePadState currentState = GamePad.GetState(PlayerIndex.One);
 
@@ -413,11 +414,11 @@ namespace WindowsGame1
                         {
                             if (mute)
                             {
-                                soundEffectInstance.Stop();
+                                MediaPlayer.Volume= 0;
                             }
                             else
                             {
-                                soundEffectInstance.Play();
+                                MediaPlayer.Volume = 1 ;
                             }
 
                             splashMenuButtons[3].isClicked = false;
@@ -541,7 +542,7 @@ namespace WindowsGame1
                             IsMouseVisible = false;
                             buttonCharakterFor.isClicked = false;
                             showError = false;
-
+                            count = playerList.Count;
                         }
                         else
                         {
@@ -644,13 +645,20 @@ namespace WindowsGame1
                         playerList[i].Update(gameTime);
                     }
 
-                    item.update();
-                    count = collisionManager.checkPlayerAlive();
+                    //item.update();
+                    for(int i = 0;i<playerList.Count;i++)
+                    {
+                        if (playerList[i].getCollisionSpheres()[0].getSphere().Intersects(waterBounding))
+                        {
+                            bubble.Play();
+                            count = collisionManager.checkPlayerAlive();
+                        }
+                    }
 
                     if (Keyboard.GetState().IsKeyDown(Keys.P) && !down)
                         gamestate = GameState.pause;
 
-                    if (count == 1)
+                    if (collisionManager.checkPlayerAlive() == 1)
                     {
                         gamestate = GameState.result;
                     }
@@ -836,10 +844,10 @@ namespace WindowsGame1
                     }
                    
 
-                    item.draw(view, projection);
+                    //item.draw(view, projection);
                     
 
-                    spriteBatch.DrawString(font, "P1-Vector " + collisionManager.calculateCollisions(playerList[0]).ToString(), new Vector2(100, 100), Color.Black);
+                    spriteBatch.DrawString(font, "count " + collisionManager.checkPlayerAlive().ToString(), new Vector2(100, 100), Color.Black);
                     spriteBatch.DrawString(font, "P2-Vector " + collisionManager.calculateCollisions(playerList[1]).ToString(), new Vector2(100, 150), Color.Black);
                     
                     spriteBatch.DrawString(font, "P1-Time " + playerList[0].getDashTime().ToString(), new Vector2(100, 200), Color.Black);

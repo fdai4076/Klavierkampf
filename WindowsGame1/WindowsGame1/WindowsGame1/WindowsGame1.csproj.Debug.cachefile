@@ -86,7 +86,6 @@ Content\Menu\SplashMenu\Lautsprecher.xnb
 Content\Menu\SplashMenu\Lautsprecher2.xnb
 Content\Menu\SplashMenu\logo.xnb
 Content\Menu\SplashMenu\LautsprecherX.xnb
-Content\Rocket.xnb
 Content\arenaTextur_0.xnb
 Content\Moebel\klavierTextur_0.xnb
 Content\Moebel\kleiderschrankTextur_0.xnb
@@ -100,3 +99,9 @@ Content\Items\umkehrenTextur_0.xnb
 Content\grasTextur_0.xnb
 Content\kopfsteinpflaserTextur_0.xnb
 Content\pflasterTextur_0.xnb
+Content\Rocket.xnb
+Content\bubble.xnb
+Content\wasserBoden.xnb
+Content\wasserTextur.xnb
+Content\wasserTextur_0.xnb
+Content\Rocket.wma
