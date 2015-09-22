@@ -8,11 +8,11 @@ namespace WindowsGame1
 {
     public class Player
     {
-       
+
         private Model model;
         private Model sphereModel;
         private Vector3 position;
-        
+
         private float[] cornerAngles;
         private bool[] itemActive;
         private bool isAlive;
@@ -26,28 +26,30 @@ namespace WindowsGame1
         private CollisionSphere[] sphere;
         private bool dashing;
         private CollisionManager collisionManager;
+        private ItemManager itemManager;
         private int modelId;
         private float rotationSpeed;
         private float dashPower;
         private double dashCountdown;
         private TimeSpan dashTime;
         public float currentDashPower;
-        
 
 
-        public Player(Vector3 spawn, float spawnrotation, int playerindex, CollisionManager collisionManager, CharacterManager.Moebel data,Model sphereModel)
+
+        public Player(Vector3 spawn, float spawnrotation, int playerindex, CollisionManager collisionManager, CharacterManager.Moebel data, Model sphereModel, ItemManager itemManager)
         {
             this.position = spawn;
-            position.Y= data.yPosition;
+            position.Y = data.yPosition;
             this.rotationy = spawnrotation;
             this.playerindex = playerindex;
             this.collisionManager = collisionManager;
+            this.itemManager = itemManager;
 
             this.model = data.model;
             this.modelId = data.modelId;
             sphere = new CollisionSphere[data.spheres.Length];
-            
-            
+
+
             for (int i = 0; i < data.spheres.Length; i++)
             {
                 sphere[i] = new CollisionSphere(data.spheres[i].getPosToModel(), data.spheres[i].getDirectionIndex());
@@ -58,10 +60,10 @@ namespace WindowsGame1
             this.dashPower = data.dashpower;
             this.dashCountdown = data.dashCountdown;
             this.power = data.power;
-            this.mass = data.mass;  
+            this.mass = data.mass;
             this.cornerAngles = data.angle;
             this.sphereModel = sphereModel;
-            
+
             for (int i = 0; i < this.sphere.Length; i++)
             {
                 this.sphere[i].setCenterPos(new Vector3(position.X + this.sphere[i].getPosToModel().X, 1.2f, position.Z + this.sphere[i].getPosToModel().Z));
@@ -73,33 +75,33 @@ namespace WindowsGame1
                                sphere[i].getCenterPos().Y,
                                (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
             }
-            
+
             dashing = false;
             directionId = 4;
             isAlive = true;
             dashTime = new TimeSpan();
-            
-            
-            
+
+
+
         }
 
         public void Draw(Matrix view, Matrix projection)
         {
-           /* for (int i = 0; i < sphere.Length; i++)
-            {
-                Matrix World = Matrix.Identity * Matrix.CreateTranslation(sphere[i].getCenterPos());
-                foreach (ModelMesh sphereMesh in sphereModel.Meshes)
-                {
-                    foreach (BasicEffect effect in sphereMesh.Effects)
-                    {
-                        effect.World = World;
-                        effect.View = view;
-                        effect.Projection = projection;
-                        effect.EnableDefaultLighting();
-                    }
-                    sphereMesh.Draw();
-                }
-            }*/
+            /* for (int i = 0; i < sphere.Length; i++)
+             {
+                 Matrix World = Matrix.Identity * Matrix.CreateTranslation(sphere[i].getCenterPos());
+                 foreach (ModelMesh sphereMesh in sphereModel.Meshes)
+                 {
+                     foreach (BasicEffect effect in sphereMesh.Effects)
+                     {
+                         effect.World = World;
+                         effect.View = view;
+                         effect.Projection = projection;
+                         effect.EnableDefaultLighting();
+                     }
+                     sphereMesh.Draw();
+                 }
+             }*/
 
             Matrix world = Matrix.Identity * Matrix.CreateRotationY(rotationy) * Matrix.CreateTranslation(position);
 
@@ -125,6 +127,7 @@ namespace WindowsGame1
                 directionId = 4;
                 currentSpeed = 0;
                 currentDashPower = 0f;
+                ItemManager.ItemsEffect itemEffect = itemManager.getItemEffect(playerindex);
 
                 if (!collisionManager.canFall(this))
                 {
@@ -340,61 +343,61 @@ namespace WindowsGame1
 
                     }
                 }
-                
+
                 movePlayer();
                 checkCanDash(gameTime);
             }
         }
 
-     /*   public void calculateCollisions()
-        {
-            allEnemyMass = 0;
-            List<Collision>[] collisions = collisionManager.checkCollision(this);
-            for (int i = 0; i < collisions.Length; i++)
-            {
-                foreach (Collision currentCollision in collisions[i])
-                {
+        /*   public void calculateCollisions()
+           {
+               allEnemyMass = 0;
+               List<Collision>[] collisions = collisionManager.checkCollision(this);
+               for (int i = 0; i < collisions.Length; i++)
+               {
+                   foreach (Collision currentCollision in collisions[i])
+                   {
 
-                    if (directionId == i)
-                    {
-                        allEnemyMass += currentCollision.getEnemyMass();
-                    }
-                    if (currentCollision.getEnemyDirection() != directionId)
-                    {
-                        if (currentCollision.getEnemyPower() > mass)
-                        {
-                            changePosition.X += (float)(currentCollision.getEnemySpeed() *
-                                ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
-                                Math.Sin(currentCollision.getEnemyRotation()));
+                       if (directionId == i)
+                       {
+                           allEnemyMass += currentCollision.getEnemyMass();
+                       }
+                       if (currentCollision.getEnemyDirection() != directionId)
+                       {
+                           if (currentCollision.getEnemyPower() > mass)
+                           {
+                               changePosition.X += (float)(currentCollision.getEnemySpeed() *
+                                   ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
+                                   Math.Sin(currentCollision.getEnemyRotation()));
 
-                            changePosition.Z += (float)(currentCollision.getEnemySpeed() *
-                              ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
-                              Math.Cos(currentCollision.getEnemyRotation()));
-                        }
-                    }
-                    else
-                    {
-                        if (currentCollision.getEnemyDirection() != 4 && currentCollision.getEnemySpeed() > currentSpeed)
-                        {
-                            changePosition.X += (float)((currentCollision.getEnemySpeed() - currentSpeed) *
-                                ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
-                                Math.Sin(currentCollision.getEnemyRotation()));
+                               changePosition.Z += (float)(currentCollision.getEnemySpeed() *
+                                 ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
+                                 Math.Cos(currentCollision.getEnemyRotation()));
+                           }
+                       }
+                       else
+                       {
+                           if (currentCollision.getEnemyDirection() != 4 && currentCollision.getEnemySpeed() > currentSpeed)
+                           {
+                               changePosition.X += (float)((currentCollision.getEnemySpeed() - currentSpeed) *
+                                   ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
+                                   Math.Sin(currentCollision.getEnemyRotation()));
 
-                            changePosition.Z += (float)((currentCollision.getEnemySpeed() - currentSpeed) *
-                                ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
-                                Math.Cos(currentCollision.getEnemyRotation()));
-                        }
-                    }
-                }
-            }
+                               changePosition.Z += (float)((currentCollision.getEnemySpeed() - currentSpeed) *
+                                   ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
+                                   Math.Cos(currentCollision.getEnemyRotation()));
+                           }
+                       }
+                   }
+               }
             
-            if (power > allEnemyMass)
-            {
-                changePosition.X += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Sin(rotationy));
-                changePosition.Z += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Cos(rotationy));
-            }
-        }
-        */
+               if (power > allEnemyMass)
+               {
+                   changePosition.X += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Sin(rotationy));
+                   changePosition.Z += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Cos(rotationy));
+               }
+           }
+           */
         public double getAngle2Dim(Vector3 spherePos, Vector3 modelPos)
         {
             Vector2 sphereVector = new Vector2(spherePos.X - modelPos.X, spherePos.Z - modelPos.Z);
@@ -451,15 +454,15 @@ namespace WindowsGame1
                 dashing = false;
             }
 
-           
+
         }
 
 
-      
+
         public TimeSpan getDashTime()
         {
-           return (dashTime + TimeSpan.FromMilliseconds(dashCountdown));
-            
+            return (dashTime + TimeSpan.FromMilliseconds(dashCountdown));
+
         }
 
         public float[] getCornerAngles()
@@ -477,7 +480,7 @@ namespace WindowsGame1
             return currentSpeed;
         }
 
-       
+
         public bool isDashing()
         {
             return dashing;

@@ -486,40 +486,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="grasBoden.fbx">
-      <Name>grasBoden</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-    <Compile Include="kopfsteinpflasterBoden.fbx">
-      <Name>kopfsteinpflasterBoden</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-    <Compile Include="pflaserBoden.fbx">
-      <Name>pflaserBoden</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="grasTextur.png">
-      <Name>grasTextur</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="kopfsteinpflaserTextur.png">
-      <Name>kopfsteinpflaserTextur</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="pflasterTextur.png">
-      <Name>pflasterTextur</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Menu\SplashMenu\Lautsprecher.png">
       <Name>Lautsprecher</Name>
       <Importer>TextureImporter</Importer>
@@ -560,17 +526,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="wasserBoden.fbx">
-      <Name>wasserBoden</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="wasserTextur.png">
       <Name>wasserTextur</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="wasserBoden.fbx">
+      <Name>wasserBoden</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

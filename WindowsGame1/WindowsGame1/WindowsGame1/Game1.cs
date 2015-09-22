@@ -20,7 +20,7 @@ namespace WindowsGame1
         private SpriteBatch spriteBatch;
         private Model klavier,kleiderschrank,stuhl,sofa,kuehlschrank,arena,ultimatesphere,ground;
         private Matrix view, projection;
-        private Item item;
+        private ItemManager item;
         private Model[] identifier;
         private List<Player> playerList;
         private Vector3[] spawnPoints;
@@ -31,13 +31,13 @@ namespace WindowsGame1
         private int count;
         private bool [,] buttonDown = new bool[4,5];
         private bool showError;
-        private bool sound;
         private bool mute;
         private bool gamePadOn;
         private bool [] charakterMenuPosition = new bool [4]; //true Oben, false Unten
    
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
+        private BoundingBox waterBounding;
         private CollisionManager collisionManager;
 
 
@@ -75,9 +75,8 @@ namespace WindowsGame1
         private int screenWidth = 1280, screenHeight = 720;
 
         private Song backgroundMusic;
-        private SoundEffectInstance soundEffectInstance;
-
-
+        private SoundEffect bubble;
+        public Model[] items;
 
         public Game1()
         {
@@ -147,22 +146,27 @@ namespace WindowsGame1
 
             arenaBounding = new BoundingBox(new Vector3(-12.5f, 1f, -12.5f), new Vector3(12.5f, 1f, 12.5f));
             groundBounding = new BoundingBox (new Vector3(-25f, -7f, -25f), new Vector3 (25f, -7f, 25f));
+            waterBounding = new BoundingBox(new Vector3(-25f, -1f, -25f), new Vector3(25f, -1f, 25f));
 
+           
             Model[] modelle = new Model[] { klavier, kleiderschrank, sofa, kuehlschrank };
             characterManager = new CharacterManager(modelle);
+            item = new ItemManager(items, collisionManager);
+            collisionManager = new CollisionManager(arenaBounding, groundBounding, item);
+            item = new ItemManager(items, collisionManager);
 
-            collisionManager = new CollisionManager(arenaBounding, groundBounding);
 
             showError = false;
-            sound = false;
+
             mute = true;
+            gamePadOn = GamePad.GetState(PlayerIndex.One).IsConnected;
 
             for (int i = 0; i <= 3; i++)
             {
                 charakterMenuPosition[i] = true;
             }
 
-   	        gamePadOn = GamePad.GetState(PlayerIndex.One).IsConnected;
+   	        
             
         }
 
@@ -182,7 +186,7 @@ namespace WindowsGame1
             kuehlschrank = Content.Load<Model>("Moebel/kuehlschrank");
             stuhl = Content.Load<Model>("Moebel/stuhl");
             arena = Content.Load<Model>("arena");
-            //item = new Item(Content.Load<Model>("Items/itemLangsamer"), new Vector3(0, 3, 0));
+            items = new Model[] { (Content.Load<Model>("Items/itemLangsamer")), (Content.Load<Model>("Items/itemSchneller")), (Content.Load<Model>("Items/itemPower")), (Content.Load<Model>("Items/itemUmkehren")) };
             ultimatesphere = Content.Load<Model>("ultimateSphere");
             identifier = new Model[] { Content.Load<Model>("player1"), Content.Load<Model>("player2"), Content.Load<Model>("player3"), Content.Load<Model>("player4") };
             ground = Content.Load<Model>("wasserBoden");
@@ -238,7 +242,9 @@ namespace WindowsGame1
             results[2] = Content.Load<Texture2D>("Menu/Result/result2");
             results[3] = Content.Load<Texture2D>("Menu/Result/result3");
 
-            //backgroundMusic = Content.Load<Song>("Rocket");
+
+            backgroundMusic = Content.Load<Song>("Rocket");
+            bubble = Content.Load<SoundEffect>("bubble");
         }
 
         /// <summary>
@@ -279,7 +285,7 @@ namespace WindowsGame1
             */
 
 
-            //if (MediaPlayer.State != MediaState.Playing) MediaPlayer.Play(backgroundMusic);
+            if (MediaPlayer.State != MediaState.Playing) MediaPlayer.Play(backgroundMusic);
 
 
  	    if (gamePadOn == true)
@@ -449,11 +455,11 @@ namespace WindowsGame1
                             {
                                 if (mute)
                                 {
-                                    soundEffectInstance.Stop();
+                                    MediaPlayer.Volume = 0;
                                 }
                                 else
                                 {
-                                    soundEffectInstance.Play();
+                                    MediaPlayer.Volume = 1;
                                 }
                                 mute = !mute;
                             }
@@ -494,11 +500,11 @@ namespace WindowsGame1
                         {
                             if (mute)
                             {
-                                soundEffectInstance.Stop();
+                                MediaPlayer.Volume = 0;
                             }
                             else
                             {
-                                soundEffectInstance.Play();
+                                MediaPlayer.Volume = 1;
                             }
 
                             splashMenuButtons[3].isClicked = false;
@@ -703,7 +709,7 @@ namespace WindowsGame1
                                 {
                                     if (playerIndex[i] != 4)
                                     {
-                                        playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere));
+                                        playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere,item));
 
                                     }
                                 }
@@ -818,13 +824,19 @@ namespace WindowsGame1
                         playerList[i].Update(gameTime);
                     }
 
-                    //item.update();
-                    count = collisionManager.checkPlayerAlive();
+                    item.update(gameTime);
+                    for(int i = 0;i<playerList.Count;i++)
+                    {
+                        if (playerList[i].getCollisionSpheres()[0].getSphere().Intersects(waterBounding))
+                        {
+                            bubble.Play();
+                        }
+                    }
 
                     if (Keyboard.GetState().IsKeyDown(Keys.P) && !buttonDown[0, 0])
                         gamestate = GameState.pause;
 
-                    if (count == 1)
+                    if (collisionManager.checkPlayerAlive() == 1)
                     {
                         gamestate = GameState.result;
                     }
@@ -915,8 +927,7 @@ namespace WindowsGame1
                     splashMenuButtons[2].Draw(spriteBatch);
                     splashMenuButtons[3].Draw(spriteBatch);
 
-                    spriteBatch.DrawString(font, "P1-Vector " + buttonDown[0, 0].ToString(), new Vector2(100, 100), Color.Black);
-                    spriteBatch.DrawString(font, "P1-Vector " + splashScreenIndex.ToString(), new Vector2(100,150), Color.Black);
+                   
                     
 		    if (!mute)
                     {
@@ -1013,10 +1024,10 @@ namespace WindowsGame1
                     }
                    
 
-                   // item.draw(view, projection);
-                    
+                    item.draw(view, projection);
 
-                    spriteBatch.DrawString(font, "P1-Vector " + collisionManager.calculateCollisions(playerList[0]).ToString(), new Vector2(100, 100), Color.Black);
+
+                    spriteBatch.DrawString(font, "picker " + item.pickerIndex.ToString(), new Vector2(100, 100), Color.Black);
                     spriteBatch.DrawString(font, "P2-Vector " + collisionManager.calculateCollisions(playerList[1]).ToString(), new Vector2(100, 150), Color.Black);
                     
                     spriteBatch.DrawString(font, "P1-Time " + playerList[0].getDashTime().ToString(), new Vector2(100, 200), Color.Black);

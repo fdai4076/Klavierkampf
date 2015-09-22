@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace WindowsGame1
 {
-   public class CharacterManager
+    public class CharacterManager
     {
         private Model[] modelle;
         private CollisionSphere[] sofaBounding;
@@ -192,22 +192,22 @@ namespace WindowsGame1
             {
                 case 0:
                     return klavier;
-                   
+
 
                 case 1:
                     return kleiderschrank;
-                   
+
 
                 case 2:
                     return sofa;
-                    
+
 
                 case 3:
                     return kuehlschrank;
-                
+
                 default:
                     return klavier;
-                    
+
             }
         }
     }
