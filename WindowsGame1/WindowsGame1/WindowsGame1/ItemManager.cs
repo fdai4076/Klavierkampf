@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 namespace WindowsGame1
 {
@@ -168,7 +170,7 @@ namespace WindowsGame1
 
         }
 
-        public void update(GameTime gameTime)
+        public void update(GameTime gameTime, SoundEffect collectItem)
         {
             rotationy += 0.025f;
             if (!pickedUp)
@@ -179,6 +181,7 @@ namespace WindowsGame1
                 {
                     activationTime = gameTime.TotalGameTime;
                     pickedUp = true;
+                    collectItem.Play();
                 }
             }
 

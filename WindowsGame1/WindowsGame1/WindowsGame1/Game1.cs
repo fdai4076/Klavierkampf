@@ -76,6 +76,7 @@ namespace WindowsGame1
 
         private Song backgroundMusic;
         private SoundEffect bubble;
+        private SoundEffect collectItem;
         public Model[] items;
 
         public Game1()
@@ -244,6 +245,7 @@ namespace WindowsGame1
 
             backgroundMusic = Content.Load<Song>("Rocket");
             bubble = Content.Load<SoundEffect>("bubble");
+            collectItem = Content.Load<SoundEffect>("collectItem");
         }
 
         /// <summary>
@@ -823,7 +825,7 @@ namespace WindowsGame1
                         playerList[i].Update(gameTime);
                     }
 
-                    item.update(gameTime);
+                    item.update(gameTime, collectItem);
                     for(int i = 0;i<playerList.Count;i++)
                     {
                         if (playerList[i].getCollisionSpheres()[0].getSphere().Intersects(waterBounding))
