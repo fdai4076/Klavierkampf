@@ -74,6 +74,7 @@ namespace WindowsGame1
                     isClicked = true;
                     aktiv = 0;
                 }
+
             }
             else
             {
@@ -81,6 +82,7 @@ namespace WindowsGame1
                 finalTexture = texture;
                 isClicked = false;
             }
+
         }
 
         public void setPosition(Vector2 newPosition)
