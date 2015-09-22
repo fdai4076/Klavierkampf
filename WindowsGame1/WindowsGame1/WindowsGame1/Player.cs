@@ -33,6 +33,9 @@ namespace WindowsGame1
         private double dashCountdown;
         private TimeSpan dashTime;
         public float currentDashPower;
+        private float speedEffect;
+        private float powerEffect;
+        private int movingEffect;
 
 
 
@@ -81,8 +84,7 @@ namespace WindowsGame1
             isAlive = true;
             dashTime = new TimeSpan();
 
-
-
+            
         }
 
         public void Draw(Matrix view, Matrix projection)
@@ -122,6 +124,10 @@ namespace WindowsGame1
 
         public void Update(GameTime gameTime)
         {
+            speedEffect = itemManager.getItemEffect(playerindex).speed;
+            powerEffect = itemManager.getItemEffect(playerindex).power;
+            movingEffect = itemManager.getItemEffect(playerindex).moving;
+
             if (isAlive)
             {
                 directionId = 4;
@@ -150,7 +156,7 @@ namespace WindowsGame1
                         directionId = 3;
                         if (collisionManager.checkCanRotateLeft(this, position))
                         {
-                            rotationy += 0.01f;
+                            rotationy += (0.01f*movingEffect);
                         }
                     }
 
@@ -159,7 +165,7 @@ namespace WindowsGame1
                         directionId = 1;
                         if (collisionManager.checkCanRotateRight(this, position))
                         {
-                            rotationy -= 0.01f;
+                            rotationy -= (0.01f * movingEffect);
 
                         }
                     }
@@ -170,7 +176,7 @@ namespace WindowsGame1
                         if (collisionManager.canWalkForward(this))
                         {
 
-                            currentSpeed -= speed;
+                            currentSpeed -= (speed*speedEffect);
                             if ((Keyboard.GetState().IsKeyDown(Keys.Tab) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
@@ -187,7 +193,7 @@ namespace WindowsGame1
                         directionId = 2;
                         if (collisionManager.canWalkBackward(this))
                         {
-                            currentSpeed += speed;
+                            currentSpeed += (speed*speedEffect);
                         }
                     }
                 }

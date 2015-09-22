@@ -151,8 +151,7 @@ namespace WindowsGame1
            
             Model[] modelle = new Model[] { klavier, kleiderschrank, sofa, kuehlschrank };
             characterManager = new CharacterManager(modelle);
-            item = new ItemManager(items, collisionManager);
-            collisionManager = new CollisionManager(arenaBounding, groundBounding, item);
+            collisionManager = new CollisionManager(arenaBounding, groundBounding);
             item = new ItemManager(items, collisionManager);
 
 
@@ -212,7 +211,7 @@ namespace WindowsGame1
             howtoplayscreen[3] = Content.Load<Texture2D>("Menu/Howtoplay/Screen3");
             howtoplayscreen[4] = Content.Load<Texture2D>("Menu/Howtoplay/Screen4");
 
-            pause = Content.Load<Texture2D>("Menu/Pause/Pause");
+            pause = Content.Load<Texture2D>("Menu/Pause/Background");
 
             buttonPauseReturn = new Button(Content.Load<Texture2D>("Menu/Pause/ButtonReturn"), Content.Load<Texture2D>("Menu/Pause/ButtonReturn2"), graphics.GraphicsDevice);
             buttonPauseMainmenu = new Button(Content.Load<Texture2D>("Menu/Pause/ButtonMainmenu"), Content.Load<Texture2D>("Menu/Pause/ButtonMainmenu2"), graphics.GraphicsDevice);
@@ -1028,11 +1027,13 @@ namespace WindowsGame1
 
 
                     spriteBatch.DrawString(font, "picker " + item.pickerIndex.ToString(), new Vector2(100, 100), Color.Black);
-                    spriteBatch.DrawString(font, "P2-Vector " + collisionManager.calculateCollisions(playerList[1]).ToString(), new Vector2(100, 150), Color.Black);
+                    spriteBatch.DrawString(font, "itemSphere " + item.getItemSphere().getSphere().Center.ToString(), new Vector2(100, 150), Color.Black);
                     
-                    spriteBatch.DrawString(font, "P1-Time " + playerList[0].getDashTime().ToString(), new Vector2(100, 200), Color.Black);
-                    spriteBatch.DrawString(font, "P2-GameTime" + gameTime.TotalGameTime.ToString(), new Vector2(100, 250), Color.Black); 
-
+                    spriteBatch.DrawString(font, "activationTime " + item.activationTime.ToString(), new Vector2(100, 200), Color.Black);
+                    spriteBatch.DrawString(font, "effectTime" + item.effectTime.ToString(), new Vector2(100, 250), Color.Black);
+                    spriteBatch.DrawString(font, "effectTime" + (item.effectTime + item.activationTime).ToString(), new Vector2(100, 300), Color.Black);
+                    spriteBatch.DrawString(font, "effectTime" + ((item.effectTime + item.activationTime)>=gameTime.TotalGameTime).ToString(), new Vector2(100, 350), Color.Black);
+                    spriteBatch.DrawString(font, "effectTime" + gameTime.TotalGameTime.ToString(), new Vector2(100, 400), Color.Black);
                     base.Draw(gameTime);
                 break;
 

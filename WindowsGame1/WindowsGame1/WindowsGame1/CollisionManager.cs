@@ -16,7 +16,7 @@ namespace WindowsGame1
         private List<Collision>[] collisions = new List<Collision>[4];
 
 
-        public CollisionManager(BoundingBox arenaBounding, BoundingBox groundBounding, ItemManager item)
+        public CollisionManager(BoundingBox arenaBounding, BoundingBox groundBounding)
         {
             playerList = new List<Player>();
             this.arenaBounding = arenaBounding;
@@ -291,16 +291,16 @@ namespace WindowsGame1
             return collisionVector;
         }
 
-        public int itemControll()
+        public int itemControll(BoundingSphere itemSphere)
         {
             for (int i = 0; i < playerList.Count; i++)
             {
                 CollisionSphere[] spheres = playerList[i].getCollisionSpheres();
                 for (int k = 0; k < spheres.Length; k++)
                 {
-                    if (spheres[k].getSphere().Intersects(item.getItemSphere().getSphere()))
+                    if (spheres[k].getSphere().Intersects(itemSphere))
                     {
-                        return i;
+                        return playerList[i].getPlayerIndex();
                     }
                 }
             }

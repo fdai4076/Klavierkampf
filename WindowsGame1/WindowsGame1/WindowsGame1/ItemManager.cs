@@ -19,8 +19,8 @@ namespace WindowsGame1
         private Model[] itemModel;
 
         private float rotationy;
-        private TimeSpan activationTime;
-        private TimeSpan effectTime;
+        public TimeSpan activationTime;
+        public TimeSpan effectTime;
 
         private bool pickedUp;
 
@@ -53,7 +53,7 @@ namespace WindowsGame1
             itemIndex = r.Next(0, 4);
             Vector3 spherePosition = new Vector3(position.X, 1.2f, position.Z);
             collisionSphere = new CollisionSphere(spherePosition, itemIndex);
-
+            collisionSphere.setCenterPos(new Vector3(position.X, 1.2f, position.Z));
         }
 
         public ItemsEffect getItemEffect(int playerIndex)
@@ -173,7 +173,7 @@ namespace WindowsGame1
             rotationy += 0.025f;
             if (!pickedUp)
             {
-                pickerIndex = collisionManager.itemControll();
+                pickerIndex = collisionManager.itemControll(collisionSphere.getSphere());
 
                 if (pickerIndex != 4)
                 {
@@ -182,7 +182,7 @@ namespace WindowsGame1
                 }
             }
 
-            if (pickedUp && (activationTime + effectTime) >= gameTime.TotalGameTime)
+            if (pickedUp && gameTime.TotalGameTime>(activationTime + effectTime))
             {
                 pickedUp = false;
                 spawnItem();
@@ -191,18 +191,21 @@ namespace WindowsGame1
 
         public void draw(Matrix view, Matrix projection)
         {
-            Matrix world = Matrix.Identity * Matrix.CreateRotationY(rotationy) * Matrix.CreateTranslation(position);
-
-            foreach (ModelMesh mesh in itemModel[itemIndex].Meshes)
+            if (!pickedUp)
             {
-                foreach (BasicEffect basic in mesh.Effects)
+                Matrix world = Matrix.Identity * Matrix.CreateRotationY(rotationy) * Matrix.CreateTranslation(position);
+
+                foreach (ModelMesh mesh in itemModel[itemIndex].Meshes)
                 {
-                    basic.World = world;
-                    basic.View = view;
-                    basic.Projection = projection;
-                    basic.EnableDefaultLighting();
+                    foreach (BasicEffect basic in mesh.Effects)
+                    {
+                        basic.World = world;
+                        basic.View = view;
+                        basic.Projection = projection;
+                        basic.EnableDefaultLighting();
+                    }
+                    mesh.Draw();
                 }
-                mesh.Draw();
             }
         }
 
