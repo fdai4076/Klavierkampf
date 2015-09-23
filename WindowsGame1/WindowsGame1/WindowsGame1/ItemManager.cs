@@ -175,7 +175,7 @@ namespace WindowsGame1
             rotationy += 0.025f;
             if (!pickedUp)
             {
-                pickerIndex = collisionManager.itemControll(collisionSphere.getSphere());
+                pickerIndex = collisionManager.checkItemPickedUp(collisionSphere.getSphere());
 
                 if (pickerIndex != 4)
                 {

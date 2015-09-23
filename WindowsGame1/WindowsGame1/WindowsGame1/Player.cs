@@ -156,7 +156,7 @@ namespace WindowsGame1
                         directionId = 3;
                         if (collisionManager.checkCanRotateLeft(this, position))
                         {
-                            rotationy += (0.01f*movingEffect);
+                            rotationy += (0.01f * movingEffect);
                         }
                     }
 
@@ -176,7 +176,7 @@ namespace WindowsGame1
                         if (collisionManager.canWalkForward(this))
                         {
 
-                            currentSpeed -= (speed*speedEffect);
+                            currentSpeed -= (speed * speedEffect * movingEffect);
                             if ((Keyboard.GetState().IsKeyDown(Keys.Tab) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
@@ -193,7 +193,7 @@ namespace WindowsGame1
                         directionId = 2;
                         if (collisionManager.canWalkBackward(this))
                         {
-                            currentSpeed += (speed*speedEffect);
+                            currentSpeed += (speed * speedEffect * movingEffect);
                         }
                     }
                 }
@@ -205,7 +205,7 @@ namespace WindowsGame1
                         directionId = 3;
                         if (collisionManager.checkCanRotateLeft(this, position))
                         {
-                            rotationy += 0.01f;
+                            rotationy += (0.01f * movingEffect);
                         }
                     }
 
@@ -216,7 +216,7 @@ namespace WindowsGame1
 
                         if (collisionManager.checkCanRotateRight(this, position))
                         {
-                            rotationy -= 0.01f;
+                            rotationy -= (0.01f * movingEffect);
                         }
                     }
 
@@ -226,7 +226,7 @@ namespace WindowsGame1
                         if (collisionManager.canWalkForward(this))
                         {
 
-                            currentSpeed -= speed;
+                            currentSpeed -= (speed * speedEffect * movingEffect);
                             if ((Keyboard.GetState().IsKeyDown(Keys.Space) && !dashing) || (GamePad.GetState(PlayerIndex.Two).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
@@ -243,7 +243,7 @@ namespace WindowsGame1
                         if (collisionManager.canWalkBackward(this))
                         {
 
-                            currentSpeed += speed;
+                            currentSpeed += (speed * speedEffect * movingEffect);
 
                         }
                     }
@@ -256,7 +256,7 @@ namespace WindowsGame1
                         directionId = 3;
                         if (collisionManager.checkCanRotateLeft(this, position))
                         {
-                            rotationy += 0.01f;
+                            rotationy += (0.01f * movingEffect);
                         }
                     }
 
@@ -266,7 +266,7 @@ namespace WindowsGame1
 
                         if (collisionManager.checkCanRotateRight(this, position))
                         {
-                            rotationy -= 0.01f;
+                            rotationy -= (0.01f * movingEffect);
                         }
                     }
 
@@ -292,7 +292,7 @@ namespace WindowsGame1
                         directionId = 2;
                         if (collisionManager.canWalkBackward(this))
                         {
-                            currentSpeed += speed;
+                            currentSpeed += (speed* speedEffect * movingEffect);
                         }
 
                     }
@@ -306,7 +306,7 @@ namespace WindowsGame1
                         directionId = 3;
                         if (collisionManager.checkCanRotateLeft(this, position))
                         {
-                            rotationy += 0.01f;
+                            rotationy += (0.01f * movingEffect);
                         }
 
                     }
@@ -316,7 +316,7 @@ namespace WindowsGame1
                         directionId = 1;
                         if (collisionManager.checkCanRotateRight(this, position))
                         {
-                            rotationy -= 0.01f;
+                            rotationy -= (0.01f * movingEffect);
                         }
                     }
 
@@ -325,8 +325,9 @@ namespace WindowsGame1
                         directionId = 0;
                         if (collisionManager.canWalkForward(this))
                         {
+                     
 
-                            currentSpeed -= speed;
+                            currentSpeed -= (speed * speedEffect * movingEffect);
                             if ((Keyboard.GetState().IsKeyDown(Keys.NumPad0) && !dashing) || (GamePad.GetState(PlayerIndex.Four).Buttons.A == ButtonState.Pressed && !dashing))
                             {
                                 currentSpeed *= 5f;
@@ -343,7 +344,7 @@ namespace WindowsGame1
                         if (collisionManager.canWalkBackward(this))
                         {
 
-                            currentSpeed += speed;
+                            currentSpeed += (speed * speedEffect * movingEffect);
                         }
 
 

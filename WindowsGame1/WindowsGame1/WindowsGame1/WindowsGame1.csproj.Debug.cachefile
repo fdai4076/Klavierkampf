@@ -84,6 +84,7 @@ Content\Menu\SplashMenu\LautsprecherX.xnb
 Content\wasserTextur.xnb
 Content\Rocket.xnb
 Content\bubble.xnb
+Content\collectItem.xnb
 Content\arenaTextur_0.xnb
 Content\Moebel\klavierTextur_0.xnb
 Content\Moebel\kleiderschrankTextur_0.xnb
@@ -95,5 +96,4 @@ Content\Items\powerTextur_0.xnb
 Content\Items\schnellerTextur_0.xnb
 Content\Items\umkehrenTextur_0.xnb
 Content\wasserTextur_0.xnb
-Content\collectItem.xnb
 Content\Rocket.wma

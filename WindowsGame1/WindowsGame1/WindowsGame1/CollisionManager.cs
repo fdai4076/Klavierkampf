@@ -12,7 +12,7 @@ namespace WindowsGame1
         private List<Player> playerList;
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
-        private ItemManager item;
+        
         private List<Collision>[] collisions = new List<Collision>[4];
 
 
@@ -21,7 +21,7 @@ namespace WindowsGame1
             playerList = new List<Player>();
             this.arenaBounding = arenaBounding;
             this.groundBounding = groundBounding;
-            this.item = item;
+            
             collisions[0] = new List<Collision>();
             collisions[1] = new List<Collision>();
             collisions[2] = new List<Collision>();
@@ -268,8 +268,8 @@ namespace WindowsGame1
                                         {
                                             enemySpeed -= player.getCurrentSpeed();
                                         }
-                                        collisionVector.X += (float)(enemySpeed * ((enemyPower - playerMass) / enemyPower) * Math.Sin(enemyRotation));
-                                        collisionVector.Z += (float)(enemySpeed * ((enemyPower - playerMass) / enemyPower) * Math.Cos(enemyRotation));
+                                        collisionVector.X += (float)(enemySpeed * ((enemyPower + enemyDashPower - playerMass) / enemyPower) * Math.Sin(enemyRotation));
+                                        collisionVector.Z += (float)(enemySpeed * ((enemyPower + enemyDashPower - playerMass) / enemyPower) * Math.Cos(enemyRotation));
 
                                     }
                                 }
@@ -290,8 +290,14 @@ namespace WindowsGame1
             }
             return collisionVector;
         }
+     
 
-        public int itemControll(BoundingSphere itemSphere)
+      
+
+        
+
+
+        public int checkItemPickedUp(BoundingSphere itemSphere)
         {
             for (int i = 0; i < playerList.Count; i++)
             {
@@ -306,8 +312,10 @@ namespace WindowsGame1
             }
             return 4;
         }
+     
 
     }
+     
 
 }
 
