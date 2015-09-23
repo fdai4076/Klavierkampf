@@ -68,19 +68,11 @@ namespace WindowsGame1
             if (aktiv == 1)
             {
                 finalTexture = texture2;
-
-                if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed)
-                {
-                    isClicked = true;
-                    aktiv = 0;
-                }
-
             }
             else
             {
                 aktiv = 0;
                 finalTexture = texture;
-                isClicked = false;
             }
 
         }

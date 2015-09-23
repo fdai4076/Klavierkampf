@@ -29,11 +29,12 @@ namespace WindowsGame1
 
         private SpriteFont font;
         private int count;
-        private bool [,] buttonDown = new bool[4,5];
+        private bool [,] buttonDown = new bool[4,6]; // Spalten (index 0 = Up, index 1 = Down, index 2 = A, index 3 = Left, index 4 = Right, index 5 = Start
         private bool showError;
         private bool mute;
         private bool gamePadOn;
         private bool [] charakterMenuPosition = new bool [4]; //true Oben, false Unten
+        private bool[] playerReady = new bool[4]; // true Ready, false Unready
    
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
@@ -41,10 +42,10 @@ namespace WindowsGame1
         private CollisionManager collisionManager;
 
 
-        private enum GameState {logo, splashMenu, character, howtoplay, ingame, pause, result};
+        private enum GameState {logo, splashMenu, character, howtoplay, ingame, pause, result, credits};
         private GameState gamestate;
 
-        private Button buttonPauseReturn, buttonPauseMainmenu;
+        private Button [] buttonPause = new Button [2];
         private Button [] buttonCharakter = new Button[2]; // index 0 = Back , index 1 = For
 
         private Button player1Back, player1For, player2Back, player2For, player3Back, player3For, player4Back, player4For;
@@ -57,20 +58,24 @@ namespace WindowsGame1
         private Texture2D splashscreen, lautsprecherX;
         private Texture2D[] howtoplayscreen = new Texture2D[5];
         private Texture2D logoPicture,logoklein;
+        private Texture2D creditsPicture;
         private Texture2D charakterwahl;
 
         private Texture2D[] character = new Texture2D[5];
+        private Texture2D ready;
 
         private Texture2D[] results = new Texture2D[4];
 
  	    private int splashScreenIndex;
         private int buttonCharakterIndex;
+        private int buttonPauseIndex;
         private int resultIndex;
         private int player1Index, player2Index, player3Index, player4Index;
         private int howtoplayIndex;
         private Color logoAnimation;
-        private Color resultAnimation;
+        private Color creditsAnimation;
         private bool logoStatus;
+        private bool creditsStatus;
 
         private int screenWidth = 1280, screenHeight = 720;
 
@@ -109,11 +114,12 @@ namespace WindowsGame1
             playerList = new List<Player>();
 
             logoAnimation = new Color(255, 255, 255, 255);
+            creditsAnimation = new Color(255, 255, 255, 255);
 
-            howtoplayIndex = buttonCharakterIndex = 0;
+            howtoplayIndex = buttonCharakterIndex = buttonPauseIndex = 0;
 
-            buttonPauseReturn.setPosition(new Vector2(555, 300));
-            buttonPauseMainmenu.setPosition(new Vector2(555, 390));
+            buttonPause[0].setPosition(new Vector2(555, 300));
+            buttonPause[1].setPosition(new Vector2(555, 390));
 
             splashMenuButtons[0].setPosition(new Vector2(565, 290));
             splashMenuButtons[1].setPosition(new Vector2(565, 380));
@@ -166,6 +172,30 @@ namespace WindowsGame1
                 charakterMenuPosition[i] = true;
             }
 
+            for (int i = 0; i <= 3; i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        if (GamePad.GetState(PlayerIndex.One).IsConnected == false) playerReady[i] = true;
+                        else playerReady[i] = false;
+                        break;
+                    case 1:
+                        if (GamePad.GetState(PlayerIndex.Two).IsConnected == false) playerReady[i] = true;
+                        else playerReady[i] = false;
+                        break;
+                    case 2:
+                        if (GamePad.GetState(PlayerIndex.Three).IsConnected == false) playerReady[i] = true;
+                        else playerReady[i] = false;
+                        break;
+                    case 3:
+                        if (GamePad.GetState(PlayerIndex.Four).IsConnected == false) playerReady[i] = true;
+                        else playerReady[i] = false;
+                        break;
+                }
+
+            }
+
    	        
             
         }
@@ -205,6 +235,7 @@ namespace WindowsGame1
             character[2] = Content.Load<Texture2D>("Menu/Charakterwahl/Char3");
             character[3] = Content.Load<Texture2D>("Menu/Charakterwahl/Char4");
             character[4] = Content.Load<Texture2D>("Menu/Charakterwahl/Char0");
+            ready = Content.Load<Texture2D>("Menu/Charakterwahl/Ready");
 
             howtoplayscreen[0] = Content.Load<Texture2D>("Menu/Howtoplay/Screen0");
             howtoplayscreen[1] = Content.Load<Texture2D>("Menu/Howtoplay/Screen1");
@@ -214,8 +245,10 @@ namespace WindowsGame1
 
             pause = Content.Load<Texture2D>("Menu/Pause/Background");
 
-            buttonPauseReturn = new Button(Content.Load<Texture2D>("Menu/Pause/ButtonReturn"), Content.Load<Texture2D>("Menu/Pause/ButtonReturn2"), graphics.GraphicsDevice);
-            buttonPauseMainmenu = new Button(Content.Load<Texture2D>("Menu/Pause/ButtonMainmenu"), Content.Load<Texture2D>("Menu/Pause/ButtonMainmenu2"), graphics.GraphicsDevice);
+            creditsPicture = Content.Load<Texture2D>("Menu/Credits/Credits");
+
+            buttonPause[0] = new Button(Content.Load<Texture2D>("Menu/Pause/ButtonReturn"), Content.Load<Texture2D>("Menu/Pause/ButtonReturn2"), graphics.GraphicsDevice);
+            buttonPause[1] = new Button(Content.Load<Texture2D>("Menu/Pause/ButtonMainmenu"), Content.Load<Texture2D>("Menu/Pause/ButtonMainmenu2"), graphics.GraphicsDevice);
             splashMenuButtons[0] = new Button(Content.Load<Texture2D>("Menu/SplashMenu/StartButton"), Content.Load<Texture2D>("Menu/SplashMenu/StartButton2"), graphics.GraphicsDevice);
             splashMenuButtons[1] = new Button(Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay"), Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay2"), graphics.GraphicsDevice);
             splashMenuButtons[2] = new Button(Content.Load<Texture2D>("Menu/SplashMenu/ExitButton"), Content.Load<Texture2D>("Menu/SplashMenu/ExitButton2"), graphics.GraphicsDevice);
@@ -307,6 +340,9 @@ namespace WindowsGame1
                 if (GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Released)
                     buttonDown[0, 4] = false;
 
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Released)
+                    buttonDown[0, 5] = false;
+
 
                 if (GamePad.GetState(PlayerIndex.Two).DPad.Up == ButtonState.Released)
                     buttonDown[1, 0] = false;
@@ -322,6 +358,9 @@ namespace WindowsGame1
 
                 if (GamePad.GetState(PlayerIndex.Two).DPad.Right == ButtonState.Released)
                     buttonDown[1, 4] = false;
+
+                if (GamePad.GetState(PlayerIndex.Two).Buttons.Start == ButtonState.Released)
+                    buttonDown[1, 5] = false;
 
 
                 if (GamePad.GetState(PlayerIndex.Three).DPad.Up == ButtonState.Released)
@@ -339,6 +378,9 @@ namespace WindowsGame1
                 if (GamePad.GetState(PlayerIndex.Three).DPad.Right == ButtonState.Released)
                     buttonDown[2, 4] = false;
 
+                if (GamePad.GetState(PlayerIndex.Three).Buttons.Start == ButtonState.Released)
+                    buttonDown[2, 5] = false;
+
 
                 if (GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Released)
                     buttonDown[3, 0] = false;
@@ -354,6 +396,9 @@ namespace WindowsGame1
 
                 if (GamePad.GetState(PlayerIndex.Four).DPad.Right == ButtonState.Released)
                     buttonDown[3, 4] = false;
+
+                if (GamePad.GetState(PlayerIndex.Four).Buttons.Start == ButtonState.Released)
+                    buttonDown[3, 5] = false;
 
 	    }
             else
@@ -493,7 +538,7 @@ namespace WindowsGame1
 
                         if (splashMenuButtons[2].isClicked == true && !buttonDown[0, 0])
                         {
-                            this.Exit();
+                            gamestate = GameState.credits;
                         }
                         splashMenuButtons[2].Update(mouse);
 
@@ -525,7 +570,7 @@ namespace WindowsGame1
                         if (GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed && !buttonDown[0, 0])
                         {
                             if (charakterMenuPosition[0] == true) charakterMenuPosition[0] = false;
-                            else charakterMenuPosition[0] = false;
+                            else charakterMenuPosition[0] = true;
                             buttonDown[0, 0] = true;
                         }
 
@@ -533,6 +578,7 @@ namespace WindowsGame1
                         {
                             if (charakterMenuPosition[0] == false) charakterMenuPosition[0] = true;
                             else charakterMenuPosition[0] = false;
+                            buttonCharakter[1].UpdatePad(1);
                             buttonDown[0, 1] = true;
                         }
 
@@ -547,7 +593,7 @@ namespace WindowsGame1
                             {
                                 buttonCharakter[buttonCharakterIndex].UpdatePad(0);
                                 if (buttonCharakterIndex == 1) buttonCharakterIndex = 0;
-                                buttonCharakterIndex += 1;
+                                else buttonCharakterIndex += 1;
                                 buttonCharakter[buttonCharakterIndex].UpdatePad(1);
                                 buttonDown[0, 4] = true;
                             }
@@ -564,52 +610,366 @@ namespace WindowsGame1
                             {
                                 buttonCharakter[buttonCharakterIndex].UpdatePad(0);
                                 if (buttonCharakterIndex == 0) buttonCharakterIndex = 1;
-                                buttonCharakterIndex -= 1;
+                                else buttonCharakterIndex -= 1;
                                 buttonCharakter[buttonCharakterIndex].UpdatePad(1);
                                 buttonDown[0, 3] = true;
                             }
                         }
 
-                        //Play2Charakterwahl Update
-                        if (GamePad.GetState(PlayerIndex.Two).DPad.Left == ButtonState.Pressed && !buttonDown[1, 3])
+                        if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !buttonDown[0, 2])
                         {
-                            player2Index = (player2Index - 1);
-                            if (player2Index == -1) player2Index = 4;
-                            buttonDown[1, 3] = true;
+                            if (charakterMenuPosition[0] == true)
+                            {
+                                if (player1Index == 0)
+                                {
+                                    buttonDown[0, 2] = true;
+                                }
+                                else
+                                {
+                                    playerReady[0] = true;
+                                    buttonDown[0, 2] = true;
+                                }
+                            }
+                            else
+                            {
+                                if (buttonCharakterIndex == 0)
+                                {
+                                    gamestate = GameState.splashMenu;
+                                    buttonDown[0, 2] = true;
+                                }
+                                else
+                                {
+                                    List<int> playerIndex = new List<int> { player1Index, player2Index, player3Index, player4Index };
+                                    playerList.Clear();
+                                    if (playerIndex.FindAll(index => index == 4).Count < 3)
+                                    {
+                                        for (int i = 0; i < playerIndex.Count; i++)
+                                        {
+                                            if (playerIndex[i] != 4)
+                                            {
+                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item));
+                                            }
+                                        }
+
+                                        collisionManager.setPlayers(playerList);
+
+                                        gamestate = GameState.ingame;
+                                        buttonDown[0, 2] = true;
+                                        showError = false;
+
+                                    }
+                                    else
+                                    {
+                                        showError = true; 
+                                        buttonDown[0, 2] = true;
+                                    }
+                                }
+                            }
+                        }
+
+                        //Play2Charakterwahl Update
+                        if (GamePad.GetState(PlayerIndex.Two).DPad.Up == ButtonState.Pressed && !buttonDown[1, 0])
+                        {
+                            if (charakterMenuPosition[1] == true) charakterMenuPosition[1] = false;
+                            else charakterMenuPosition[1] = true;
+                            buttonDown[1, 0] = true;
+                        }
+
+                        if (GamePad.GetState(PlayerIndex.Two).DPad.Down == ButtonState.Pressed && !buttonDown[1, 1])
+                        {
+                            if (charakterMenuPosition[1] == false) charakterMenuPosition[1] = true;
+                            else charakterMenuPosition[1] = false;
+                            buttonDown[1, 1] = true;
                         }
 
                         if (GamePad.GetState(PlayerIndex.Two).DPad.Right == ButtonState.Pressed && !buttonDown[1, 4])
                         {
-                            player2Index = (player2Index + 1) % 5;
-                            buttonDown[1, 4] = true;
+                            if (charakterMenuPosition[1] == true)
+                            {
+                                player2Index = (player2Index + 1) % 5;
+                                buttonDown[1, 4] = true;
+                            }
+                            else
+                            {
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(0);
+                                if (buttonCharakterIndex == 1) buttonCharakterIndex = 0;
+                                else buttonCharakterIndex += 1;
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(1);
+                                buttonDown[1, 4] = true;
+                            }
+                        }
+                        if (GamePad.GetState(PlayerIndex.Two).DPad.Left == ButtonState.Pressed && !buttonDown[1, 3])
+                        {
+                            if (charakterMenuPosition[1] == true)
+                            {
+                                player2Index = (player2Index - 1);
+                                if (player2Index == -1) player1Index = 4;
+                                buttonDown[1, 3] = true;
+                            }
+                            else
+                            {
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(0);
+                                if (buttonCharakterIndex == 0) buttonCharakterIndex = 1;
+                                else buttonCharakterIndex -= 1;
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(1);
+                                buttonDown[1, 3] = true;
+                            }
+                        }
+
+                        if (GamePad.GetState(PlayerIndex.Two).Buttons.A == ButtonState.Pressed && !buttonDown[1, 2])
+                        {
+                            if (charakterMenuPosition[1] == true)
+                            {
+                                if (player2Index == 0)
+                                {
+                                    buttonDown[1, 2] = true;
+                                }
+                                else
+                                {
+                                    playerReady[2] = true;
+                                    buttonDown[1, 2] = true;
+                                }
+                            }
+                            else
+                            {
+                                if (buttonCharakterIndex == 0)
+                                {
+                                    gamestate = GameState.splashMenu;
+                                    buttonDown[1, 2] = true;
+                                }
+                                else
+                                {
+                                    List<int> playerIndex = new List<int> { player1Index, player2Index, player3Index, player4Index };
+                                    playerList.Clear();
+                                    if (playerIndex.FindAll(index => index == 4).Count < 3)
+                                    {
+                                        for (int i = 0; i < playerIndex.Count; i++)
+                                        {
+                                            if (playerIndex[i] != 4)
+                                            {
+                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item));
+
+                                            }
+                                        }
+
+                                        collisionManager.setPlayers(playerList);
+
+                                        gamestate = GameState.ingame;
+                                        buttonDown[1, 2] = true;
+                                        showError = false;
+
+                                    }
+                                    else
+                                    {
+                                        showError = true;
+                                        buttonDown[1, 2] = true;
+                                    }
+                                }
+                            }
                         }
 
                         //Play3Charakterwahl Update
-                        if (GamePad.GetState(PlayerIndex.Three).DPad.Left == ButtonState.Pressed && !buttonDown[2, 3])
+                        if (GamePad.GetState(PlayerIndex.Three).DPad.Up == ButtonState.Pressed && !buttonDown[2, 0])
                         {
-                            player3Index = (player3Index - 1);
-                            if (player3Index == -1) player3Index = 4;
-                            buttonDown[2, 3] = true;
+                            if (charakterMenuPosition[2] == true) charakterMenuPosition[2] = false;
+                            else charakterMenuPosition[2] = true;
+                            buttonDown[2, 0] = true;
+                        }
+
+                        if (GamePad.GetState(PlayerIndex.Three).DPad.Down == ButtonState.Pressed && !buttonDown[2, 1])
+                        {
+                            if (charakterMenuPosition[2] == false) charakterMenuPosition[2] = true;
+                            else charakterMenuPosition[2] = false;
+                            buttonCharakter[1].UpdatePad(1);
+                            buttonDown[2, 1] = true;
                         }
 
                         if (GamePad.GetState(PlayerIndex.Three).DPad.Right == ButtonState.Pressed && !buttonDown[2, 4])
                         {
-                            player3Index = (player3Index + 1) % 5;
-                            buttonDown[2, 4] = true;
+                            if (charakterMenuPosition[2] == true)
+                            {
+                                player3Index = (player3Index + 1) % 5;
+                                buttonDown[2, 4] = true;
+                            }
+                            else
+                            {
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(0);
+                                if (buttonCharakterIndex == 1) buttonCharakterIndex = 0;
+                                else buttonCharakterIndex += 1;
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(1);
+                                buttonDown[2, 4] = true;
+                            }
+                        }
+                        if (GamePad.GetState(PlayerIndex.Three).DPad.Left == ButtonState.Pressed && !buttonDown[2, 3])
+                        {
+                            if (charakterMenuPosition[2] == true)
+                            {
+                                player3Index = (player3Index - 1);
+                                if (player3Index == -1) player3Index = 4;
+                                buttonDown[2, 3] = true;
+                            }
+                            else
+                            {
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(0);
+                                if (buttonCharakterIndex == 0) buttonCharakterIndex = 1;
+                                else buttonCharakterIndex -= 1;
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(1);
+                                buttonDown[2, 3] = true;
+                            }
                         }
 
-                        //Play3Charakterwahl Update
-                        if (GamePad.GetState(PlayerIndex.Four).DPad.Left == ButtonState.Pressed && !buttonDown[3, 3])
+                        if (GamePad.GetState(PlayerIndex.Three).Buttons.A == ButtonState.Pressed && !buttonDown[2, 2])
                         {
-                            player3Index = (player3Index - 1);
-                            if (player3Index == -1) player3Index = 4;
-                            buttonDown[3, 3] = true;
+                            if (charakterMenuPosition[2] == true)
+                            {
+                                if (player3Index == 0)
+                                {
+                                    buttonDown[2, 2] = true;
+                                }
+                                else
+                                {
+                                    playerReady[0] = true;
+                                    buttonDown[2, 2] = true;
+                                }
+                            }
+                            else
+                            {
+                                if (buttonCharakterIndex == 0)
+                                {
+                                    gamestate = GameState.splashMenu;
+                                    buttonDown[2, 2] = true;
+                                }
+                                else
+                                {
+                                    List<int> playerIndex = new List<int> { player1Index, player2Index, player3Index, player4Index };
+                                    playerList.Clear();
+                                    if (playerIndex.FindAll(index => index == 4).Count < 3)
+                                    {
+                                        for (int i = 0; i < playerIndex.Count; i++)
+                                        {
+                                            if (playerIndex[i] != 4)
+                                            {
+                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item));
+
+                                            }
+                                        }
+
+                                        collisionManager.setPlayers(playerList);
+
+                                        gamestate = GameState.ingame;
+                                        buttonDown[2, 2] = true;
+                                        showError = false;
+
+                                    }
+                                    else
+                                    {
+                                        showError = true;
+                                        buttonDown[2, 2] = true;
+                                    }
+                                }
+                            }
+                        }
+
+                        //Play4Charakterwahl Update
+                        if (GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Pressed && !buttonDown[3, 0])
+                        {
+                            if (charakterMenuPosition[3] == true) charakterMenuPosition[3] = false;
+                            else charakterMenuPosition[3] = true;
+                            buttonDown[3, 0] = true;
+                        }
+
+                        if (GamePad.GetState(PlayerIndex.Four).DPad.Down == ButtonState.Pressed && !buttonDown[3, 1])
+                        {
+                            if (charakterMenuPosition[3] == false) charakterMenuPosition[3] = true;
+                            else charakterMenuPosition[3] = false;
+                            buttonCharakter[1].UpdatePad(1);
+                            buttonDown[3, 1] = true;
                         }
 
                         if (GamePad.GetState(PlayerIndex.Four).DPad.Right == ButtonState.Pressed && !buttonDown[3, 4])
                         {
-                            player3Index = (player3Index + 1) % 5;
-                            buttonDown[3, 4] = true;
+                            if (charakterMenuPosition[3] == true)
+                            {
+                                player4Index = (player4Index + 1) % 5;
+                                buttonDown[3, 4] = true;
+                            }
+                            else
+                            {
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(0);
+                                if (buttonCharakterIndex == 1) buttonCharakterIndex = 0;
+                                else buttonCharakterIndex += 1;
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(1);
+                                buttonDown[3, 4] = true;
+                            }
+                        }
+                        if (GamePad.GetState(PlayerIndex.Four).DPad.Left == ButtonState.Pressed && !buttonDown[3, 3])
+                        {
+                            if (charakterMenuPosition[3] == true)
+                            {
+                                player4Index = (player4Index - 1);
+                                if (player4Index == -1) player4Index = 4;
+                                buttonDown[3, 3] = true;
+                            }
+                            else
+                            {
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(0);
+                                if (buttonCharakterIndex == 0) buttonCharakterIndex = 1;
+                                else buttonCharakterIndex -= 1;
+                                buttonCharakter[buttonCharakterIndex].UpdatePad(1);
+                                buttonDown[3, 3] = true;
+                            }
+                        }
+
+                        if (GamePad.GetState(PlayerIndex.Four).Buttons.A == ButtonState.Pressed && !buttonDown[3, 2])
+                        {
+                            if (charakterMenuPosition[3] == true)
+                            {
+                                if (player4Index == 0)
+                                {
+                                    buttonDown[3, 2] = true;
+                                }
+                                else
+                                {
+                                    playerReady[0] = true;
+                                    buttonDown[3, 2] = true;
+                                }
+                            }
+                            else
+                            {
+                                if (buttonCharakterIndex == 0)
+                                {
+                                    gamestate = GameState.splashMenu;
+                                    buttonDown[3, 2] = true;
+                                }
+                                else
+                                {
+                                    List<int> playerIndex = new List<int> { player1Index, player2Index, player3Index, player4Index };
+                                    playerList.Clear();
+                                    if (playerIndex.FindAll(index => index == 4).Count < 3)
+                                    {
+                                        for (int i = 0; i < playerIndex.Count; i++)
+                                        {
+                                            if (playerIndex[i] != 4)
+                                            {
+                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item));
+
+                                            }
+                                        }
+
+                                        collisionManager.setPlayers(playerList);
+
+                                        gamestate = GameState.ingame;
+                                        buttonDown[3, 2] = true;
+                                        showError = false;
+
+                                    }
+                                    else
+                                    {
+                                        showError = true;
+                                        buttonDown[3, 2] = true;
+                                    }
+                                }
+                            }
                         }
 
                     }
@@ -834,8 +1194,23 @@ namespace WindowsGame1
                         }
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.P) && !buttonDown[0, 0])
-                        gamestate = GameState.pause;
+
+                    if (gamePadOn == true)
+                    {
+                        if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed && !buttonDown[0, 5]) || (GamePad.GetState(PlayerIndex.Two).Buttons.Start == ButtonState.Pressed && !buttonDown[1, 5]) || (GamePad.GetState(PlayerIndex.Three).Buttons.Start == ButtonState.Pressed && !buttonDown[2, 5]) || (GamePad.GetState(PlayerIndex.Four).Buttons.Start == ButtonState.Pressed && !buttonDown[3, 5]))
+                        {
+                            gamestate = GameState.pause;
+
+                            for (int i = 0; i <= 3; i++)
+                            {
+                                buttonDown[i, 2] = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (Keyboard.GetState().IsKeyDown(Keys.P) && !buttonDown[0, 0]) gamestate = GameState.pause;
+                    }
 
                     if (collisionManager.checkPlayerAlive() == 1)
                     {
@@ -845,25 +1220,85 @@ namespace WindowsGame1
                     break;
 
                 case GameState.pause:
-                    
-                    IsMouseVisible = true;
 
-                    if (buttonPauseReturn.isClicked == true && !buttonDown[0, 0])
+                    if (gamePadOn == true)
                     {
-                        gamestate = GameState.ingame;
-                        IsMouseVisible = false; 
-                        buttonPauseReturn.isClicked = false;
+                        buttonPause[buttonPauseIndex].UpdatePad(1);
+
+                        if ((GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed && !buttonDown[0, 0]) || (GamePad.GetState(PlayerIndex.Two).DPad.Up == ButtonState.Pressed && !buttonDown[1, 0]) || (GamePad.GetState(PlayerIndex.Three).DPad.Up == ButtonState.Pressed && !buttonDown[2, 0]) || (GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Pressed && !buttonDown[3, 0]))
+                        {
+                            if (buttonPauseIndex == 0)
+                            {
+                                buttonPause[buttonPauseIndex].UpdatePad(0);
+                                buttonPauseIndex = 1;
+                                buttonPause[buttonPauseIndex].UpdatePad(1);
+                            }
+                            else
+                            {
+                                buttonPause[buttonPauseIndex].UpdatePad(0);
+                                buttonPauseIndex -= 1;
+                                buttonPause[buttonPauseIndex].UpdatePad(1);
+                            }
+
+                            for (int i = 0; i <= 3; i++)
+                            {
+                                buttonDown[i, 0] = true;
+                            }
+                        }
+
+                        if ((GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed && !buttonDown[0, 1]) || (GamePad.GetState(PlayerIndex.Two).DPad.Down == ButtonState.Pressed && !buttonDown[1, 1]) || (GamePad.GetState(PlayerIndex.Three).DPad.Down == ButtonState.Pressed && !buttonDown[2, 1]) || (GamePad.GetState(PlayerIndex.Four).DPad.Down == ButtonState.Pressed && !buttonDown[3, 1]))
+                        {
+                            if (buttonPauseIndex == 1)
+                            {
+                                buttonPause[buttonPauseIndex].UpdatePad(0);
+                                buttonPauseIndex = 0;
+                                buttonPause[buttonPauseIndex].UpdatePad(1);
+                            }
+                            else
+                            {
+                                buttonPause[buttonPauseIndex].UpdatePad(0);
+                                buttonPauseIndex += 1;
+                                buttonPause[buttonPauseIndex].UpdatePad(1);
+                            }
+
+                            for (int i = 0; i <= 3; i++)
+                            {
+                                buttonDown[i, 1] = true;
+                            }
+                        }
+
+                        if ((GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !buttonDown[0, 2]) || (GamePad.GetState(PlayerIndex.Two).Buttons.A == ButtonState.Pressed && !buttonDown[1, 2]) || (GamePad.GetState(PlayerIndex.Three).Buttons.A == ButtonState.Pressed && !buttonDown[2, 2]) || (GamePad.GetState(PlayerIndex.Four).Buttons.A == ButtonState.Pressed && !buttonDown[3, 2]))
+                        {
+                            if (buttonPauseIndex == 0) gamestate = GameState.ingame;
+                            if (buttonPauseIndex == 1) gamestate = GameState.splashMenu;
+                            
+                            for (int i = 0; i <= 3; i++)
+                            {
+                                buttonDown[i, 2] = true;
+                            }
+                        } 
+                    }
+                    else
+                    {
+                        IsMouseVisible = true;
+
+                        if (buttonPause[0].isClicked == true && !buttonDown[0, 0])
+                        {
+                            gamestate = GameState.ingame;
+                            IsMouseVisible = false;
+                            buttonPause[0].isClicked = false;
+                        }
+
+                        if (buttonPause[1].isClicked == true && !buttonDown[0, 0])
+                        {
+                            gamestate = GameState.splashMenu;
+                            buttonPause[1].isClicked = false;
+
+                        }
+                        buttonPause[1].Update(mouse);
+                        buttonPause[0].Update(mouse);
                     }
 
-                    if (buttonPauseMainmenu.isClicked == true && !buttonDown[0, 0])
-                    {
-                        gamestate = GameState.splashMenu;
-                        buttonPauseMainmenu.isClicked = false;
-                        
-                    }
-                    buttonPauseMainmenu.Update(mouse);
-                    buttonPauseReturn.Update(mouse);
-                    
                     break;
 
                 case GameState.result:
@@ -890,6 +1325,27 @@ namespace WindowsGame1
                     buttonResultMainMenu.Update(mouse);
                     buttonResultNewGame.Update(mouse);
 
+
+                    break;
+
+                case GameState.credits :
+
+                    if (gameTime.TotalGameTime.Seconds > 5)
+                    {
+                        if (creditsAnimation.A == 255) creditsStatus = false;
+                        if (creditsAnimation.A == 0) creditsStatus = true;
+                        if (creditsStatus)
+                        {
+                            this.Exit();
+                        }
+                        else
+                        {
+                            creditsAnimation.A -= 3;
+                            creditsAnimation.R -= 3;
+                            creditsAnimation.G -= 3;
+                            creditsAnimation.B -= 3;
+                        }
+                    }
 
                     break;
 
@@ -961,6 +1417,14 @@ namespace WindowsGame1
 
                     buttonCharakter[0].Draw(spriteBatch);
                     buttonCharakter[1].Draw(spriteBatch);
+
+                    if (gamePadOn == true)
+                    {
+                        if (playerReady[0] == true) spriteBatch.Draw(ready, new Rectangle(295, 180, ready.Width, ready.Height), Color.White);
+                        if (playerReady[1] == true) spriteBatch.Draw(ready, new Rectangle(725, 180, ready.Width, ready.Height), Color.White);
+                        if (playerReady[2] == true) spriteBatch.Draw(ready, new Rectangle(295, 425, ready.Width, ready.Height), Color.White);
+                        if (playerReady[3] == true) spriteBatch.Draw(ready, new Rectangle(725, 425, ready.Width, ready.Height), Color.White);
+                    }
 
                     if (showError)
                     {
@@ -1045,8 +1509,8 @@ namespace WindowsGame1
                 
                 spriteBatch.Draw(pause, new Rectangle(0, 0, pause.Width, pause.Height), Color.White);
                 spriteBatch.Draw(buttonBackgroundPause, new Rectangle(480, 150, buttonBackgroundPause.Width, buttonBackgroundPause.Height), Color.White);
-                buttonPauseReturn.Draw(spriteBatch);
-                buttonPauseMainmenu.Draw(spriteBatch);
+                buttonPause[0].Draw(spriteBatch);
+                buttonPause[1].Draw(spriteBatch);
                 
                 break;
 
@@ -1056,6 +1520,12 @@ namespace WindowsGame1
 
                 buttonResultMainMenu.Draw(spriteBatch);
                 buttonResultNewGame.Draw(spriteBatch);
+
+                break;
+
+             case GameState.credits :
+
+                spriteBatch.Draw(creditsPicture, new Rectangle(0, 0, creditsPicture.Width, creditsPicture.Height), creditsAnimation);
 
                 break;
 
