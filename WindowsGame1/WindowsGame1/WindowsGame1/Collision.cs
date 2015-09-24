@@ -8,50 +8,39 @@ namespace WindowsGame1
 {
     public class Collision
     {
-        private float enemyRotation;
-        private float enemypower;
-        private float enemyMass;
-        private int enemyDirectionId;
-        private float enemySpeed;
+        private Vector3 directionVector;
+        private float dashPower;
+        private float speed;
 
 
-        public Collision(float enemySpeed, float enemyRotation, float enemypower, float enemyMass, int enemyDirectionId)
+        public Collision(float speed,Vector3 directionVector, float dashPower)
         {
-
-            this.enemyRotation = enemyRotation;
-            this.enemypower = enemypower;
-            this.enemyMass = enemyMass;
-            this.enemyDirectionId = enemyDirectionId;
-            this.enemySpeed = enemySpeed;
+            this.directionVector = directionVector;
+            this.dashPower = dashPower;
+            this.speed = speed;
+            
 
         }
 
-
-        public float getEnemyPower()
+        public Vector3 getDirectionVector()
         {
-            return enemypower;
+            return directionVector;
         }
 
-        public int getEnemyDirection()
+        public float getDashPower()
         {
-            return enemyDirectionId;
+            return dashPower;
+        }
+
+        public float getSpeed()
+        {
+            return speed;
         }
 
 
-        public float getEnemyMass()
-        {
-            return enemyMass;
-        }
 
-        public float getEnemyRotation()
-        {
-            return enemyRotation;
-        }
-
-        public float getEnemySpeed()
-        {
-            return enemySpeed;
-        }
+        
     }
+
 
 }

@@ -13,7 +13,10 @@ namespace WindowsGame1
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
         
-        private List<Collision>[] collisions = new List<Collision>[4];
+        public List<Collision>[] collisions = new List<Collision>[4];
+        public List<Player> enemysInFront = new List<Player>();
+        public int test;
+       
 
 
         public CollisionManager(BoundingBox arenaBounding, BoundingBox groundBounding)
@@ -227,7 +230,7 @@ namespace WindowsGame1
             return playerList[0].getModelId();
         }
 
-        public Vector3 calculateCollisions(Player player)
+     /*   public Vector3 calculateCollisions(Player player)
         {
             Vector3 collisionVector = new Vector3(0, 0, 0);
             List<int> alreadyCollideWithPlayer = new List<int>();
@@ -289,7 +292,113 @@ namespace WindowsGame1
                 collisionVector.Z += (float)(playerSpeed * ((playerPower - enemyMasses) / playerPower) * Math.Cos(playerRotation));
             }
             return collisionVector;
+        } */
+
+        public Vector3 calculateCollisions(Player player)
+        {
+
+
+            enemysInFront.Clear();
+            checkPlayerCollisionAt(player, player.getDirectionId());
+            float allEnemyMass = getAllEnemyMass(enemysInFront);
+             Vector3 directionVector = calculateVector(player, allEnemyMass);
+            //hitAllEnemys(enemysInFront, directionVector, player.getcurrentDashPower(), player.getCurrentSpeed());
+
+          //  Vector3 enemyCollisionVectors = getEnemyCollisionVectors(player.getPlayerIndex());
+           // directionVector += enemyCollisionVectors;
+
+
+            test = (enemysInFront.Count);
+            return directionVector;
         }
+
+        private float getAllEnemyMass(List<Player> enemysInFront)
+        {
+            float allEnemyMasses = 0f;
+            foreach (Player enemy in enemysInFront)
+            {
+                
+                allEnemyMasses += enemy.getMass();
+            }
+            return allEnemyMasses;
+        }
+
+       
+            
+
+
+        private void checkPlayerCollisionAt(Player player, int playerDirectionId)
+        {
+
+          
+            CollisionSphere[] playerCollisionSpheres = player.getCollisionSpheres();
+            for (int i = 0; i < playerList.Count; i++)
+            {
+                if (playerList[i].getPlayerIndex() != player.getPlayerIndex())
+                {
+                    CollisionSphere[] enemyCollisionSpheres = playerList[i].getCollisionSpheres();
+
+                    for (int x = 0; x < playerCollisionSpheres.Length; x++)
+                    {
+                        if (playerCollisionSpheres[x].getDirectionIndex() == playerDirectionId)
+                        {
+                            for (int y = 0; y < enemyCollisionSpheres.Length; y++ )
+                            {
+                                if (playerCollisionSpheres[x].getSphere().Intersects(enemyCollisionSpheres[y].getSphere()))
+                                {
+                                    if (!enemysInFront.Contains(playerList[i]))
+                                    {
+                                        //checkPlayerCollisionAt(playerList[i], (enemyCollisionSpheres[y].getDirectionIndex() + 2) % 4);
+                                        enemysInFront.Add(playerList[i]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+           
+        }
+
+        private Vector3 getEnemyCollisionVectors(int playerIndex)
+        {
+            Vector3 enemyDirections = new Vector3(0, 0, 0);
+            for(int i = 0; i < collisions[playerIndex].Count; i++)
+            {
+                enemyDirections += (collisions[playerIndex][i].getDirectionVector() * (collisions[playerIndex][i].getDashPower() / 0.1f));
+                collisions[playerIndex].Remove(collisions[playerIndex][i]);
+            }
+            return enemyDirections;
+        }
+
+        private Vector3 calculateVector(Player player, float allEnemyMass)
+        {
+            float playerSpeed = player.getCurrentSpeed();
+            float playerPower = player.getPower();
+            float playerDashPower = player.getcurrentDashPower();
+            float playerRotationY = player.getRotationY();
+
+            Vector3 vector = new Vector3(0, 0, 0);
+            if ((playerPower + playerDashPower) > allEnemyMass)
+            {
+                vector.X = playerSpeed * (float)(((playerPower + playerDashPower - allEnemyMass) / (playerPower + playerDashPower)) * Math.Sin(playerRotationY));
+                vector.Z = playerSpeed * (float)(((playerPower + playerDashPower - allEnemyMass) / (playerPower + playerDashPower)) * Math.Cos(playerRotationY));
+            } 
+            return vector;
+        }
+
+        private void hitAllEnemys(List<Player> enemyList, Vector3 directionVector, float playerDashPower, float playerSpeed)
+        {
+            foreach(Player enemy in enemyList)
+            {
+                collisions[enemy.getPlayerIndex()].Add(new Collision(playerSpeed, directionVector, playerDashPower));
+            }
+        }
+                
+                    
+        
+
+            
      
 
       

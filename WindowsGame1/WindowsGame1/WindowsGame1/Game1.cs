@@ -1500,8 +1500,8 @@ namespace WindowsGame1
                     spriteBatch.DrawString(font, "effectTime" + (item.effectTime + item.activationTime).ToString(), new Vector2(100, 300), Color.Black);
                     spriteBatch.DrawString(font, "effectTime" + ((item.effectTime + item.activationTime)>=gameTime.TotalGameTime).ToString(), new Vector2(100, 350), Color.Black);
                     spriteBatch.DrawString(font, "effectTime" + gameTime.TotalGameTime.ToString(), new Vector2(100, 400), Color.Black);
-                    spriteBatch.DrawString(font, "P1-CurrentSpeed" + playerList[0].getCurrentSpeed().ToString(), new Vector2(100, 450), Color.Black);
-                    spriteBatch.DrawString(font, "Degree" + MathHelper.ToDegrees(MathHelper.ToRadians(90f) + MathHelper.ToRadians(180f)).ToString(), new Vector2(100,500), Color.Black);
+                    spriteBatch.DrawString(font, "P1-Vector" + collisionManager.test.ToString(), new Vector2(100, 450), Color.Black);
+                    spriteBatch.DrawString(font, "enemyCount" + collisionManager.test.ToString(), new Vector2(100,500), Color.Black);
                     base.Draw(gameTime);
                 break;
 
