@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
 
 namespace WindowsGame1
 {
@@ -36,10 +37,11 @@ namespace WindowsGame1
         private float speedEffect;
         private float powerEffect;
         private int movingEffect;
+        private SoundEffect dashEffect;
 
 
 
-        public Player(Vector3 spawn, float spawnrotation, int playerindex, CollisionManager collisionManager, CharacterManager.Moebel data, Model sphereModel, ItemManager itemManager)
+        public Player(Vector3 spawn, float spawnrotation, int playerindex, CollisionManager collisionManager, CharacterManager.Moebel data, Model sphereModel, ItemManager itemManager, SoundEffect dashEffect)
         {
             this.position = spawn;
             position.Y = data.yPosition;
@@ -50,6 +52,7 @@ namespace WindowsGame1
 
             this.model = data.model;
             this.modelId = data.modelId;
+            this.dashEffect = dashEffect;
             sphere = new CollisionSphere[data.spheres.Length];
 
 
@@ -183,6 +186,7 @@ namespace WindowsGame1
                                 currentDashPower = dashPower;
                                 dashing = true;
                                 dashTime = gameTime.TotalGameTime;
+                                dashEffect.Play();
 
                             }
                         }
@@ -233,6 +237,7 @@ namespace WindowsGame1
                                 power += dashPower;
                                 dashing = false;
                                 dashTime = gameTime.TotalGameTime;
+                                dashEffect.Play();
                             }
                         }
                     }
@@ -283,6 +288,7 @@ namespace WindowsGame1
                                 power += dashPower;
                                 dashing = false;
                                 dashTime = gameTime.TotalGameTime;
+                                dashEffect.Play();
                             }
                         }
                     }
@@ -334,6 +340,7 @@ namespace WindowsGame1
                                 power += dashPower;
                                 dashing = false;
                                 dashTime = gameTime.TotalGameTime;
+                                dashEffect.Play();
                             }
                         }
                     }

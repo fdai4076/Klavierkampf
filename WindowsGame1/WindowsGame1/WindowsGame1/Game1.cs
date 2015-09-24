@@ -82,6 +82,7 @@ namespace WindowsGame1
         private Song backgroundMusic;
         private SoundEffect bubble;
         private SoundEffect collectItem;
+        private SoundEffect dashEffect;
         public Model[] items;
 
         public Game1()
@@ -196,6 +197,7 @@ namespace WindowsGame1
 
             }
 
+
    	        
             
         }
@@ -276,9 +278,10 @@ namespace WindowsGame1
             results[3] = Content.Load<Texture2D>("Menu/Result/result3");
 
 
-            backgroundMusic = Content.Load<Song>("Rocket");
-            bubble = Content.Load<SoundEffect>("bubble");
-            collectItem = Content.Load<SoundEffect>("collectItem");
+            backgroundMusic = Content.Load<Song>("Sound/Rocket");
+            bubble = Content.Load<SoundEffect>("Sound/bubble");
+            collectItem = Content.Load<SoundEffect>("Sound/collectItem");
+            dashEffect = Content.Load<SoundEffect>("Sound/Dash");
         }
 
         /// <summary>
@@ -647,7 +650,7 @@ namespace WindowsGame1
                                         {
                                             if (playerIndex[i] != 4)
                                             {
-                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item));
+                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item,dashEffect));
                                             }
                                         }
 
@@ -747,7 +750,7 @@ namespace WindowsGame1
                                         {
                                             if (playerIndex[i] != 4)
                                             {
-                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item));
+                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item,dashEffect));
 
                                             }
                                         }
@@ -849,7 +852,7 @@ namespace WindowsGame1
                                         {
                                             if (playerIndex[i] != 4)
                                             {
-                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item));
+                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item,dashEffect));
 
                                             }
                                         }
@@ -951,7 +954,7 @@ namespace WindowsGame1
                                         {
                                             if (playerIndex[i] != 4)
                                             {
-                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item));
+                                                playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere, item,dashEffect));
 
                                             }
                                         }
@@ -1070,7 +1073,7 @@ namespace WindowsGame1
                                 {
                                     if (playerIndex[i] != 4)
                                     {
-                                        playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere,item));
+                                        playerList.Add(new Player(spawnPoints[playerList.Count], spawnRotation[playerList.Count], i, collisionManager, characterManager.getStruct(playerIndex[i]), ultimatesphere,item,dashEffect));
 
                                     }
                                 }
@@ -1092,46 +1095,6 @@ namespace WindowsGame1
 
                         }
                     }
-                    /*if (buttonCharakterFor.isClicked == true && !down)
-                    {
-                       if (player1Index != 0 && player2Index != 0)
-                        {
-                            if (player1Index != player2Index && player1Index != player3Index && player1Index != player4Index)
-                            {
-                                if (player2Index != player1Index && player2Index != player3Index && player2Index != player4Index)
-                                {
-                                    if (player3Index != 0)
-                                    {
-                                        if (player3Index != player1Index && player3Index != player2Index && player3Index != player4Index)
-                                        {
-                                            if (player4Index != 0)
-                                            {
-                                                if (player4Index != player1Index && player4Index != player2Index && player4Index != player3Index)
-                                                {
-                                                    gamestate = GameState.ingame;
-                                                    IsMouseVisible = false;
-                                                    buttonCharakterFor.isClicked = false;
-                                                }
-                                            }
-                             
-                                            else
-                                            {
-                                                gamestate = GameState.ingame;
-                                                IsMouseVisible = false;
-                                                buttonCharakterFor.isClicked = false;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        gamestate = GameState.ingame;
-                                        IsMouseVisible = false;
-                                        buttonCharakterFor.isClicked = false;
-                                    }
-                                }
-                            }
-                        }
-                     }*/
                         
                     buttonCharakter[1].Update(mouse);
 
@@ -1209,7 +1172,8 @@ namespace WindowsGame1
                     }
                     else
                     {
-                        if (Keyboard.GetState().IsKeyDown(Keys.P) && !buttonDown[0, 0]) gamestate = GameState.pause;
+                        if (Keyboard.GetState().IsKeyDown(Keys.P) && !buttonDown[0, 0]) 
+                            gamestate = GameState.pause;
                     }
 
                     if (collisionManager.checkPlayerAlive() == 1)

@@ -512,14 +512,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Rocket.mp3">
+    <Compile Include="Sound\Rocket.mp3">
       <Name>Rocket</Name>
       <Importer>Mp3Importer</Importer>
       <Processor>SongProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="bubble.wav">
+    <Compile Include="Sound\bubble.wav">
       <Name>bubble</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
@@ -540,7 +540,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="collectItem.wav">
+    <Compile Include="Sound\collectItem.wav">
       <Name>collectItem</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
@@ -558,6 +558,13 @@
       <Name>Ready</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sound\Dash.wav">
+      <Name>Dash</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
