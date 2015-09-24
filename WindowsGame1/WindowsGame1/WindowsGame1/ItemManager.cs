@@ -24,7 +24,7 @@ namespace WindowsGame1
         public TimeSpan activationTime;
         public TimeSpan effectTime;
 
-        private bool pickedUp;
+        public bool pickedUp;
 
         private CollisionManager collisionManager;
 
@@ -181,6 +181,9 @@ namespace WindowsGame1
                 {
                     activationTime = gameTime.TotalGameTime;
                     pickedUp = true;
+                    position.X = 18;
+                    position.Y = 10;
+                    position.Z = -4;
                     collectItem.Play();
                 }
             }
@@ -194,8 +197,8 @@ namespace WindowsGame1
 
         public void draw(Matrix view, Matrix projection)
         {
-            if (!pickedUp)
-            {
+            
+            
                 Matrix world = Matrix.Identity * Matrix.CreateRotationY(rotationy) * Matrix.CreateTranslation(position);
 
                 foreach (ModelMesh mesh in itemModel[itemIndex].Meshes)
@@ -210,11 +213,17 @@ namespace WindowsGame1
                     mesh.Draw();
                 }
             }
-        }
+        
 
         public CollisionSphere getItemSphere()
         {
             return collisionSphere;
+        }
+
+        public int getRestTime(GameTime gameTime)
+        {
+            TimeSpan time = ((activationTime + effectTime) - gameTime.TotalGameTime);
+            return time.Seconds;
         }
     }
 }

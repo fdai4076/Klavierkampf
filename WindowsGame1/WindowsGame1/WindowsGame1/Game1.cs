@@ -34,7 +34,6 @@ namespace WindowsGame1
         private bool mute;
         private bool gamePadOn;
         private bool [] charakterMenuPosition = new bool [4]; //true Oben, false Unten
-        private bool[] playerReady = new bool[4]; // true Ready, false Unready
    
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
@@ -83,6 +82,7 @@ namespace WindowsGame1
         private SoundEffect bubble;
         private SoundEffect collectItem;
         private SoundEffect dashEffect;
+        private SoundEffect crashEffect;
         public Model[] items;
 
         public Game1()
@@ -159,7 +159,7 @@ namespace WindowsGame1
            
             Model[] modelle = new Model[] { klavier, kleiderschrank, sofa, kuehlschrank };
             characterManager = new CharacterManager(modelle);
-            collisionManager = new CollisionManager(arenaBounding, groundBounding);
+            collisionManager = new CollisionManager(arenaBounding, groundBounding,crashEffect);
             item = new ItemManager(items, collisionManager);
 
 
@@ -172,34 +172,6 @@ namespace WindowsGame1
             {
                 charakterMenuPosition[i] = true;
             }
-
-            for (int i = 0; i <= 3; i++)
-            {
-                switch (i)
-                {
-                    case 0:
-                        if (GamePad.GetState(PlayerIndex.One).IsConnected == false) playerReady[i] = true;
-                        else playerReady[i] = false;
-                        break;
-                    case 1:
-                        if (GamePad.GetState(PlayerIndex.Two).IsConnected == false) playerReady[i] = true;
-                        else playerReady[i] = false;
-                        break;
-                    case 2:
-                        if (GamePad.GetState(PlayerIndex.Three).IsConnected == false) playerReady[i] = true;
-                        else playerReady[i] = false;
-                        break;
-                    case 3:
-                        if (GamePad.GetState(PlayerIndex.Four).IsConnected == false) playerReady[i] = true;
-                        else playerReady[i] = false;
-                        break;
-                }
-
-            }
-
-
-   	        
-            
         }
 
         /// <summary>
@@ -282,6 +254,7 @@ namespace WindowsGame1
             bubble = Content.Load<SoundEffect>("Sound/bubble");
             collectItem = Content.Load<SoundEffect>("Sound/collectItem");
             dashEffect = Content.Load<SoundEffect>("Sound/Dash");
+            crashEffect = Content.Load<SoundEffect>("Sound/crash");
         }
 
         /// <summary>
@@ -629,7 +602,6 @@ namespace WindowsGame1
                                 }
                                 else
                                 {
-                                    playerReady[0] = true;
                                     buttonDown[0, 2] = true;
                                 }
                             }
@@ -729,7 +701,6 @@ namespace WindowsGame1
                                 }
                                 else
                                 {
-                                    playerReady[2] = true;
                                     buttonDown[1, 2] = true;
                                 }
                             }
@@ -831,7 +802,6 @@ namespace WindowsGame1
                                 }
                                 else
                                 {
-                                    playerReady[0] = true;
                                     buttonDown[2, 2] = true;
                                 }
                             }
@@ -933,7 +903,6 @@ namespace WindowsGame1
                                 }
                                 else
                                 {
-                                    playerReady[0] = true;
                                     buttonDown[3, 2] = true;
                                 }
                             }
@@ -1142,6 +1111,7 @@ namespace WindowsGame1
                     break;
 
                 case GameState.ingame:
+                    MediaPlayer.Volume = 0.5f;
 
                     for (int i = 0; i < playerList.Count; i++)
                     {
@@ -1382,14 +1352,6 @@ namespace WindowsGame1
                     buttonCharakter[0].Draw(spriteBatch);
                     buttonCharakter[1].Draw(spriteBatch);
 
-                    if (gamePadOn == true)
-                    {
-                        if (playerReady[0] == true) spriteBatch.Draw(ready, new Rectangle(295, 180, ready.Width, ready.Height), Color.White);
-                        if (playerReady[1] == true) spriteBatch.Draw(ready, new Rectangle(725, 180, ready.Width, ready.Height), Color.White);
-                        if (playerReady[2] == true) spriteBatch.Draw(ready, new Rectangle(295, 425, ready.Width, ready.Height), Color.White);
-                        if (playerReady[3] == true) spriteBatch.Draw(ready, new Rectangle(725, 425, ready.Width, ready.Height), Color.White);
-                    }
-
                     if (showError)
                     {
                         spriteBatch.DrawString(font, "Please select at least two Players!", new Vector2(440, 670), Color.Red);
@@ -1464,9 +1426,17 @@ namespace WindowsGame1
                     spriteBatch.DrawString(font, "effectTime" + (item.effectTime + item.activationTime).ToString(), new Vector2(100, 300), Color.Black);
                     spriteBatch.DrawString(font, "effectTime" + ((item.effectTime + item.activationTime)>=gameTime.TotalGameTime).ToString(), new Vector2(100, 350), Color.Black);
                     spriteBatch.DrawString(font, "effectTime" + gameTime.TotalGameTime.ToString(), new Vector2(100, 400), Color.Black);
-                    spriteBatch.DrawString(font, "P1-Vector" + collisionManager.test.ToString(), new Vector2(100, 450), Color.Black);
+                    spriteBatch.DrawString(font, "enemyMass" + collisionManager.test.ToString(), new Vector2(100, 450), Color.Black);
                     spriteBatch.DrawString(font, "enemyCount" + collisionManager.test.ToString(), new Vector2(100,500), Color.Black);
+                    if (item.pickedUp)
+                    {
+                        spriteBatch.DrawString(font, "Player " + (item.pickerIndex + 1).ToString(), new Vector2(1100, 50), Color.White);
+                        spriteBatch.DrawString(font, item.getRestTime(gameTime).ToString(), new Vector2(1110, 90), Color.White);
+                    }
+
+
                     base.Draw(gameTime);
+
                 break;
 
             case GameState.pause:

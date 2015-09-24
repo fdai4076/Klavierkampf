@@ -11,13 +11,15 @@ namespace WindowsGame1
         private Vector3 directionVector;
         private float dashPower;
         private float speed;
+        private int directionId;
 
 
-        public Collision(float speed,Vector3 directionVector, float dashPower)
+        public Collision(int directionId, float speed, Vector3 directionVector, float dashPower)
         {
             this.directionVector = directionVector;
             this.dashPower = dashPower;
             this.speed = speed;
+            this.directionId = directionId;
             
 
         }
