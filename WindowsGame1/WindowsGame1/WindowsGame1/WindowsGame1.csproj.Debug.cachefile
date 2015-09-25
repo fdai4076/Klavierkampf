@@ -82,6 +82,13 @@ Content\Menu\SplashMenu\Lautsprecher2.xnb
 Content\Menu\SplashMenu\logo.xnb
 Content\Menu\SplashMenu\LautsprecherX.xnb
 Content\wasserTextur.xnb
+Content\Menu\Credits\Credits.xnb
+Content\Menu\Charakterwahl\Ready.xnb
+Content\Sound\Rocket.xnb
+Content\Sound\bubble.xnb
+Content\Sound\collectItem.xnb
+Content\Sound\Dash.xnb
+Content\Sound\crash.xnb
 Content\arenaTextur_0.xnb
 Content\Moebel\klavierTextur_0.xnb
 Content\Moebel\kleiderschrankTextur_0.xnb
@@ -93,11 +100,5 @@ Content\Items\powerTextur_0.xnb
 Content\Items\schnellerTextur_0.xnb
 Content\Items\umkehrenTextur_0.xnb
 Content\wasserTextur_0.xnb
-Content\Menu\Credits\Credits.xnb
-Content\Menu\Charakterwahl\Ready.xnb
-Content\Sound\Rocket.xnb
-Content\Sound\bubble.xnb
-Content\Sound\collectItem.xnb
-Content\Sound\Dash.xnb
-Content\Sound\crash.xnb
+Content\SpriteFont2.xnb
 Content\Sound\Rocket.wma

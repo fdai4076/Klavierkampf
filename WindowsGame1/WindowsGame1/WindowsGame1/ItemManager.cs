@@ -24,7 +24,7 @@ namespace WindowsGame1
         public TimeSpan activationTime;
         public TimeSpan effectTime;
 
-        public bool pickedUp;
+        private bool pickedUp;
 
         private CollisionManager collisionManager;
 
@@ -49,9 +49,9 @@ namespace WindowsGame1
 
         public void spawnItem()
         {
-            position.X = r.Next(-13, 13) + 0.5f;
+            position.X = r.Next(-12, 12);
             position.Y = 3;
-            position.Z = r.Next(-13, 13) + 0.5f;
+            position.Z = r.Next(-12, 12);
             itemIndex = r.Next(0, 4);
             Vector3 spherePosition = new Vector3(position.X, 1.2f, position.Z);
             collisionSphere = new CollisionSphere(spherePosition, itemIndex);
@@ -170,9 +170,9 @@ namespace WindowsGame1
 
         }
 
-        public void update(GameTime gameTime, SoundEffect collectItem)
+        public void update(GameTime gameTime, SoundEffect collectItem,bool mute)
         {
-            rotationy += 0.025f;
+            rotationy += 0.025f ;
             if (!pickedUp)
             {
                 pickerIndex = collisionManager.checkItemPickedUp(collisionSphere.getSphere());
@@ -184,7 +184,10 @@ namespace WindowsGame1
                     position.X = 18;
                     position.Y = 10;
                     position.Z = -4;
-                    collectItem.Play();
+                    if (!mute)
+                    {
+                        collectItem.Play();
+                    }
                 }
             }
 
@@ -224,6 +227,36 @@ namespace WindowsGame1
         {
             TimeSpan time = ((activationTime + effectTime) - gameTime.TotalGameTime);
             return time.Seconds;
+        }
+
+        public int getItemIndex()
+        {
+            return itemIndex;
+        }
+
+        public bool getPickedUp()
+        {
+            return pickedUp;
+        }
+
+        public List<String> getAffectedPlayer(List<Player> playerList)
+        {
+            List<String> affectedPlayer = new List<String>();
+            if (itemIndex == 0 || itemIndex == 3)
+            {
+                foreach (Player player in playerList)
+                {
+                    if (player.getPlayerIndex() != pickerIndex)
+                    {
+                        affectedPlayer.Add((player.getPlayerIndex()+1).ToString());
+                    }
+                }
+            }
+            else
+            {
+                  affectedPlayer.Add((pickerIndex+1).ToString());               
+            }
+            return affectedPlayer;
         }
     }
 }

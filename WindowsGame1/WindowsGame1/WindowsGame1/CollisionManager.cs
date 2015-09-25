@@ -18,6 +18,7 @@ namespace WindowsGame1
         public List<Player> enemysInFront = new List<Player>();
         public float test;
         private SoundEffect crashEffect;
+        private bool mute;
        
 
 
@@ -34,36 +35,6 @@ namespace WindowsGame1
             collisions[3] = new List<Collision>();
 
         }
-
-        /*    public List<Collision>[] checkCollision(Player player)
-            {
-                clearCollisions();
-                CollisionSphere[] playerSpheres = player.getCollisionSpheres();
-                alreadyCollideWithEnemy.Clear();
-                for (int i = 0; i < playerList.Count; i++)
-                {
-                    if (player.getPlayerIndex() != playerList[i].getPlayerIndex())
-                    {
-                        CollisionSphere[] enemySpheres = playerList[i].getCollisionSpheres();
-                        for (int x = 0; x < playerSpheres.Length; x++)
-                        {
-                            for (int y = 0; y < enemySpheres.Length; y++)
-                            {
-                                if (!(alreadyCollideWithEnemy.Contains(playerList[i].getPlayerIndex())))
-                                {
-                                    if (playerSpheres[x].getSphere().Intersects(enemySpheres[y].getSphere()))
-                                    {
-                                        collisions[playerSpheres[x].getDirectionIndex()].Add(new Collision(playerList[i].getCurrentSpeed(), playerList[i].getRotationY(), playerList[i].getPower(), playerList[i].getMass(), playerList[i].getDirectionId()));
-                                        alreadyCollideWithEnemy.Add(playerList[i].getPlayerIndex());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                return collisions;
-            }
-         */
 
         public void setPlayers(List<Player> playerlist)
         {
@@ -196,11 +167,11 @@ namespace WindowsGame1
             {
                 if (currentSphere.getSphere().Intersects(arenaBounding))
                 {
-                    return true;
+                    return false;
                 }
 
             }
-            return false;
+            return true;
         }
 
         public bool outOfGame(Player player)
@@ -233,69 +204,11 @@ namespace WindowsGame1
             return playerList[0].getModelId();
         }
 
-     /*   public Vector3 calculateCollisions(Player player)
+        public int winnerIndex()
         {
-            Vector3 collisionVector = new Vector3(0, 0, 0);
-            List<int> alreadyCollideWithPlayer = new List<int>();
-            float enemyMasses = 0f;
-            CollisionSphere[] playerCollisionSpheres = player.getCollisionSpheres();
-            for (int i = 0; i < playerList.Count; i++)
-            {
-                if (player.getPlayerIndex() != playerList[i].getPlayerIndex())
-                {
-                    CollisionSphere[] enemyCollisionSpheres = playerList[i].getCollisionSpheres();
-                    for (int x = 0; x < playerCollisionSpheres.Length; x++)
-                    {
-                        for (int y = 0; y < enemyCollisionSpheres.Length; y++)
-                        {
-                            if (!alreadyCollideWithPlayer.Contains(playerList[i].getPlayerIndex()))
-                            {
-                                if (playerCollisionSpheres[x].getSphere().Intersects(enemyCollisionSpheres[y].getSphere()))
-                                {
-                                    alreadyCollideWithPlayer.Add(playerList[i].getPlayerIndex());
+            return playerList[0].getPlayerIndex();
+        }
 
-                                    float enemyPower = playerList[i].getPower();
-                                    float enemyMass = playerList[i].getMass();
-                                    float enemyRotation = playerList[i].getRotationY();
-                                    float enemySpeed = playerList[i].getCurrentSpeed();
-                                    float enemyDashPower = playerList[i].getcurrentDashPower();
-                                    float playerMass = player.getMass();
-
-
-                                    if (playerCollisionSpheres[x].getDirectionIndex() == player.getDirectionId())
-                                    {
-                                        enemyMasses += enemyMass;
-                                    }
-
-                                    if (enemyPower > playerMass)
-                                    {
-
-                                        if (((playerCollisionSpheres[x].getDirectionIndex() + 2) % 4) == enemyCollisionSpheres[y].getDirectionIndex())
-                                        {
-                                            enemySpeed -= player.getCurrentSpeed();
-                                        }
-                                        collisionVector.X += (float)(enemySpeed * ((enemyPower + enemyDashPower - playerMass) / enemyPower) * Math.Sin(enemyRotation));
-                                        collisionVector.Z += (float)(enemySpeed * ((enemyPower + enemyDashPower - playerMass) / enemyPower) * Math.Cos(enemyRotation));
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (player.getPower() > enemyMasses)
-            {
-                float playerPower = player.getPower();
-                float playerDashPower = player.getcurrentDashPower();
-                float playerSpeed = player.getCurrentSpeed();
-                float playerRotation = player.getRotationY();
-
-                collisionVector.X += (float)(playerSpeed * ((playerPower - enemyMasses) / playerPower) * Math.Sin(playerRotation));
-                collisionVector.Z += (float)(playerSpeed * ((playerPower - enemyMasses) / playerPower) * Math.Cos(playerRotation));
-            }
-            return collisionVector;
-        } */
 
         public Vector3 calculateCollisions(Player player)
         {
@@ -353,8 +266,10 @@ namespace WindowsGame1
                                     {
                                         checkPlayerCollisionAt(playerList[i], (enemyCollisionSpheres[y].getDirectionIndex() + 2) % 4);
                                         enemysInFront.Add(playerList[i]);
-                                        if (!crashEffect.Play())
+                                        if (!mute)
+                                        {
                                             crashEffect.Play();
+                                        }
                                     }
                                 }
                             }
@@ -412,17 +327,6 @@ namespace WindowsGame1
             }
         }
                 
-                    
-        
-
-            
-     
-
-      
-
-        
-
-
         public int checkItemPickedUp(BoundingSphere itemSphere)
         {
             for (int i = 0; i < playerList.Count; i++)
@@ -438,7 +342,10 @@ namespace WindowsGame1
             }
             return 4;
         }
-     
+        public void Update(bool mute)
+        {
+            this.mute = mute;
+        }
 
     }
      

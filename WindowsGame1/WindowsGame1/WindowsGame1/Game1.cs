@@ -27,17 +27,17 @@ namespace WindowsGame1
         private float[] spawnRotation;
         private CharacterManager characterManager;
 
-        private SpriteFont font;
-        private int count;
+        private SpriteFont font,font2;
         private bool [,] buttonDown = new bool[4,6]; // Spalten (index 0 = Up, index 1 = Down, index 2 = A, index 3 = Left, index 4 = Right, index 5 = Start
         private bool showError;
-        private bool mute;
+        private bool mute,drawX;
         private bool gamePadOn;
         private bool [] charakterMenuPosition = new bool [4]; //true Oben, false Unten
    
         private BoundingBox arenaBounding;
         private BoundingBox groundBounding;
         private BoundingBox waterBounding;
+
         private CollisionManager collisionManager;
 
 
@@ -88,6 +88,7 @@ namespace WindowsGame1
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            //graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferHeight = screenHeight;
             graphics.PreferredBackBufferWidth = screenWidth;
@@ -165,7 +166,8 @@ namespace WindowsGame1
 
             showError = false;
 
-            mute = true;
+            mute = false;
+            drawX = false;
             gamePadOn = GamePad.GetState(PlayerIndex.One).IsConnected;
 
             for (int i = 0; i <= 3; i++)
@@ -184,6 +186,7 @@ namespace WindowsGame1
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("SpriteFont1");
+            font2 = Content.Load<SpriteFont>("SpriteFont2");
             klavier = Content.Load<Model>("Moebel/klavier");
             kleiderschrank = Content.Load<Model>("Moebel/kleiderschrank");
             sofa = Content.Load<Model>("Moebel/sofa");
@@ -475,6 +478,7 @@ namespace WindowsGame1
                             if (splashScreenIndex == 2) this.Exit();
                             if (splashScreenIndex == 3)
                             {
+                                mute = !mute;
                                 if (mute)
                                 {
                                     MediaPlayer.Volume = 0;
@@ -483,7 +487,8 @@ namespace WindowsGame1
                                 {
                                     MediaPlayer.Volume = 1;
                                 }
-                                mute = !mute;
+                                
+                                drawX = !drawX;
                             }
 
                             for (int i = 0; i <= 3; i++)
@@ -520,17 +525,20 @@ namespace WindowsGame1
 
                         if (splashMenuButtons[3].isClicked == true && !buttonDown[0, 0])
                         {
-                            if (mute)
-                            {
-                                MediaPlayer.Volume = 0;
-                            }
-                            else
-                            {
-                                MediaPlayer.Volume = 1;
-                            }
+                           mute = !mute;
+                                if (mute)
+                                {
+                                    MediaPlayer.Volume = 0;
+                                }
+                                else
+                                {
+                                    MediaPlayer.Volume = 1;
+                                }
+
+                                drawX = !drawX;
 
                             splashMenuButtons[3].isClicked = false;
-                            mute = !mute;
+
 
                         }
                         splashMenuButtons[3].Update(mouse);
@@ -1111,19 +1119,25 @@ namespace WindowsGame1
                     break;
 
                 case GameState.ingame:
-                    MediaPlayer.Volume = 0.5f;
-
+                    if (!mute)
+                    {
+                        MediaPlayer.Volume = 0.5f;
+                    }
+                    collisionManager.Update(mute);
                     for (int i = 0; i < playerList.Count; i++)
                     {
-                        playerList[i].Update(gameTime);
+                        playerList[i].Update(gameTime,mute);
                     }
 
-                    item.update(gameTime, collectItem);
+                    item.update(gameTime, collectItem,mute);
                     for(int i = 0;i<playerList.Count;i++)
                     {
                         if (playerList[i].getCollisionSpheres()[0].getSphere().Intersects(waterBounding))
                         {
-                            bubble.Play();
+                            if (!mute)
+                            {
+                                bubble.Play();
+                            }
                         }
                     }
 
@@ -1154,7 +1168,14 @@ namespace WindowsGame1
                     break;
 
                 case GameState.pause:
-
+                    if (mute)
+                    {
+                        MediaPlayer.Volume = 0;
+                    }
+                    else
+                    {
+                        MediaPlayer.Volume = 1;
+                    }
                     if (gamePadOn == true)
                     {
                         buttonPause[buttonPauseIndex].UpdatePad(1);
@@ -1236,6 +1257,14 @@ namespace WindowsGame1
                     break;
 
                 case GameState.result:
+                    if (mute)
+                    {
+                        MediaPlayer.Volume = 0;
+                    }
+                    else
+                    {
+                        MediaPlayer.Volume = 1;
+                    }
 
                     resultIndex = collisionManager.winner();
                     IsMouseVisible = true;
@@ -1263,6 +1292,14 @@ namespace WindowsGame1
                     break;
 
                 case GameState.credits :
+                    if (mute)
+                    {
+                        MediaPlayer.Volume = 0;
+                    }
+                    else
+                    {
+                        MediaPlayer.Volume = 1;
+                    }
 
                     if (gameTime.TotalGameTime.Seconds > 5)
                     {
@@ -1320,7 +1357,7 @@ namespace WindowsGame1
 
                    
                     
-		    if (!mute)
+		    if (drawX)
                     {
                         spriteBatch.Draw(lautsprecherX, new Rectangle(565, 555, lautsprecherX.Width, lautsprecherX.Height), Color.White);
 
@@ -1418,20 +1455,48 @@ namespace WindowsGame1
                     item.draw(view, projection);
 
 
-                    spriteBatch.DrawString(font, "picker " + item.pickerIndex.ToString(), new Vector2(100, 100), Color.Black);
-                    spriteBatch.DrawString(font, "itemSphere " + item.getItemSphere().getSphere().Center.ToString(), new Vector2(100, 150), Color.Black);
+                    /*spriteBatch.DrawString(font, "canFall " + collisionManager.canFall(playerList[0]).ToString(), new Vector2(100, 100), Color.Black);
+                    spriteBatch.DrawString(font, "isAlive " + playerList[0].isAlive.ToString(), new Vector2(100, 150), Color.Black);
                     
-                    spriteBatch.DrawString(font, "activationTime " + item.activationTime.ToString(), new Vector2(100, 200), Color.Black);
-                    spriteBatch.DrawString(font, "effectTime" + item.effectTime.ToString(), new Vector2(100, 250), Color.Black);
+                    spriteBatch.DrawString(font, "canMove " + playerList[0].canMove.ToString(), new Vector2(100, 200), Color.Black);
+                    spriteBatch.DrawString(font, "sphere" + playerList[0].getCollisionSpheres()[0].getCenterPos().ToString(), new Vector2(100, 250), Color.Black);
                     spriteBatch.DrawString(font, "effectTime" + (item.effectTime + item.activationTime).ToString(), new Vector2(100, 300), Color.Black);
                     spriteBatch.DrawString(font, "effectTime" + ((item.effectTime + item.activationTime)>=gameTime.TotalGameTime).ToString(), new Vector2(100, 350), Color.Black);
                     spriteBatch.DrawString(font, "effectTime" + gameTime.TotalGameTime.ToString(), new Vector2(100, 400), Color.Black);
                     spriteBatch.DrawString(font, "enemyMass" + collisionManager.test.ToString(), new Vector2(100, 450), Color.Black);
                     spriteBatch.DrawString(font, "enemyCount" + collisionManager.test.ToString(), new Vector2(100,500), Color.Black);
-                    if (item.pickedUp)
+                   */
+                    int y = 100;
+                    spriteBatch.DrawString(font, "DashCountdown", new Vector2(20,y), Color.White);
+                    y += 20;
+                    for(int i = 0;i<playerList.Count;i++)
                     {
-                        spriteBatch.DrawString(font, "Player " + (item.pickerIndex + 1).ToString(), new Vector2(1100, 50), Color.White);
-                        spriteBatch.DrawString(font, item.getRestTime(gameTime).ToString(), new Vector2(1110, 90), Color.White);
+                        y += 20;
+                        int dashCountdown = playerList[i].getRestDashTime(gameTime).Seconds;
+                        if (dashCountdown <= 0)
+                        {
+                            spriteBatch.DrawString(font, "Player " + (playerList[i].getPlayerIndex() + 1).ToString() + " Bereit!", new Vector2(20, y), Color.White);
+                        }
+
+                        else
+                        {
+                            spriteBatch.DrawString(font, "Player " + (playerList[i].getPlayerIndex() + 1).ToString() + " " + dashCountdown.ToString(), new Vector2(20, y), Color.White);
+                        }
+                    }
+                    if (item.getPickedUp())
+                    {
+                        List<String> affectedPlayer = item.getAffectedPlayer(playerList);
+                        int v = 100;
+                        spriteBatch.DrawString(font, item.getRestTime(gameTime).ToString(), new Vector2(1110, v), Color.White);
+                        v += 40;
+                        for (int i = 0; i < affectedPlayer.Count; i++)
+                        {
+                            v += 30;
+                            spriteBatch.DrawString(font, "Player " + affectedPlayer[i].ToString(), new Vector2(1100, v), Color.White);
+                            
+                        }
+                            
+                       
                     }
 
 
@@ -1451,7 +1516,7 @@ namespace WindowsGame1
             case GameState.result:
 
                 spriteBatch.Draw(results[resultIndex], new Rectangle(0, 0, results[resultIndex].Width, results[resultIndex].Height), Color.White);
-
+                spriteBatch.DrawString(font2,  "Player "+ (collisionManager.winnerIndex()+1).ToString(), new Vector2(10, 350), Color.White);
                 buttonResultMainMenu.Draw(spriteBatch);
                 buttonResultNewGame.Draw(spriteBatch);
 

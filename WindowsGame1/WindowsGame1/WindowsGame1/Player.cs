@@ -16,7 +16,8 @@ namespace WindowsGame1
 
         private float[] cornerAngles;
         private bool[] itemActive;
-        private bool isAlive;
+        public bool isAlive;
+        public bool canMove;
         private int directionId;
         private int playerindex;
         private float rotationy;
@@ -53,6 +54,7 @@ namespace WindowsGame1
             this.model = data.model;
             this.modelId = data.modelId;
             this.dashEffect = dashEffect;
+            canMove = true;
             sphere = new CollisionSphere[data.spheres.Length];
 
 
@@ -72,7 +74,7 @@ namespace WindowsGame1
 
             for (int i = 0; i < this.sphere.Length; i++)
             {
-                this.sphere[i].setCenterPos(new Vector3(position.X + this.sphere[i].getPosToModel().X, 1.2f, position.Z + this.sphere[i].getPosToModel().Z));
+                this.sphere[i].setCenterPos(new Vector3(position.X + this.sphere[i].getPosToModel().X, 1.1f, position.Z + this.sphere[i].getPosToModel().Z));
                 this.sphere[i].setAngleToModel(getAngle2Dim(this.sphere[i].getCenterPos(), this.position));
                 this.sphere[i].setRadius(Math.Sqrt(Math.Pow(position.X - sphere[i].getCenterPos().X, 2) + Math.Pow(position.Z - sphere[i].getCenterPos().Z, 2)));
                 double radius = sphere[i].getRadius();
@@ -92,7 +94,7 @@ namespace WindowsGame1
 
         public void Draw(Matrix view, Matrix projection)
         {
-            /* for (int i = 0; i < sphere.Length; i++)
+            /*for (int i = 0; i < sphere.Length; i++)
              {
                  Matrix World = Matrix.Identity * Matrix.CreateTranslation(sphere[i].getCenterPos());
                  foreach (ModelMesh sphereMesh in sphereModel.Meshes)
@@ -125,7 +127,7 @@ namespace WindowsGame1
             }
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime,bool mute)
         {
             speedEffect = itemManager.getItemEffect(playerindex).speed;
             powerEffect = itemManager.getItemEffect(playerindex).power;
@@ -138,280 +140,177 @@ namespace WindowsGame1
                 currentDashPower = 0f;
                 ItemManager.ItemsEffect itemEffect = itemManager.getItemEffect(playerindex);
 
-                if (!collisionManager.canFall(this))
+                if (collisionManager.canFall(this))
                 {
                     position.Y -= 0.1f;
                     for (int i = 0; i < sphere.Length; i++)
                     {
                         sphere[i].setCenterPos(new Vector3(sphere[i].getCenterPos().X, sphere[i].getCenterPos().Y - 0.1f, sphere[i].getCenterPos().Z));
                     }
+                    canMove = false;
 
                     if (collisionManager.outOfGame(this))
                         isAlive = false;
                 }
 
 
-
-                if (playerindex == 0)
+                if (canMove)
                 {
-                    if (Keyboard.GetState().IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
+                    if (playerindex == 0)
                     {
-                        directionId = 3;
-                        if (collisionManager.checkCanRotateLeft(this, position))
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
                         {
-                            rotationy += (0.01f * movingEffect);
+                            rotateLeft();
                         }
-                    }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.D) || GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
-                    {
-                        directionId = 1;
-                        if (collisionManager.checkCanRotateRight(this, position))
+                        if (Keyboard.GetState().IsKeyDown(Keys.D) || GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
                         {
-                            rotationy -= (0.01f * movingEffect);
-
+                            rotateRight();
                         }
-                    }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.W) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
-                    {
-                        directionId = 0;
-                        if (collisionManager.canWalkForward(this))
+                        if (Keyboard.GetState().IsKeyDown(Keys.W) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
                         {
 
-                            currentSpeed -= (speed * speedEffect * movingEffect);
-                            if ((Keyboard.GetState().IsKeyDown(Keys.E) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
+                            walkForward();
+                        }
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
+                        {
+
+                            walkBackward();
+                        }
+
+                        if ((Keyboard.GetState().IsKeyDown(Keys.E) && !dashing) || (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed && !dashing))
+                        {
+                            if (currentSpeed == 0 && movingEffect == -1)
                             {
-                                currentSpeed *= 5f;
-                                currentDashPower = dashPower;
-                                dashing = true;
-                                dashTime = gameTime.TotalGameTime;
-                                dashEffect.Play();
-
+                                walkBackward();
                             }
-                        }
-                    }
-
-                    if (Keyboard.GetState().IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
-                    {
-                        directionId = 2;
-                        if (collisionManager.canWalkBackward(this))
-                        {
-                            currentSpeed += (speed * speedEffect * movingEffect);
-                        }
-                    }
-                }
-
-                if (playerindex == 1)
-                {
-                    if (Keyboard.GetState().IsKeyDown(Keys.H) || GamePad.GetState(PlayerIndex.Two).DPad.Left == ButtonState.Pressed)
-                    {
-                        directionId = 3;
-                        if (collisionManager.checkCanRotateLeft(this, position))
-                        {
-                            rotationy += (0.01f * movingEffect);
-                        }
-                    }
-
-                    if (Keyboard.GetState().IsKeyDown(Keys.K) || GamePad.GetState(PlayerIndex.Two).DPad.Right == ButtonState.Pressed)
-                    {
-                        directionId = 1;
-                        rotationy -= 0.01f;
-
-                        if (collisionManager.checkCanRotateRight(this, position))
-                        {
-                            rotationy -= (0.01f * movingEffect);
-                        }
-                    }
-
-                    if (Keyboard.GetState().IsKeyDown(Keys.U) || GamePad.GetState(PlayerIndex.Two).DPad.Up == ButtonState.Pressed)
-                    {
-                        directionId = 0;
-                        if (collisionManager.canWalkForward(this))
-                        {
-
-                            currentSpeed -= (speed * speedEffect * movingEffect);
-                            if ((Keyboard.GetState().IsKeyDown(Keys.I) && !dashing) || (GamePad.GetState(PlayerIndex.Two).Buttons.A == ButtonState.Pressed && !dashing))
+                            if (currentSpeed == 0)
                             {
-                                currentSpeed *= 5f;
-                                power += dashPower;
-                                dashing = false;
-                                dashTime = gameTime.TotalGameTime;
-                                dashEffect.Play();
+                                walkForward();
                             }
+                            dash(gameTime, mute);
                         }
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.J) || GamePad.GetState(PlayerIndex.Two).DPad.Down == ButtonState.Pressed)
+                    if (playerindex == 1)
                     {
-                        directionId = 2;
-                        if (collisionManager.canWalkBackward(this))
+                        if (Keyboard.GetState().IsKeyDown(Keys.H) || GamePad.GetState(PlayerIndex.Two).DPad.Left == ButtonState.Pressed)
                         {
-
-                            currentSpeed += (speed * speedEffect * movingEffect);
-
+                            rotateLeft();
                         }
-                    }
-                }
 
-                if (playerindex == 2)
-                {
-                    if (Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.Three).DPad.Left == ButtonState.Pressed)
-                    {
-                        directionId = 3;
-                        if (collisionManager.checkCanRotateLeft(this, position))
+                        if (Keyboard.GetState().IsKeyDown(Keys.K) || GamePad.GetState(PlayerIndex.Two).DPad.Right == ButtonState.Pressed)
                         {
-                            rotationy += (0.01f * movingEffect);
+                            rotateRight();
                         }
-                    }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.Three).DPad.Right == ButtonState.Pressed)
-                    {
-                        directionId = 1;
-
-                        if (collisionManager.checkCanRotateRight(this, position))
+                        if (Keyboard.GetState().IsKeyDown(Keys.U) || GamePad.GetState(PlayerIndex.Two).DPad.Up == ButtonState.Pressed)
                         {
-                            rotationy -= (0.01f * movingEffect);
+                            walkForward();
                         }
-                    }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.Three).DPad.Up == ButtonState.Pressed)
-                    {
-                        directionId = 0;
-                        if (collisionManager.canWalkForward(this))
+                        if (Keyboard.GetState().IsKeyDown(Keys.J) || GamePad.GetState(PlayerIndex.Two).DPad.Down == ButtonState.Pressed)
                         {
-
-                            currentSpeed -= speed;
-                            if ((Keyboard.GetState().IsKeyDown(Keys.RightControl) && !dashing) || (GamePad.GetState(PlayerIndex.Three).Buttons.A == ButtonState.Pressed && !dashing))
+                            walkBackward();
+                        }
+                        if ((Keyboard.GetState().IsKeyDown(Keys.I) && !dashing) || (GamePad.GetState(PlayerIndex.Two).Buttons.A == ButtonState.Pressed && !dashing))
+                        {
+                            if (currentSpeed == 0 && movingEffect == -1)
                             {
-                                currentSpeed *= 5f;
-                                power += dashPower;
-                                dashing = false;
-                                dashTime = gameTime.TotalGameTime;
-                                dashEffect.Play();
+                                walkBackward();
                             }
-                        }
-                    }
-
-                    if (Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.Three).DPad.Down == ButtonState.Pressed)
-                    {
-                        directionId = 2;
-                        if (collisionManager.canWalkBackward(this))
-                        {
-                            currentSpeed += (speed* speedEffect * movingEffect);
-                        }
-
-                    }
-                }
-
-
-                if (playerindex == 3)
-                {
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad4) || GamePad.GetState(PlayerIndex.Four).DPad.Left == ButtonState.Pressed)
-                    {
-                        directionId = 3;
-                        if (collisionManager.checkCanRotateLeft(this, position))
-                        {
-                            rotationy += (0.01f * movingEffect);
-                        }
-
-                    }
-
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad6) || GamePad.GetState(PlayerIndex.Four).DPad.Right == ButtonState.Pressed)
-                    {
-                        directionId = 1;
-                        if (collisionManager.checkCanRotateRight(this, position))
-                        {
-                            rotationy -= (0.01f * movingEffect);
-                        }
-                    }
-
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad8) || GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Pressed)
-                    {
-                        directionId = 0;
-                        if (collisionManager.canWalkForward(this))
-                        {
-                     
-
-                            currentSpeed -= (speed * speedEffect * movingEffect);
-                            if ((Keyboard.GetState().IsKeyDown(Keys.NumPad0) && !dashing) || (GamePad.GetState(PlayerIndex.Four).Buttons.A == ButtonState.Pressed && !dashing))
+                            if (currentSpeed == 0)
                             {
-                                currentSpeed *= 5f;
-                                power += dashPower;
-                                dashing = false;
-                                dashTime = gameTime.TotalGameTime;
-                                dashEffect.Play();
+                                walkForward();
                             }
+                            dash(gameTime, mute);
                         }
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.NumPad5) || GamePad.GetState(PlayerIndex.Four).DPad.Down == ButtonState.Pressed)
+                    if (playerindex == 2)
                     {
-                        directionId = 2;
-                        if (collisionManager.canWalkBackward(this))
+                        if (Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.Three).DPad.Left == ButtonState.Pressed)
+                        {
+                            rotateLeft();
+                        }
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.Three).DPad.Right == ButtonState.Pressed)
+                        {
+                            rotateRight();
+                        }
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.Three).DPad.Up == ButtonState.Pressed)
+                        {
+                            walkForward();
+                        }
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.Three).DPad.Down == ButtonState.Pressed)
+                        {
+                            walkBackward();
+                        }
+                        if ((Keyboard.GetState().IsKeyDown(Keys.RightControl) && !dashing) || (GamePad.GetState(PlayerIndex.Three).Buttons.A == ButtonState.Pressed && !dashing))
+                        {
+                            if (currentSpeed == 0 && movingEffect == -1)
+                            {
+                                walkBackward();
+                            }
+                            if (currentSpeed == 0)
+                            {
+                                walkForward();
+                            }
+                            dash(gameTime, mute);
+                        }
+                    }
+
+
+                    if (playerindex == 3)
+                    {
+                        if (Keyboard.GetState().IsKeyDown(Keys.NumPad4) || GamePad.GetState(PlayerIndex.Four).DPad.Left == ButtonState.Pressed)
                         {
 
-                            currentSpeed += (speed * speedEffect * movingEffect);
+                            rotateLeft();
+
                         }
 
+                        if (Keyboard.GetState().IsKeyDown(Keys.NumPad6) || GamePad.GetState(PlayerIndex.Four).DPad.Right == ButtonState.Pressed)
+                        {
+                            rotateRight();
+                        }
 
+                        if (Keyboard.GetState().IsKeyDown(Keys.NumPad8) || GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Pressed)
+                        {
+
+                            walkForward();
+                        }
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.NumPad5) || GamePad.GetState(PlayerIndex.Four).DPad.Down == ButtonState.Pressed)
+                        {
+                            walkBackward();
+                        }
+
+                        if ((Keyboard.GetState().IsKeyDown(Keys.NumPad9) && !dashing) || (GamePad.GetState(PlayerIndex.Four).Buttons.A == ButtonState.Pressed && !dashing))
+                        {
+                            if (currentSpeed == 0 && movingEffect == -1)
+                            {
+                                walkBackward();
+                            }
+                            if (currentSpeed == 0)
+                            {
+                                walkForward();
+                            }
+                            dash(gameTime, mute);
+                        }
                     }
-                }
 
+                }
                 movePlayer();
                 checkCanDash(gameTime);
             }
         }
 
-        /*   public void calculateCollisions()
-           {
-               allEnemyMass = 0;
-               List<Collision>[] collisions = collisionManager.checkCollision(this);
-               for (int i = 0; i < collisions.Length; i++)
-               {
-                   foreach (Collision currentCollision in collisions[i])
-                   {
-
-                       if (directionId == i)
-                       {
-                           allEnemyMass += currentCollision.getEnemyMass();
-                       }
-                       if (currentCollision.getEnemyDirection() != directionId)
-                       {
-                           if (currentCollision.getEnemyPower() > mass)
-                           {
-                               changePosition.X += (float)(currentCollision.getEnemySpeed() *
-                                   ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
-                                   Math.Sin(currentCollision.getEnemyRotation()));
-
-                               changePosition.Z += (float)(currentCollision.getEnemySpeed() *
-                                 ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
-                                 Math.Cos(currentCollision.getEnemyRotation()));
-                           }
-                       }
-                       else
-                       {
-                           if (currentCollision.getEnemyDirection() != 4 && currentCollision.getEnemySpeed() > currentSpeed)
-                           {
-                               changePosition.X += (float)((currentCollision.getEnemySpeed() - currentSpeed) *
-                                   ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
-                                   Math.Sin(currentCollision.getEnemyRotation()));
-
-                               changePosition.Z += (float)((currentCollision.getEnemySpeed() - currentSpeed) *
-                                   ((currentCollision.getEnemyPower() - mass) / currentCollision.getEnemyPower()) *
-                                   Math.Cos(currentCollision.getEnemyRotation()));
-                           }
-                       }
-                   }
-               }
-            
-               if (power > allEnemyMass)
-               {
-                   changePosition.X += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Sin(rotationy));
-                   changePosition.Z += (float)(currentSpeed * ((power - allEnemyMass) / power) * Math.Cos(rotationy));
-               }
-           }
-           */
         public double getAngle2Dim(Vector3 spherePos, Vector3 modelPos)
         {
             Vector2 sphereVector = new Vector2(spherePos.X - modelPos.X, spherePos.Z - modelPos.Z);
@@ -461,22 +360,111 @@ namespace WindowsGame1
 
         }
 
+        public void rotateLeft()
+        {
+            if (movingEffect == -1)
+            {
+                directionId = 1;
+                if (collisionManager.checkCanRotateRight(this, position))
+                {
+                    rotationy += (rotationSpeed * movingEffect);
+                }
+            }
+            else
+            {
+                directionId = 3;
+                if (collisionManager.checkCanRotateLeft(this, position))
+                {
+                    rotationy += (rotationSpeed * movingEffect);
+                }
+            }
+        }
+
+        public void rotateRight()
+        {
+            if (movingEffect == -1)
+            {
+                directionId = 3;
+                if (collisionManager.checkCanRotateLeft(this, position))
+                {
+                    rotationy -= (rotationSpeed * movingEffect);
+                }
+            }
+            else
+            {
+                directionId = 1;
+                if (collisionManager.checkCanRotateRight(this, position))
+                {
+                    rotationy -= (rotationSpeed * movingEffect);
+                }
+            }
+        }
+
+        public void walkBackward()
+        {
+            if (movingEffect == -1)
+            {
+                directionId = 0;
+                if (collisionManager.canWalkForward(this))
+                {
+                    currentSpeed += (speed * speedEffect * movingEffect);
+                }
+            }
+            else
+            {
+                directionId = 2;
+                if (collisionManager.canWalkBackward(this))
+                {
+                    currentSpeed += (speed * speedEffect * movingEffect);
+                }
+            }
+        }
+
+        public void walkForward()
+        {
+            if (movingEffect == -1)
+            {
+                directionId = 2;
+                if (collisionManager.canWalkBackward(this))
+                {
+                    currentSpeed -= (speed * speedEffect * movingEffect);
+
+                }
+            }
+            else
+            {
+                directionId = 0;
+                if (collisionManager.canWalkForward(this))
+                {
+                    currentSpeed -= (speed * speedEffect * movingEffect);
+
+                }
+            }
+        }
+
+        public void dash(GameTime gameTime, bool mute)
+        {
+            currentSpeed *= 5f;
+            currentDashPower = dashPower;
+            dashing = true;
+            dashTime = gameTime.TotalGameTime;
+            if (!mute)
+            {
+                dashEffect.Play();
+            }
+        }
+
         public void checkCanDash(GameTime gameTime)
         {
             if (dashTime + TimeSpan.FromMilliseconds(dashCountdown) <= gameTime.TotalGameTime)
             {
                 dashing = false;
             }
-
-
         }
 
-
-
-        public TimeSpan getDashTime()
+        public TimeSpan getRestDashTime(GameTime gameTime)
         {
-            return (dashTime + TimeSpan.FromMilliseconds(dashCountdown));
-
+            return (dashTime + TimeSpan.FromMilliseconds(dashCountdown)-gameTime.TotalGameTime);
         }
 
         public float[] getCornerAngles()

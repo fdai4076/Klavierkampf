@@ -112,7 +112,6 @@
     <Compile Include="Collision.cs" />
     <Compile Include="CollisionManager.cs" />
     <Compile Include="CollisionSphere.cs" />
-    <Compile Include="Item.cs" />
     <Compile Include="ItemManager.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
