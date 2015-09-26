@@ -1455,7 +1455,7 @@ namespace WindowsGame1
                     item.draw(view, projection);
 
 
-                    /*spriteBatch.DrawString(font, "canFall " + collisionManager.canFall(playerList[0]).ToString(), new Vector2(100, 100), Color.Black);
+                    spriteBatch.DrawString(font, "canFall " + collisionManager.canFall(playerList[0]).ToString(), new Vector2(100, 100), Color.Black);
                     spriteBatch.DrawString(font, "isAlive " + playerList[0].isAlive.ToString(), new Vector2(100, 150), Color.Black);
                     
                     spriteBatch.DrawString(font, "canMove " + playerList[0].canMove.ToString(), new Vector2(100, 200), Color.Black);
@@ -1465,7 +1465,7 @@ namespace WindowsGame1
                     spriteBatch.DrawString(font, "effectTime" + gameTime.TotalGameTime.ToString(), new Vector2(100, 400), Color.Black);
                     spriteBatch.DrawString(font, "enemyMass" + collisionManager.test.ToString(), new Vector2(100, 450), Color.Black);
                     spriteBatch.DrawString(font, "enemyCount" + collisionManager.test.ToString(), new Vector2(100,500), Color.Black);
-                   */
+                   
                     int y = 100;
                     spriteBatch.DrawString(font, "DashCountdown", new Vector2(20,y), Color.White);
                     y += 20;

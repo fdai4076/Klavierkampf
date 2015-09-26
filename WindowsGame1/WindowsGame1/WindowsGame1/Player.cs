@@ -94,7 +94,7 @@ namespace WindowsGame1
 
         public void Draw(Matrix view, Matrix projection)
         {
-            /*for (int i = 0; i < sphere.Length; i++)
+            for (int i = 0; i < sphere.Length; i++)
              {
                  Matrix World = Matrix.Identity * Matrix.CreateTranslation(sphere[i].getCenterPos());
                  foreach (ModelMesh sphereMesh in sphereModel.Meshes)
@@ -108,7 +108,7 @@ namespace WindowsGame1
                      }
                      sphereMesh.Draw();
                  }
-             }*/
+             }
 
             Matrix world = Matrix.Identity * Matrix.CreateRotationY(rotationy) * Matrix.CreateTranslation(position);
 
@@ -120,8 +120,8 @@ namespace WindowsGame1
                     basic.View = view;
                     basic.Projection = projection;
                     basic.EnableDefaultLighting();
-                    //basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-                    //basic.Alpha = 0.5f;
+                    basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                    basic.Alpha = 0.5f;
                 }
                 mesh.Draw();
             }
@@ -341,6 +341,20 @@ namespace WindowsGame1
         {
             Vector3 collisionVector = collisionManager.calculateCollisions(this);
             position += collisionVector;
+         
+           for (int i = 0; i < sphere.Length; i++)
+            {
+                double radius = sphere[i].getRadius();
+                sphere[i].setCenterPos(new Vector3(
+                    (float)(position.X + (Math.Cos(sphere[i].getAngleToModel() + rotationy) * radius)),
+                    sphere[i].getCenterPos().Y,
+                    (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
+            }
+            
+        }
+
+        public void moveCollisionSpheres(Vector3 collisionVector)
+        {
             for (int i = 0; i < sphere.Length; i++)
             {
 
@@ -349,16 +363,8 @@ namespace WindowsGame1
                 sphere[i].getCenterPos().Y,
                 (float)(sphere[i].getCenterPos().Z + collisionVector.Z)));
             }
-            for (int i = 0; i < sphere.Length; i++)
-            {
-                double radius = sphere[i].getRadius();
-                sphere[i].setCenterPos(new Vector3(
-                    (float)(position.X + (Math.Cos(sphere[i].getAngleToModel() + rotationy) * radius)),
-                    sphere[i].getCenterPos().Y,
-                    (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
-            }
-
         }
+
 
         public void rotateLeft()
         {

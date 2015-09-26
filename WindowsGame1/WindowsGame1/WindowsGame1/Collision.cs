@@ -39,6 +39,11 @@ namespace WindowsGame1
             return speed;
         }
 
+        public int getDirectionId()
+        {
+            return directionId;
+        }
+
 
 
         

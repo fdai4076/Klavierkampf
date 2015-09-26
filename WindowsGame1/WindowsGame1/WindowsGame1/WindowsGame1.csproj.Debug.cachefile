@@ -15,6 +15,7 @@ Content\player3.xnb
 Content\player4.xnb
 Content\wasserBoden.xnb
 Content\SpriteFont1.xnb
+Content\SpriteFont2.xnb
 Content\Moebel\kuehlschrankTexture.xnb
 Content\arenaTextur.xnb
 Content\Moebel\klavierTextur.xnb
@@ -100,5 +101,4 @@ Content\Items\powerTextur_0.xnb
 Content\Items\schnellerTextur_0.xnb
 Content\Items\umkehrenTextur_0.xnb
 Content\wasserTextur_0.xnb
-Content\SpriteFont2.xnb
 Content\Sound\Rocket.wma
