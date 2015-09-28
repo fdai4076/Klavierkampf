@@ -306,7 +306,7 @@ namespace WindowsGame1
                     }
 
                 }
-                movePlayer();
+                collisionManager.calculateCollisions(this, directionId, currentSpeed, power, currentDashPower, rotationy);
                 checkCanDash(gameTime);
             }
         }
@@ -337,9 +337,9 @@ namespace WindowsGame1
             return mass;
         }
 
-        private void movePlayer()
+    /*    private void movePlayer()
         {
-            Vector3 collisionVector = collisionManager.calculateCollisions(this);
+            collisionManager.calculateCollisions(this,directionId,currentSpeed,power,currentDashPower,rotationy);
             position += collisionVector;
          
            for (int i = 0; i < sphere.Length; i++)
@@ -351,7 +351,22 @@ namespace WindowsGame1
                     (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
             }
             
+        }*/
+
+        public void movePlayer(Vector3 directionVector)
+        {
+            position += directionVector;
+
+           for (int i = 0; i < sphere.Length; i++)
+            {
+                double radius = sphere[i].getRadius();
+                sphere[i].setCenterPos(new Vector3(
+                    (float)(position.X + (Math.Cos(sphere[i].getAngleToModel() + rotationy) * radius)),
+                    sphere[i].getCenterPos().Y,
+                    (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
+            } 
         }
+
 
         public void moveCollisionSpheres(Vector3 collisionVector)
         {
@@ -411,7 +426,7 @@ namespace WindowsGame1
             if (movingEffect == -1)
             {
                 directionId = 0;
-                if (collisionManager.canWalkForward(this))
+                if (collisionManager.canWalk(this, directionId))
                 {
                     currentSpeed += (speed * speedEffect * movingEffect);
                 }
@@ -419,7 +434,7 @@ namespace WindowsGame1
             else
             {
                 directionId = 2;
-                if (collisionManager.canWalkBackward(this))
+                if (collisionManager.canWalk(this, directionId))
                 {
                     currentSpeed += (speed * speedEffect * movingEffect);
                 }
@@ -431,7 +446,7 @@ namespace WindowsGame1
             if (movingEffect == -1)
             {
                 directionId = 2;
-                if (collisionManager.canWalkBackward(this))
+                if (collisionManager.canWalk(this, directionId))
                 {
                     currentSpeed -= (speed * speedEffect * movingEffect);
 
@@ -440,7 +455,7 @@ namespace WindowsGame1
             else
             {
                 directionId = 0;
-                if (collisionManager.canWalkForward(this))
+                if (collisionManager.canWalk(this, directionId))
                 {
                     currentSpeed -= (speed * speedEffect * movingEffect);
 
