@@ -28,6 +28,8 @@ namespace WindowsGame1
 
         private CollisionManager collisionManager;
 
+        private Model itemSchatten;
+
         public struct ItemsEffect
         {
             public float speed;
@@ -36,7 +38,7 @@ namespace WindowsGame1
         };
 
 
-        public ItemManager(Model[] itemModel, CollisionManager collisionManager)
+        public ItemManager(Model[] itemModel, CollisionManager collisionManager,Model itemSchatten)
         {
             r = new Random();
             this.itemModel = itemModel;
@@ -44,6 +46,7 @@ namespace WindowsGame1
             pickedUp = false;
             effectTime = new TimeSpan(0, 0, 10);
             this.collisionManager = collisionManager;
+            this.itemSchatten = itemSchatten;
             spawnItem();
         }
 
@@ -214,6 +217,21 @@ namespace WindowsGame1
                         basic.EnableDefaultLighting();
                     }
                     mesh.Draw();
+                }
+                if (!pickedUp)
+                {
+                    Matrix world2 = Matrix.Identity * Matrix.CreateTranslation(new Vector3(position.X, 1.4f, position.Z));
+                    foreach (ModelMesh mesh in itemSchatten.Meshes)
+                    {
+                        foreach (BasicEffect basic in mesh.Effects)
+                        {
+                            basic.World = world2;
+                            basic.View = view;
+                            basic.Projection = projection;
+                            basic.EnableDefaultLighting();
+                        }
+                        mesh.Draw();
+                    }
                 }
             }
         

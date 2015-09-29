@@ -22,6 +22,7 @@ namespace WindowsGame1
         private Matrix view, projection;
         private ItemManager item;
         private Model[] identifier;
+        private Model itemSchatten;
         private List<Player> playerList;
         private Vector3[] spawnPoints;
         private float[] spawnRotation;
@@ -161,7 +162,7 @@ namespace WindowsGame1
             Model[] modelle = new Model[] { klavier, kleiderschrank, sofa, kuehlschrank };
             characterManager = new CharacterManager(modelle);
             collisionManager = new CollisionManager(arenaBounding, groundBounding,crashEffect);
-            item = new ItemManager(items, collisionManager);
+            item = new ItemManager(items, collisionManager,itemSchatten);
 
 
             showError = false;
@@ -197,6 +198,7 @@ namespace WindowsGame1
             ultimatesphere = Content.Load<Model>("ultimateSphere");
             identifier = new Model[] { Content.Load<Model>("player1"), Content.Load<Model>("player2"), Content.Load<Model>("player3"), Content.Load<Model>("player4") };
             ground = Content.Load<Model>("wasserBoden");
+            itemSchatten = Content.Load<Model>("schattenItems");
             // TODO: use this.Content to load your game content here
 
             logoPicture = Content.Load<Texture2D>("Menu/Logo/LogoScreen");
