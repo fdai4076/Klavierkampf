@@ -37,7 +37,6 @@ namespace WindowsGame1
             public int moving;
         };
 
-
         public ItemManager(Model[] itemModel, CollisionManager collisionManager,Model itemSchatten)
         {
             r = new Random();
@@ -49,7 +48,8 @@ namespace WindowsGame1
             this.itemSchatten = itemSchatten;
             spawnItem();
         }
-
+        
+        //erstellt Zufallswerte für die SpawnPosition des Items und erstellt die passende collisionSphere
         public void spawnItem()
         {
             position.X = r.Next(-12, 12);
@@ -61,11 +61,11 @@ namespace WindowsGame1
             collisionSphere.setCenterPos(new Vector3(position.X, 1.2f, position.Z));
         }
 
+        //weist dem struct itemsEffect Werte zu, die der Player später nutzt um die Bewegung zu verändern
         public ItemsEffect getItemEffect(int playerIndex)
         {
             if (pickedUp == true)
             {
-
                 switch (itemIndex)
                 {
                     case 0:
@@ -87,7 +87,6 @@ namespace WindowsGame1
 
                             return effect;
                         }
-                        break;
 
                     case 1:
                         if (playerIndex == pickerIndex)
@@ -108,7 +107,6 @@ namespace WindowsGame1
 
                             return effect;
                         }
-                        break;
 
                     case 2:
                         if (playerIndex == pickerIndex)
@@ -129,7 +127,6 @@ namespace WindowsGame1
 
                             return effect;
                         }
-                        break;
 
                     case 3:
                         if (playerIndex == pickerIndex)
@@ -150,7 +147,6 @@ namespace WindowsGame1
 
                             return effect;
                         }
-                        break;
 
                     default:
                         ItemsEffect effect2;
@@ -170,9 +166,11 @@ namespace WindowsGame1
 
                 return effect;
             }
-
         }
 
+        //lässt das Item rotieren, außerdem legt es eine neue Position fest, wenn das Item eingesammelt wurde,
+        //damit angezeigt werden kann welches item eingesammelt wurde, wenn die effectTime des Items vorbei ist, wird ein
+        // neues gespawnt
         public void update(GameTime gameTime, SoundEffect collectItem,bool mute)
         {
             rotationy += 0.025f ;
@@ -201,10 +199,9 @@ namespace WindowsGame1
             }
         }
 
+        //zeichnet das Item an der zufälligen festgelegten stelle und den Schatten direkt darunter
         public void draw(Matrix view, Matrix projection)
-        {
-            
-            
+        {           
                 Matrix world = Matrix.Identity * Matrix.CreateRotationY(rotationy) * Matrix.CreateTranslation(position);
 
                 foreach (ModelMesh mesh in itemModel[itemIndex].Meshes)
@@ -235,28 +232,32 @@ namespace WindowsGame1
                 }
             }
         
-
+        //gibt die Sphere des Items zurück
         public CollisionSphere getItemSphere()
         {
             return collisionSphere;
         }
 
+        //gibt die restliche Zeit, in der das Item einen Effekt hat, zurück
         public int getRestTime(GameTime gameTime)
         {
             TimeSpan time = ((activationTime + effectTime) - gameTime.TotalGameTime);
             return time.Seconds;
         }
 
+        // gibt den Index des Items zurück
         public int getItemIndex()
         {
             return itemIndex;
         }
 
+        //gibt zurück ob das Item schon eingesammelt wurde
         public bool getPickedUp()
         {
             return pickedUp;
         }
 
+        //gibt zurück welche Player einen Effekt des Items abbekommen
         public List<String> getAffectedPlayer(List<Player> playerList)
         {
             List<String> affectedPlayer = new List<String>();

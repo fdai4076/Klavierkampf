@@ -38,9 +38,9 @@ namespace WindowsGame1
 
         };
 
+        //legt die CollisionSpheres für die verschiedenen Modelle fest und erstellt außerdem für jedes Model ein Moebel struct
         public CharacterManager(Model[] modelle)
         {
-
             this.modelle = modelle;
 
             this.stuhlBounding = new CollisionSphere[] {
@@ -180,12 +180,11 @@ namespace WindowsGame1
             kuehlschrank.mass = 0.05f;
             kuehlschrank.yPosition = 2.403f;
             kuehlschrank.angle = new float[] { 135f, 45f, 225f, 315f };
-
         }
 
+        // gibt den Struct zu der zugehörigen id zurück
         public Moebel getStruct(int id)
         {
-
             this.id = id;
 
             switch (id)
@@ -193,21 +192,17 @@ namespace WindowsGame1
                 case 0:
                     return klavier;
 
-
                 case 1:
                     return kleiderschrank;
 
-
                 case 2:
                     return sofa;
-
 
                 case 3:
                     return kuehlschrank;
 
                 default:
                     return klavier;
-
             }
         }
     }

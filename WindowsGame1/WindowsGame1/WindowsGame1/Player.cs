@@ -9,15 +9,14 @@ namespace WindowsGame1
 {
     public class Player
     {
-
         private Model model;
         private Model sphereModel;
         private Vector3 position;
 
         private float[] cornerAngles;
         private bool[] itemActive;
-        public bool isAlive;
-        public bool canMove;
+        private bool isAlive;
+        private bool canMove;
         private int directionId;
         private int playerindex;
         private float rotationy;
@@ -40,8 +39,6 @@ namespace WindowsGame1
         private int movingEffect;
         private SoundEffect dashEffect;
 
-
-
         public Player(Vector3 spawn, float spawnrotation, int playerindex, CollisionManager collisionManager, CharacterManager.Moebel data, Model sphereModel, ItemManager itemManager, SoundEffect dashEffect)
         {
             this.position = spawn;
@@ -56,7 +53,6 @@ namespace WindowsGame1
             this.dashEffect = dashEffect;
             canMove = true;
             sphere = new CollisionSphere[data.spheres.Length];
-
 
             for (int i = 0; i < data.spheres.Length; i++)
             {
@@ -87,11 +83,10 @@ namespace WindowsGame1
             dashing = false;
             directionId = 4;
             isAlive = true;
-            dashTime = new TimeSpan();
-
-            
+            dashTime = new TimeSpan();           
         }
 
+        //zeichnet die Spieler und die BoundingSpheres
         public void Draw(Matrix view, Matrix projection)
         {
             for (int i = 0; i < sphere.Length; i++)
@@ -127,12 +122,15 @@ namespace WindowsGame1
             }
         }
 
+
         public void Update(GameTime gameTime,bool mute)
         {
+            //ruft den möglichen Effekt eines Items auf den Spieler ab
             speedEffect = itemManager.getItemEffect(playerindex).speed;
             powerEffect = itemManager.getItemEffect(playerindex).power;
             movingEffect = itemManager.getItemEffect(playerindex).moving;
 
+            //Abfrage ob der Spieler noch auf der Tunierfläche ist
             if (isAlive)
             {
                 directionId = 4;
@@ -140,6 +138,7 @@ namespace WindowsGame1
                 currentDashPower = 0f;
                 ItemManager.ItemsEffect itemEffect = itemManager.getItemEffect(playerindex);
 
+                //wenn der Spieler die Tunierfläche verlässt fällt er
                 if (collisionManager.canFall(this))
                 {
                     position.Y -= 0.1f;
@@ -153,12 +152,12 @@ namespace WindowsGame1
                         isAlive = false;
                 }
 
-
+                //abfrage ob der Spieler sich bewegen kann
                 if (canMove)
                 {
+                    //Steuerung und Dash für Player1
                     if (playerindex == 0)
                     {
-
                         if (Keyboard.GetState().IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
                         {
                             rotateLeft();
@@ -195,6 +194,7 @@ namespace WindowsGame1
                         }
                     }
 
+                    //Steuerung und Dash für Player2
                     if (playerindex == 1)
                     {
                         if (Keyboard.GetState().IsKeyDown(Keys.H) || GamePad.GetState(PlayerIndex.Two).DPad.Left == ButtonState.Pressed)
@@ -230,6 +230,7 @@ namespace WindowsGame1
                         }
                     }
 
+                    //Steuerung und Dash für Player3
                     if (playerindex == 2)
                     {
                         if (Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.Three).DPad.Left == ButtonState.Pressed)
@@ -265,14 +266,12 @@ namespace WindowsGame1
                         }
                     }
 
-
+                    //Steuerung und Dash für Player4
                     if (playerindex == 3)
                     {
                         if (Keyboard.GetState().IsKeyDown(Keys.NumPad4) || GamePad.GetState(PlayerIndex.Four).DPad.Left == ButtonState.Pressed)
                         {
-
                             rotateLeft();
-
                         }
 
                         if (Keyboard.GetState().IsKeyDown(Keys.NumPad6) || GamePad.GetState(PlayerIndex.Four).DPad.Right == ButtonState.Pressed)
@@ -282,7 +281,6 @@ namespace WindowsGame1
 
                         if (Keyboard.GetState().IsKeyDown(Keys.NumPad8) || GamePad.GetState(PlayerIndex.Four).DPad.Up == ButtonState.Pressed)
                         {
-
                             walkForward();
                         }
 
@@ -304,13 +302,15 @@ namespace WindowsGame1
                             dash(gameTime, mute);
                         }
                     }
-
                 }
+
+                //überprüft Kollisonen und überprüft, ob der Spieler dashen kann
                 collisionManager.calculateCollisions(this, directionId, currentSpeed, power, currentDashPower, rotationy);
                 checkCanDash(gameTime);
             }
         }
 
+        //gibt den Winkel zwischen der Sphere und dem Model zurück
         public double getAngle2Dim(Vector3 spherePos, Vector3 modelPos)
         {
             Vector2 sphereVector = new Vector2(spherePos.X - modelPos.X, spherePos.Z - modelPos.Z);
@@ -322,16 +322,19 @@ namespace WindowsGame1
             return Math.Acos(angle);
         }
 
+        //gibt den Player Index zurück
         public int getPlayerIndex()
         {
             return playerindex;
         }
 
+        //gibt ein Array der CollisionSpheres zurück
         public CollisionSphere[] getCollisionSpheres()
         {
             return sphere;
         }
 
+        //gibt die Masse zurück
         public float getMass()
         {
             return mass;
@@ -353,6 +356,7 @@ namespace WindowsGame1
             
         }*/
 
+        //bewegt die Collision SPheres
         public void movePlayer(Vector3 directionVector)
         {
             position += directionVector;
@@ -372,7 +376,6 @@ namespace WindowsGame1
         {
             for (int i = 0; i < sphere.Length; i++)
             {
-
                 sphere[i].setCenterPos(new Vector3(
                 (float)(sphere[i].getCenterPos().X + collisionVector.X),
                 sphere[i].getCenterPos().Y,
@@ -380,7 +383,7 @@ namespace WindowsGame1
             }
         }
 
-
+        //lässt den Player links rotieren
         public void rotateLeft()
         {
             if (movingEffect == -1)
@@ -401,6 +404,7 @@ namespace WindowsGame1
             }
         }
 
+        //lässt den Player rechts rotieren
         public void rotateRight()
         {
             if (movingEffect == -1)
@@ -421,6 +425,7 @@ namespace WindowsGame1
             }
         }
 
+        //lässt den Player rückwärts laufen
         public void walkBackward()
         {
             if (movingEffect == -1)
@@ -441,6 +446,7 @@ namespace WindowsGame1
             }
         }
 
+        //lässt den Player vorwärts laufen
         public void walkForward()
         {
             if (movingEffect == -1)
@@ -463,6 +469,7 @@ namespace WindowsGame1
             }
         }
 
+        //dash Effekt
         public void dash(GameTime gameTime, bool mute)
         {
             currentSpeed *= 5f;
@@ -475,6 +482,7 @@ namespace WindowsGame1
             }
         }
 
+        //überprüft ob der Player dashen kann
         public void checkCanDash(GameTime gameTime)
         {
             if (dashTime + TimeSpan.FromMilliseconds(dashCountdown) <= gameTime.TotalGameTime)
@@ -483,56 +491,64 @@ namespace WindowsGame1
             }
         }
 
+        //gibt die Zeit zum nächsten möglichen Dash zurück
         public TimeSpan getRestDashTime(GameTime gameTime)
         {
             return (dashTime + TimeSpan.FromMilliseconds(dashCountdown)-gameTime.TotalGameTime);
         }
 
+        //gibt die Winkel der CollisionSpheres in der Ecke zurück
         public float[] getCornerAngles()
         {
             return cornerAngles;
         }
-
+        
+        //gibt die Richtungs ID zurück
         public int getDirectionId()
         {
             return directionId;
         }
 
+        //gibt den aktuellen Speed zurück
         public float getCurrentSpeed()
         {
             return currentSpeed;
         }
 
-
+        //gibt zurück ob der Spieler dasht
         public bool isDashing()
         {
             return dashing;
         }
 
+        //gibt die Power zurück
         public float getPower()
         {
             return power;
         }
 
+        //gibt die Model Id zurück
         public int getModelId()
         {
             return modelId;
         }
 
+        // gibt die y Rotation zurück
         public float getRotationY()
         {
             return rotationy;
         }
 
+        //gibt die position zurück
         public Vector3 getPosition()
         {
             return position;
         }
 
+        //gibt die aktuelle DashPower zurück
         public float getcurrentDashPower()
         {
             return currentDashPower;
         }
-
     }
 }
