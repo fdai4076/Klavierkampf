@@ -88,7 +88,7 @@ namespace WindowsGame1
 
         //zeichnet die Spieler und die BoundingSpheres
         public void Draw(Matrix view, Matrix projection)
-        {
+        {/*
             for (int i = 0; i < sphere.Length; i++)
              {
                  Matrix World = Matrix.Identity * Matrix.CreateTranslation(sphere[i].getCenterPos());
@@ -103,7 +103,7 @@ namespace WindowsGame1
                      }
                      sphereMesh.Draw();
                  }
-             }
+             }*/
 
             Matrix world = Matrix.Identity * Matrix.CreateRotationY(rotationy) * Matrix.CreateTranslation(position);
 
@@ -115,8 +115,8 @@ namespace WindowsGame1
                     basic.View = view;
                     basic.Projection = projection;
                     basic.EnableDefaultLighting();
-                    basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-                    basic.Alpha = 0.5f;
+                    //basic.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                    //basic.Alpha = 0.5f;
                 }
                 mesh.Draw();
             }
