@@ -86,7 +86,7 @@ namespace WindowsGame1
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            //graphics.IsFullScreen = true;
+            graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferHeight = screenHeight;
             graphics.PreferredBackBufferWidth = screenWidth;
@@ -1192,6 +1192,7 @@ namespace WindowsGame1
 
                     if (collisionManager.checkPlayerAlive() == 1)
                     {
+                        item.resetItem();
                         gamestate = GameState.result;
                     }
 

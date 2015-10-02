@@ -361,14 +361,14 @@ namespace WindowsGame1
         {
             position += directionVector;
 
-           for (int i = 0; i < sphere.Length; i++)
+            for (int i = 0; i < sphere.Length; i++)
             {
                 double radius = sphere[i].getRadius();
                 sphere[i].setCenterPos(new Vector3(
                     (float)(position.X + (Math.Cos(sphere[i].getAngleToModel() + rotationy) * radius)),
                     sphere[i].getCenterPos().Y,
                     (float)(position.Z + (-Math.Sin(sphere[i].getAngleToModel() + rotationy) * radius))));
-            } 
+            }
         }
 
 
@@ -376,6 +376,7 @@ namespace WindowsGame1
         {
             for (int i = 0; i < sphere.Length; i++)
             {
+
                 sphere[i].setCenterPos(new Vector3(
                 (float)(sphere[i].getCenterPos().X + collisionVector.X),
                 sphere[i].getCenterPos().Y,
@@ -472,7 +473,7 @@ namespace WindowsGame1
         //dash Effekt
         public void dash(GameTime gameTime, bool mute)
         {
-            currentSpeed *= 5f;
+            currentSpeed = currentSpeed * (dashPower * 1000);
             currentDashPower = dashPower;
             dashing = true;
             dashTime = gameTime.TotalGameTime;

@@ -277,6 +277,11 @@ namespace WindowsGame1
             }
             return affectedPlayer;
         }
+
+        public void resetItem()
+        {
+            activationTime = new TimeSpan(0,0,0);
+        }
     }
 }
 
