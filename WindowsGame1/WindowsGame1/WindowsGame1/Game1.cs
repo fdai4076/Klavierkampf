@@ -49,14 +49,14 @@ namespace WindowsGame1
         private Button [] buttonCharakter = new Button[2]; // index 0 = Back , index 1 = For
 
         private Button player1Back, player1For, player2Back, player2For, player3Back, player3For, player4Back, player4For;
-        private Button howtoplayBack, howtoplayFor;
+        private Button [] howtoplay = new Button [2];
         private Button [] splashMenuButtons = new Button[4]; //index 0 = Start , index 1 = Howtoplay, index 2 = Exit, index 3 = Mute
         private Button buttonResultNewGame, buttonResultMainMenu;
 
         private Texture2D buttonBackground, buttonBackgroundPause;
         private Texture2D pause;
         private Texture2D splashscreen, lautsprecherX;
-        private Texture2D[] howtoplayscreen = new Texture2D[5];
+        private Texture2D [] howtoplayscreen = new Texture2D[5];
         private Texture2D logoPicture,logoklein;
         private Texture2D creditsPicture;
         private Texture2D charakterwahl;
@@ -70,6 +70,7 @@ namespace WindowsGame1
         private int buttonCharakterIndex;
         private int buttonPauseIndex;
         private int resultIndex;
+        private int howtoplayButtonIndex;
         private int player1Index, player2Index, player3Index, player4Index;
         private int howtoplayIndex;
         private Color logoAnimation;
@@ -119,7 +120,7 @@ namespace WindowsGame1
             logoAnimation = new Color(255, 255, 255, 255);
             creditsAnimation = new Color(255, 255, 255, 255);
 
-            howtoplayIndex = buttonCharakterIndex = buttonPauseIndex = 0;
+            howtoplayIndex = buttonCharakterIndex = buttonPauseIndex = howtoplayButtonIndex = 0;
 
             buttonPause[0].setPosition(new Vector2(555, 300));
             buttonPause[1].setPosition(new Vector2(555, 390));
@@ -129,8 +130,8 @@ namespace WindowsGame1
             splashMenuButtons[2].setPosition(new Vector2(565, 470));
             splashMenuButtons[3].setPosition(new Vector2(565, 555));
          
-            howtoplayBack.setPosition(new Vector2(30, 640));
-            howtoplayFor.setPosition(new Vector2(1100, 640));
+            howtoplay[0].setPosition(new Vector2(30, 640));
+            howtoplay[1].setPosition(new Vector2(1100, 640));
             buttonCharakter[0].setPosition(new Vector2(30, 640));
             buttonCharakter[1].setPosition(new Vector2(1100, 640));
 
@@ -232,8 +233,8 @@ namespace WindowsGame1
             splashMenuButtons[1] = new Button(Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay"), Content.Load<Texture2D>("Menu/SplashMenu/Howtoplay2"), graphics.GraphicsDevice);
             splashMenuButtons[2] = new Button(Content.Load<Texture2D>("Menu/SplashMenu/ExitButton"), Content.Load<Texture2D>("Menu/SplashMenu/ExitButton2"), graphics.GraphicsDevice);
             splashMenuButtons[3] = new Button(Content.Load<Texture2D>("Menu/splashMenu/Lautsprecher"), Content.Load<Texture2D>("Menu/splashMenu/Lautsprecher2"), graphics.GraphicsDevice);
-            howtoplayBack = new Button(Content.Load<Texture2D>("Menu/Back"), Content.Load<Texture2D>("Menu/Back2"), graphics.GraphicsDevice);
-            howtoplayFor = new Button(Content.Load<Texture2D>("Menu/For"), Content.Load<Texture2D>("Menu/For2"), graphics.GraphicsDevice);
+            howtoplay[0] = new Button(Content.Load<Texture2D>("Menu/Back"), Content.Load<Texture2D>("Menu/Back2"), graphics.GraphicsDevice);
+            howtoplay[1] = new Button(Content.Load<Texture2D>("Menu/For"), Content.Load<Texture2D>("Menu/For2"), graphics.GraphicsDevice);
             buttonCharakter[0] = new Button(Content.Load<Texture2D>("Menu/Back"), Content.Load<Texture2D>("Menu/Back2"), graphics.GraphicsDevice);
             buttonCharakter[1] = new Button(Content.Load<Texture2D>("Menu/For"), Content.Load<Texture2D>("Menu/For2"), graphics.GraphicsDevice);
             
@@ -397,7 +398,7 @@ namespace WindowsGame1
                 this.Exit();
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                this.Exit();
+                gamestate = GameState.credits;
 
             MouseState mouse = Mouse.GetState();
             //GameState
@@ -1081,42 +1082,81 @@ namespace WindowsGame1
 
                 case GameState.howtoplay:
 
-                    IsMouseVisible = true;
-
-                    if (howtoplayBack.isClicked == true && !buttonDown[0, 0])
+                    if (gamePadOn == true)
                     {
-                        if (howtoplayIndex == 0)
+                        if ((GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed && !buttonDown[0, 3]) || (GamePad.GetState(PlayerIndex.Two).DPad.Left == ButtonState.Pressed && !buttonDown[1, 3]) || (GamePad.GetState(PlayerIndex.Three).DPad.Left == ButtonState.Pressed && !buttonDown[2, 3]) || (GamePad.GetState(PlayerIndex.Four).DPad.Left == ButtonState.Pressed && !buttonDown[3, 3]))
                         {
-                            gamestate = GameState.splashMenu;
-                            howtoplayBack.isClicked = false;
-                            IsMouseVisible = false;
-                        }
-                        else
-                        {
-                            howtoplayIndex -= 1;
-                            howtoplayBack.isClicked = false;
+                            if (howtoplayIndex == 0)
+                            { 
+                                gamestate = GameState.splashMenu;
+                            }
+                            else
+                            {
+                                howtoplayIndex -= 1;
+                            }
+
+                            for (int i = 0; i <= 3; i++)
+                            {
+                                buttonDown[i, 3] = true;
+                            }
                         }
 
+                        if ((GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed && !buttonDown[0, 4]) || (GamePad.GetState(PlayerIndex.Two).DPad.Right == ButtonState.Pressed && !buttonDown[1, 4]) || (GamePad.GetState(PlayerIndex.Three).DPad.Right == ButtonState.Pressed && !buttonDown[2, 4]) || (GamePad.GetState(PlayerIndex.Four).DPad.Right == ButtonState.Pressed && !buttonDown[3, 4]))
+                        {
+                            if (howtoplayIndex == 4)
+                            {
+                                gamestate = GameState.splashMenu;
+                            }
+                            else
+                            {
+                                howtoplayIndex += 1;
+                            }
+
+                            for (int i = 0; i <= 3; i++)
+                            {
+                                buttonDown[i, 4] = true;
+                            }
+                        }
                     }
-                    howtoplayBack.Update(mouse);
-
-                    if (howtoplayFor.isClicked == true && !buttonDown[0, 0])
+                    else
                     {
-                        if (howtoplayIndex == 4)
-                        {
-                            gamestate = GameState.splashMenu;
-                            howtoplayIndex = 0;
-                            howtoplayFor.isClicked = false;
-                            IsMouseVisible = false;
-                        }
-                        else
-                        {
-                            howtoplayIndex += 1;
-                            howtoplayFor.isClicked = false;
-                        }
+                        IsMouseVisible = true;
 
+                        if (howtoplay[0].isClicked == true && !buttonDown[0, 0])
+                        {
+                            if (howtoplayIndex == 0)
+                            {
+                                gamestate = GameState.splashMenu;
+                                howtoplay[0].isClicked = false;
+                                IsMouseVisible = false;
+                            }
+                            else
+                            {
+                                howtoplayIndex -= 1;
+                                howtoplay[0].isClicked = false;
+                            }
+
+                        }
+                        howtoplay[0].Update(mouse);
+
+                        if (howtoplay[1].isClicked == true && !buttonDown[0, 0])
+                        {
+                            if (howtoplayIndex == 4)
+                            {
+                                gamestate = GameState.splashMenu;
+                                howtoplayIndex = 0;
+                                howtoplay[1].isClicked = false;
+                                IsMouseVisible = false;
+                            }
+                            else
+                            {
+                                howtoplayIndex += 1;
+                                howtoplay[1].isClicked = false;
+                            }
+
+                        }
+                        howtoplay[1].Update(mouse);
                     }
-                    howtoplayFor.Update(mouse);
 
                     break;
 
@@ -1401,8 +1441,8 @@ namespace WindowsGame1
                 case GameState.howtoplay:
 
                     spriteBatch.Draw(howtoplayscreen[howtoplayIndex], new Rectangle(0, 0, howtoplayscreen[howtoplayIndex].Width, howtoplayscreen[howtoplayIndex].Height), Color.White);
-                    howtoplayBack.Draw(spriteBatch);
-                    howtoplayFor.Draw(spriteBatch);
+                    howtoplay[0].Draw(spriteBatch);
+                    howtoplay[1].Draw(spriteBatch);
 
                     break;
 
@@ -1458,9 +1498,9 @@ namespace WindowsGame1
 
 
                     spriteBatch.DrawString(font, "canFall " + collisionManager.canFall(playerList[0]).ToString(), new Vector2(100, 100), Color.Black);
-                    spriteBatch.DrawString(font, "isAlive " + playerList[0].isAlive.ToString(), new Vector2(100, 150), Color.Black);
+                    //spriteBatch.DrawString(font, "isAlive " + playerList[0].isAlive.ToString(), new Vector2(100, 150), Color.Black);
                     
-                    spriteBatch.DrawString(font, "canMove " + playerList[0].canMove.ToString(), new Vector2(100, 200), Color.Black);
+                    //spriteBatch.DrawString(font, "canMove " + playerList[0].canMove.ToString(), new Vector2(100, 200), Color.Black);
                     spriteBatch.DrawString(font, "sphere" + playerList[0].getCollisionSpheres()[0].getCenterPos().ToString(), new Vector2(100, 250), Color.Black);
                     spriteBatch.DrawString(font, "effectTime" + (item.effectTime + item.activationTime).ToString(), new Vector2(100, 300), Color.Black);
                     spriteBatch.DrawString(font, "effectTime" + ((item.effectTime + item.activationTime)>=gameTime.TotalGameTime).ToString(), new Vector2(100, 350), Color.Black);
